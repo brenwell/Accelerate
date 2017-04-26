@@ -1,14 +1,29 @@
 #!/bin/bash
 PATH=./node_modules/.bin:$PATH
 
+WEBPACK=./node_modules/.bin/webpack
+INDEXJS=./src/index.js
+BUNDLE=./dist/accelerate.js
+BUNDLE_MIN=./dist/accelerate.min.js
+
 function public:start {
   rm -rf ./lib/
-  webpack --progress --colors --watch --env.fileName 'suga.js' --env.libName 'suga'
+  ${WEBPACK} --progress --colors --watch --env.fileName 'suga.js' --env.libName 'suga'
 }
 
+function public:clean {
+  rm -Rfv ./dist/*
+}
+
+function public:watch {
+  ${WEBPACK} --progress -w --colors ${INDEXJS} ${BUNDLE}
+  ${WEBPACK} --progress -w --colors ${INDEXJS} ${BUNDLE_MIN}
+}
 function public:build {
-  webpack --progress --colors --env.fileName 'suga.js' --env.libName 'suga'
-  webpack --progress --colors -p --env.fileName 'suga.min.js' --env.libName 'suga'
+  ${WEBPACK} --progress --colors ${INDEXJS} ${BUNDLE}
+  ${WEBPACK} --progress --colors ${INDEXJS} ${BUNDLE_MIN}
+  # ${WEBPACK} --progress --colors --env.fileName 'suga.js' --env.libName 'suga'
+  # ${WEBPACK} --progress --colors -p --env.fileName 'suga.min.js' --env.libName 'suga'
 }
 
 function public:test {
