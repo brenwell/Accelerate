@@ -5,7 +5,7 @@
 
 import {BezDecelerator} from "./accelerator.js"
 
-window.BezDecelerator = BezDecelerator
+// window.BezDecelerator = BezDecelerator
 /*
 * This class seeks to keep track of the 1 dimensional motion of an object that is subject to
 * multiple velocity changes.
@@ -23,7 +23,7 @@ window.BezDecelerator = BezDecelerator
 *           dF - is the distance that the object should move while changing velocity
 *           cb - is a function to call when the velocity change is complete
 */
-class Mover{
+export class Mover{
 
     constructor(v0)
     {
@@ -46,6 +46,10 @@ class Mover{
         this.cb = cb
         this.decelerator = new BezDecelerator(v0, vF, tF, dF)
     }
+    /*
+    * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
+    * frames and display issues.
+    */
     getDistance(numberOfFrames)
     {
         console.log(`Mover::getDistance:numberOfFrames: ${numberOfFrames} time:${this.time}`)
@@ -55,7 +59,7 @@ class Mover{
             
             console.log(`Mover::getDistance:not changing velocity: ${this.currentVelocity} distance:${res}`)
             
-            return res
+            return this.totalDistance
         }else {
             this.elapsedTimeChangingVelocity += numberOfFrames * this.timeInterval
             this.time += numberOfFrames * this.timeInterval
@@ -82,6 +86,10 @@ class Mover{
             return this.totalDistance
         }
     }
+    /*
+    * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
+    * frames and display issues.
+    */
     getDistanceVelocityNotChanging(numberOfFrames)
     {
         this.time += this.timeInterval*numberOfFrames
@@ -89,5 +97,6 @@ class Mover{
         return this.totalDistance
     }
 }
-window.Accelerator = {}
-window.Accelerator.Mover = Mover
+
+// window.Accelerator = {}
+// window.Accelerator.Mover = Mover

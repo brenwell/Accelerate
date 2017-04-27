@@ -1,11 +1,10 @@
+// import {graphFunction, drawAxes} from "./graph.js"
+// have own internal versions of grpah for the moment
+import {Mover} from "../src/index.js"
 
-<!DOCTYPE html>
-<html>
-<head><title>Canvas code example</title>
-<script src="jquery.min.js"></script>
-<script type="text/javascript" src="./dist/mover_bundle.js"></script>
-<!--script type="text/javascript">
-// These are the parameters that define the problem
+$(document).ready(function(){
+	$("#go_button").click(main)
+})
 
 const v0 = 800  // (10*60) 10px / frame (60/sec)
 const vF = 190
@@ -18,11 +17,6 @@ const rangeDomain = {
 	xMax : tF,
 	yMin : 0,
 	yMax : dF
-}
-let version = ""
-function doVersion1()
-{	
-	main()
 }
 function makeChange(v0, vF, tF, dF){
 	let r = {
@@ -76,7 +70,7 @@ let maxD = 4000.0
 function experiment(schedule)
 {
 	let totalTime = 0.0
-	let mover = new window.Accelerator.Mover(50.0)
+	let mover = new Mover(50.0)
 	let lastStep = -1
 
 	let result1 = function(delta_t)
@@ -246,15 +240,3 @@ function drawAxes(ctx,axes)
 	drawLine(ctx, [0,h], [w,h], "rgb(256,0,0)")
 
 }
-</script-->
-</head>
-<body>
-	<div style="float:right; width:400px">
-		<h1>Experiment</h1>
-		<div>
-			<button id="go_button" >GO</button>
-		</div>
-	</div>
-	<div id="canvas-wrapper"><canvas id="canvas" width="1000" height="500"></canvas></div>
-</body>
-</html>
