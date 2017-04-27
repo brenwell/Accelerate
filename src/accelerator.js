@@ -36,7 +36,12 @@ export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 
     if( v0 == 0 )
 	{
-        throw new Error('no change in velocity not implemented');
+        // throw new Error('zero initial velocity not implemented');
+		let P0 = [0.0, 0.0]
+		let P1 = [T/3.0, 0]
+		let P3 = [T, D]
+        let P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+        func = CubicBezier(P0, P1, P2, P3);
     } 
 	// Terminal velocity is zero - fit with quadratic
     else if( vF ==  0)

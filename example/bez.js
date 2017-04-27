@@ -85,19 +85,6 @@ function main(bezDecelerationObj)
 
 	var axes={} 
 	var ctx=canvas.getContext("2d");
-	axes.x0 = 0; // starting x value
-	axes.xMin = 0; // starting x value
-	axes.xMax = tF
-	axes.xScale = ctx.width / tF
-
-	axes.yMin = 0
-	axes.yMax = dF
-	axes.yScale = ctx.height / dF
-
-	axes.y0 = 500
-
-	axes.scale = 40;                 // 40 pixels from x=0 to x=1
-	axes.doNegativeX = false;
 
 	drawAxes(ctx, axes);
 
