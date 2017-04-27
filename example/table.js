@@ -1,5 +1,6 @@
-// import {graphFunction, drawAxes} from "./graph.js"
-// have own internal versions of grpah for the moment
+/*
+* Tests graphing a table of (x,y) values rather that working directly with a/the function
+*/
 import {graphTable} from "./graph.js"
 
 $(document).ready(function(){

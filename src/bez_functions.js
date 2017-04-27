@@ -1,7 +1,7 @@
 import {BezierCubicClass} from "./bezier_cubic"
 import {BezierQuadraticClass} from "./bezier_quadratic"
 import newtonRaphson from "newton-raphson"
-console.log(newtonRaphson)
+
 /*
 * The key thing happening here is to convert a parameterized Bezier function
 * into a function of x
@@ -9,7 +9,9 @@ console.log(newtonRaphson)
 
 /* 
 * This function returns a function which is a bezier Cubic curve as a
-* function of x so that (x, f(x)) is a point on the bezier curve
+* function of x so that (x, f(x)) is a point on the bezier curve.
+* Bezier functions are defined as curves (x(t), y(t)) for a parameter t between 0 .. 1
+* but cannot be rephrased as (x, f(x)). Getting itin this f(x) form takes computational work
 */
 export const CubicBezier = function CubicBezier(P0, P1, P2, P3)
 {

@@ -1,7 +1,9 @@
-// import {graphFunction, drawAxes} from "./graph.js"
-// have own internal versions of grpah for the moment
+/*
+* This is the main entry point for the motion.html page.
+* proves a slection of two motions to display. 
+*/
+
 import {drawAxes, graphTable} from "./graph.js"
-import {Mover} from "../src/index.js"
 import motion1 from "./motion_1.js"
 import motion2 from "./motion_2.js"
 

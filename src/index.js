@@ -145,6 +145,8 @@ export default class Mover{
             +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`)
     }
 
+/////////////// below here will disappear
+
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
     advanceTimeByFrames(numberOfFrames)
     {

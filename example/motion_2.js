@@ -1,6 +1,4 @@
-// import {graphFunction, drawAxes} from "./graph.js"
-// have own internal versions of grpah for the moment
-import {Mover} from "../src/index.js"
+// this is an example of a motion .. but simple for testing
 
 export default function()
 {

@@ -1,3 +1,7 @@
+/*
+* main entry for bez.html - draws various forms of bezier functions
+*/
+
 import {BezDecelerator} from "../src/accelerator"
 import {graphFunction, graphParametricFunction, drawAxes} from "./graph.js"
 
