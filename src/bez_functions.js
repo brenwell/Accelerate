@@ -3,6 +3,10 @@ import {BezierQuadraticClass} from "./bezier_quadratic"
 import newtonRaphson from "newton-raphson"
 
 /*
+* @TODO
+*   -    better first guesses for newton-raphson
+*/
+/*
 * The key thing happening here is to convert a parameterized Bezier function
 * into a function of x
 */

@@ -1,16 +1,15 @@
-// const bez = require("./bez_functions")
-// const accelerator = require("./accelerator.js")
-
-// const BezDecelerator.class  = accelerator;
+import {BezDecelerator} from "./accelerator.js"
 
 function logger(s)
 {
     //console.log(s)
 }
+/*
+* TODO
+*   -   does not correctly support advancing by a time interval that jumps over the end of an acceleration
+*   -   the calc of velocity during an acceleration is crude and probably can be made more accurate
+*/
 
-import {BezDecelerator} from "./accelerator.js"
-
-// window.BezDecelerator = BezDecelerator
 /*
 * This class seeks to keep track of the 1 dimensional motion of an object that is subject to
 * multiple velocity changes. 
@@ -32,21 +31,22 @@ import {BezDecelerator} from "./accelerator.js"
 * of the promise returned by call to accelerate() that setup the acceleration
 *
 *
-*   -   accelerate(v0, vF, tF, dF, cb) - instructs the object to start a velocity change
+*   -   accelerate(v0, vF, tF, dF) - instructs the object to start a velocity change
 *           v0 - is current velocity and is unnecessary since the moving object knows its current velocity
 *           vF - is the velocity the object is to change to
 *           tF - is the time interval over which the change is to take place
 *           dF - is the distance that the object should move while changing velocity
-*           cb - is a function to call when the velocity change is complete
+*       returns a ES6 promise
 */
-export default class Mover{
+export default class Mover
+{
 
     constructor(v0)
     {
 		this.signature = "Mover"
         this.time = 0.0;
         this.elapsedTimeChangingVelocity = 0.0
-        this.timeInterval = 1.0/60.0
+        this.timeInterval = 1.0/60.0 // @FIX this is going away
         this.totalDistance = 0.0
         this.changingVelocity = false
         this.decelerator = null
