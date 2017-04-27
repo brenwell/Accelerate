@@ -106,7 +106,7 @@ function logger(s)
 * of the promise returned by call to accelerate() that setup the acceleration
 *
 *
-*   -   to(v0, vF, tF, dF, cb) - instructs the object to start a velocity change
+*   -   accelerate(v0, vF, tF, dF, cb) - instructs the object to start a velocity change
 *           v0 - is current velocity and is unnecessary since the moving object knows its current velocity
 *           vF - is the velocity the object is to change to
 *           tF - is the time interval over which the change is to take place
@@ -543,7 +543,7 @@ function logger(s){
 	let iMax = calcDurationOfScheduleInTicks(schedule.accelsTable) + Math.round(2.0/deltaT)
 	let i = 0
 	let accelFlag = false
-	let mover = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* Mover */](schedule.v0)
+	let mover = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](schedule.v0)
 	let table = []
 
 	let moreAccels = (schedule.accelsTable.length > 0)

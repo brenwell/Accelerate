@@ -32,14 +32,14 @@ import {BezDecelerator} from "./accelerator.js"
 * of the promise returned by call to accelerate() that setup the acceleration
 *
 *
-*   -   to(v0, vF, tF, dF, cb) - instructs the object to start a velocity change
+*   -   accelerate(v0, vF, tF, dF, cb) - instructs the object to start a velocity change
 *           v0 - is current velocity and is unnecessary since the moving object knows its current velocity
 *           vF - is the velocity the object is to change to
 *           tF - is the time interval over which the change is to take place
 *           dF - is the distance that the object should move while changing velocity
 *           cb - is a function to call when the velocity change is complete
 */
-export class Mover{
+export default class Mover{
 
     constructor(v0)
     {
