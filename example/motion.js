@@ -1,6 +1,6 @@
-// import {graphFunction, drawAxes} from "./graph.js"
-// have own internal versions of grpah for the moment
-import Mover from "../src/index.js"
+/*
+* This file implements a function that can run a schedule of accelerations
+*/
 
 let sample_schedule = {
 	v0 : 0.0,		// initial velocity in distance units/second

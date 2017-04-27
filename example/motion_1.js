@@ -1,8 +1,6 @@
-// import {graphFunction, drawAxes} from "./graph.js"
-// have own internal versions of grpah for the moment
-import {Mover} from "../src/index.js"
-import runSchedule from "./motion.js"
+// this is a meaningful example of a motion.
 
+import runSchedule from "./motion.js"
 
 let schedule = {
 	v0 : 0.0,

@@ -1,4 +1,6 @@
-
+/*
+* some simple utilities for graphing functions
+*/
 export function graphFunction (ctx, axes, func, color, thick) {
 	var xx, yy
 	var dx=4, x0=axes.x0, y0=axes.y0, scale=axes.scale;
