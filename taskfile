@@ -1,14 +1,84 @@
 #!/bin/bash
-PATH=./node_modules/.bin:$PATH
+PWD=`pwd`
+PATH=${PWD}/node_modules/.bin:$PATH
+
+EXAMPLE=${PWD}/example
+EXAMPLE_DIST=${PWD}/example/dist
+
+WEBPACK=./node_modules/.bin/webpack
+INDEXJS=./src/index.js
+BUNDLE=./dist/accelerate.js
+BUNDLE_MIN=./dist/accelerate.min.js
+
+
+
+## tasks related to example ###############################
+function public:bez_clean {
+  rm -fv ${EXAMPLE_DIST}/bez_bundle*
+}
+function public:bez_build {
+    cd ${EXAMPLE}
+  webpack  --devtool source-map ./bez.js ${EXAMPLE_DIST}/bez_bundle.js
+}
+function public:bez_watch {
+    cd ${EXAMPLE}
+  webpack -w  --devtool source-map ./bez ${EXAMPLE_DIST}//bez_bundle.js 
+}
+
+function public:mover_clean {
+  rm -fv ${EXAMPLE_DIST}/mover_bundle*
+}
+function public:mover_build {
+  cd ${EXAMPLE}
+  webpack  --devtool source-map ./mover.js ${EXAMPLE_DIST}/mover_bundle.js
+}
+function public:mover_watch {
+    cd ${EXAMPLE}
+  webpack -w  --devtool source-map ./mover.js ${EXAMPLE_DIST}/mover_bundle.js 
+}
+
+function public:table_clean {
+  rm -fv ${EXAMPLE_DIST}/table_bundle*
+}
+function public:table_build {
+  cd ./example
+  webpack  --devtool source-map ./table.js ${EXAMPLE_DIST}/table_bundle.js
+}
+function public:table_watch {
+  cd ./example
+  webpack -w  --devtool source-map ./table.js ${EXAMPLE_DIST}/table_bundle.js 
+}
+
+
+function public:ex_clean {
+  ./taskfile bez_clean
+  ./taskfile mover_clean
+  ./taskfile table_clean
+}
+
+function public:ex_build {
+  ./taskfile bez_build
+  ./taskfile mover_build
+  ./taskfile table_build
+}
+## tasks related to example ###############################
+
 
 function public:start {
   rm -rf ./lib/
-  webpack --progress --colors --watch --env.fileName 'suga.js' --env.libName 'suga'
+  ${WEBPACK} --progress --colors --watch --env.fileName 'suga.js' --env.libName 'suga'
 }
 
+function public:clean {
+  rm -Rfv ./dist/*
+}
+
+
 function public:build {
-  webpack --progress --colors --env.fileName 'suga.js' --env.libName 'suga'
-  webpack --progress --colors -p --env.fileName 'suga.min.js' --env.libName 'suga'
+  ${WEBPACK} --progress --colors ${INDEXJS} ${BUNDLE}
+  ${WEBPACK} --progress --colors ${INDEXJS} ${BUNDLE_MIN}
+  # ${WEBPACK} --progress --colors --env.fileName 'suga.js' --env.libName 'suga'
+  # ${WEBPACK} --progress --colors -p --env.fileName 'suga.min.js' --env.libName 'suga'
 }
 
 function public:test {
@@ -17,7 +87,7 @@ function public:test {
 
 function public:lint {
   # eslint scripts src test --max-warnings 0
-  eslint src --fix --max-warnings 0
+  eslint example src --fix --max-warnings 0
 }
 
 function public:lib {

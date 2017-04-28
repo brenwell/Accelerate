@@ -1,142 +1,180 @@
-BezDecelerator = {};
+import {BezDecelerator} from "./accelerator.js"
 
-function CubicBezier(P0, P1, P2, P3)
+function logger(s)
 {
-    let scalar = function(t, p0, p1, p2, p3){
-
-        var res =   p0*(1-t)*(1-t)*(1-t)
-					+ 3.0 * p1 * (1-t)*(1-t)*t
-					+ 3.0 * p2 * (1 - t)* t * t
-					+ p3*t*t*t;
-        return res;
-
-    };
-
-    let resFunc = function(t){
-        let x = scalar(t, P0[0], P1[0], P2[0], P3[0]);
-        let y = scalar(t, P0[1], P1[1], P2[1], P3[1]);
-        return [x,y];
-    };
-
-    return resFunc;
+    //console.log(s)
 }
-function QuadraticBezier(P0, P1, P2)
- {
-    let scalar = function(t, p0, p1, p2, p3){
-        var res =   p0*(1-t)*(1-t)
-					+ 2.0 * p1 * (1-t)*t
-					+ p2*t*t;
-        return res;
+/*
+* TODO
+*   -   does not correctly support advancing by a time interval that jumps over the end of an acceleration
+*   -   the calc of velocity during an acceleration is crude and probably can be made more accurate
+*/
 
-    };
-    let resFunc = function(t){
-        let x = scalar(t, P0[0], P1[0], P2[0]);
-        let y = scalar(t, P0[1], P1[1], P2[1]);
-        return [x,y];
-    };
-
-    return resFunc;
-}
-
-BezDecelerator.class = function Decelerator(v0, vF, tF, dF)
+/*
+* This class seeks to keep track of the 1 dimensional motion of an object that is subject to
+* multiple velocity changes.
+*
+* The two relevant properties of this object are position and velocity which can be obtained
+* at any time with methods position() and velocity()
+*
+* A starting velocity is set via the constructor.
+*
+* Time is advanced, and the position and velocity updated, by calling the method advanceTimeBy(timeInterval)
+* with a timeInterval or deltaTime which is a time interval since the last update and is in SECONDS not FRAMES
+*
+* An acceleration (either positive or negative) can be scheduled by calling the method accelerate(vF, tF, dF)
+* this call will have no effect on the position or velocity until the next call to advanceTimeBy
+* That method will apply the acceleration on successive calls until the ending condition is encountered
+* tF seconds of acceleration have elapsed AND the body has traveled dF distance during the acceleration
+*
+* On finishing the acceleration the advanceTimeBy() method will call the resolve() function
+* of the promise returned by call to accelerate() that setup the acceleration
+*
+*
+*   -   accelerate(v0, vF, tF, dF) - instructs the object to start a velocity change
+*           v0 - is current velocity and is unnecessary since the moving object knows its current velocity
+*           vF - is the velocity the object is to change to
+*           tF - is the time interval over which the change is to take place
+*           dF - is the distance that the object should move while changing velocity
+*       returns a ES6 promise
+*/
+export default class Mover
 {
-	// just changing the notation to what I am using
-    var V = v0;
-    var T = tF;
-    var D = dF;
-    let P0 = [], P1 = [], P2 = [], P3 = [];
-    let func;
-    const threshold = 0.1;
-    if( v0 == 0 )
-	{
-        throw new Error('no change in velocity not implemented');
-    }
-	// Terminal velocity is zero - fit with quadratic
-    else if( vF ==  0)
-	{
-        let P0 = [0.0,0.0];
-        let P2 = [T,D];
-        let P1 = [D/V, D];
-        func = QuadraticBezier(P0, P1, P2);
-    }
-	// terminal velocity is low enough (slower than D/T) to simply slow down gradually to achieve goal
-	// hence can fit with a quadratic bezier
-    else if( (vF > 0) && ((D - vF*T) >= (threshold * D) ) )
-	{
-        let P0 = [0.0,0.0];
-        let P2 = [T,D];
-        let p1_x = (D - vF*T)/(v0 - vF);
-        let p1_y = (v0*p1_x);
-        func = QuadraticBezier(P0, [p1_x, p1_y], P2);
-    }
-	// terminal velocity higher than D/T or only just a little bit less that D/T
-	// and hence requires some speed up towards the end
-	// needs a cubic bezier to fit
-    else if( (vF > 0) && ((D - vF*T) <=  (1.0 * threshold * D) ) )
-	{
-        let P0 = [0.0, 0.0];
-        let P1 = [D/V, D];
-        let P3 = [T,D];
-        let p2_x = T - D/vF;
-        let p2_y = 0.0;
-        let P2 = [p2_x, p2_y];
-        let alpha = .75;
 
-        let P1_adj = [P1[0]*alpha, P1[1]*alpha];
-
-		// attempts to add a stretch factor .. seems to work for alpha 0.0 .. 1.0
-        let P2_adj = [T - D*alpha/vF, D*(1.0 - alpha)]; // alpha 0 .. 1
-
-        func = CubicBezier(P0, P1_adj, P2_adj, P3);
-    }
-	// terminal velocity is close to D/T and simply produces a straightline equal to D/T
-	// does not seem like a good answer
-	// THIS SHOULD BE OBSOLETE
-    else if( (vF > 0) && ((D - vF*T) <= (threshold * D) ) && ((D - vF*T) >=  (-1.0 * threshold * D) ) )
-	{
-        throw new Error('dont know what to do with these velocities');
-        let P0 = [0.0, 0.0];
-        let P1 = [D/V, D];
-        let P3 = [T,D];
-        let p2_x = T - D/vF;
-        let p2_y = 0.0;
-        let P2 = [p2_x, p2_y];
-        let alpha = .75;
-
-        let P1_adj = [P1[0]*alpha, P1[1]*alpha];
-
-		// attempts to add a stretch factor .. seems to work for alpha 0.0 .. 1.0
-        let P2_adj = [T - D*alpha/vF, D*(1.0 - alpha)]; // alpha 0 .. 1
-
-        func = CubicBezier(P0, P1_adj, P2_adj, P3);
-    }
-	// should not be any more cases
-    else
-	{
-        throw new Error('dont know what to do -- not implemented');
-    }
-
-	// this function is the trajectory of the initial velocity
-    this.tangent_initial = function(t)
-	{
-        return V*t;
-    }.bind(this);
-
-	// this function draws the trajectory of the final velocity
-    this.tangent_final = function(t)
-	{
-        let res =  vF*t + (D - vF*T);
-        return res;
-    }.bind(this);
-
-	/*
-	* p is a parameter in the range 0..T - its the time point
-	*/
-    this.getDistance = function(p)
+    constructor(v0)
     {
-    	let t = p/T;  // value of the bezier parameter t in rnage 0..1
-    	let b_point = func(t);
-    	return b_point;
+        this.signature = "Mover"
+        this.time = 0.0;
+        this.elapsedTimeChangingVelocity = 0.0
+        this.timeInterval = 1.0/60.0 // @FIX this is going away
+        this.totalDistance = 0.0
+        this.changingVelocity = false
+        this.decelerator = null
+        this.currentVelocity = v0
+    }
+    /*
+    * Advance the moving objects time by a time interval
+    *
+    *   deltaTime {float} - interval since the last call to this method
+    *
+    *   returns {float} -   total distance traveled after this time interbal is added to total time
+    *                       of travel. Just for convenience as could get this with position()
+    */
+    advanceTimeBy(deltaTime)
+    {
+        if( ! this.changingVelocity ){
+            this.advanceTimeBy_VelocityNotChanging(deltaTime)
+        }else {
+            this.time += deltaTime
+            this.elapsedTimeChangingVelocity += deltaTime
 
-    }.bind(this);
-};
+            let tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity)
+            let deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance
+
+            this.currentVelocity = deltaDistance / (deltaTime)
+            this.totalDistance = this.distanceBeforeVelocityChange + tmp
+
+            logger(
+                `Mover::advanceByTime  elapsedTimeChangingVelocity: ${this.elapsedTimeChangingVelocity}`
+                +` timeForChange: ${this.timeForChange}`
+                +` DVdistance: ${tmp} `
+                +` totalDistance: ${this.totalDistance}`
+                + `velocity: ${this.currentVelocity}`)
+
+            if( this.elapsedTimeChangingVelocity >= this.timeForChange )
+            {
+                logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`)
+                this.currentVelocity = this.newVelocity
+                this.changingVelocity = false
+                if( typeof this.resolvePromiseFunction == "function")
+                    this.resolvePromiseFunction()
+            }
+        }
+        return this.totalDistance
+    }
+    /*
+    * returns {float} the current position of the moving object
+    */
+    position()
+    {
+        return this.totalDistance
+    }
+    /*
+    * returns {float} the current velocity of the moving object
+    */
+    velocity()
+    {
+        return this.currentVelocity
+    }
+    /*
+    *   accelerate(vF, tF, dF, cb) - instructs the object to start a velocity change
+    *           vF - is the velocity the object is to change to
+    *           tF - is the time interval over which the change is to take place
+    *           dF - is the distance that the object should move while changing velocity
+    *
+    *   returns a ES6 Promise which will be resolved when the acceleration has completed
+    */
+    accelerate(vF, tF, dF)
+    {
+        logger(`Mover::accelerate ${vF} ${tF} ${dF}`)
+        if( this.changingVelocity ){
+            throw new Error("cannot have two accelerations underway at the same time")
+        }
+        let v0 = this.currentVelocity
+        let p = new Promise(function(resolve){
+            this.resolvePromiseFunction = resolve
+        }.bind(this))
+        this.distanceBeforeVelocityChange = this.totalDistance
+        this.changingVelocity = true
+        this.elapsedTimeChangingVelocity = 0.0
+        this.timeForChange = tF
+        this.newVelocity = vF
+        this.distanceForChange = dF
+        this.decelerator = new BezDecelerator(v0, vF, tF, dF)
+        return p
+    }
+
+    /*
+    * Internal only - advances time when no acceleration is active
+    */
+    advanceTimeBy_VelocityNotChanging(deltaTime)
+    {
+        this.time += deltaTime
+        this.totalDistance += this.currentVelocity * deltaTime
+        logger(`Mover::advanceTimeBy_VelocityNotChanging velocity:`
+            +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`)
+    }
+
+/////////////// below here will disappear
+
+    // ONLY    HERE DURING TRANSITION TO DELTA TIME
+    advanceTimeByFrames(numberOfFrames)
+    {
+        logger(`Mover::advanceTimeByFrames:numberOfFrames: ${numberOfFrames} time:${this.time}`)
+        let deltaTime = numberOfFrames * this.timeInterval
+        this.advanceTimeBy(deltaTime)
+    }
+
+    // ONLY    HERE DURING TRANSITION TO DELTA TIME
+    /*
+    * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
+    * frames and display issues.
+    */
+    getDistance(numberOfFrames)
+    {
+        this.advanceTimeByFrames(numberOfFrames)
+        return this.totalDistance
+    }
+
+    // ONLY    HERE DURING TRANSITION TO DELTA TIME
+    /*
+    * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
+    * frames and display issues.
+    */
+    getDistanceVelocityNotChanging(numberOfFrames)
+    {
+        this.time += this.timeInterval*numberOfFrames
+        this.totalDistance += this.currentVelocity*this.timeInterval*numberOfFrames
+        return this.totalDistance
+    }
+}
