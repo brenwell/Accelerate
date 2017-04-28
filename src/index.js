@@ -178,3 +178,6 @@ export default class Mover
         return this.totalDistance
     }
 }
+
+
+window.ACCELERATE = exports;

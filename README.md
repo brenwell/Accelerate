@@ -4,40 +4,18 @@
 ## Usage
 
 ```js
-const initVelocity = 0
-
-const car = new PIXI.Sprite();
-const carAccelerator = new Accelerator(initVelocity);
-
-// animate on frame
-function ticker(delta) {
-    car.position.x += carAccelerator.getDistance(delta)
-
-    window.requestAnimationFrame(ticker);
-}
-window.requestAnimationFrame(ticker);
-
-// Promise based
-carAccelerator.to(newV, overDist, overTime)
-.then(carAccelerator.to(newV, overDist))
-.then(carAccelerator.to(newV, overTime))
-.then(console.log('done'))
-
-```
-## Update to usage
-```js
 import Accelerator from 'Accelerator'
 const initVelocity = 0
 const carAccelerator = new Accelerator(initialVelocity)
 
 // animate on frame
 function ticker(delta) {
-	const deltaTime = delta * timeForSiingleFrame
-	
+	const deltaTime = delta * timeForSingleFrame
+
     carAccelerator.advanceTimeBy(deltaTime)
     car.position.x = carAccelerator.position()
     car.velocity = carAccelerator.velocity()
-	
+
     window.requestAnimationFrame(ticker);
 }
 window.requestAnimationFrame(ticker);
@@ -49,11 +27,11 @@ or, alternatively
 
 // animate on frame
 function ticker(delta) {
-	const deltaTime = delta * timeForSiingleFrame
-	
+	const deltaTime = delta * timeForSingleFrame
+
     car.position.x = carAccelerator.advanceTimeBy(deltaTime)
     car.velocity = carAccelerator.velocity()
-	
+
     window.requestAnimationFrame(ticker);
 }
 window.requestAnimationFrame(ticker);
@@ -75,9 +53,9 @@ carAccelerator.accelerate(newV, overTime, overDistance)
 ## Example to look at
 Look at the example called motion.html. It uses a timer loop to simulate a motion with multiple accelerations, collects the
 positions at each 'tick' and after it is all over graphs the motions position against time.
- 
+
 ## Look at taskfile also
- 
+
 ## Commands
 
 ### Test
