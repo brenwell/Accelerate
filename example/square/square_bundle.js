@@ -325,19 +325,19 @@ function main()
     });
     
     let timer = setTimeout( () => {
-        console.log("timer fired - start acceleration/deceleration to zero speed")
-        accelerator.accelerate(0, 20, 100)
+        console.log("timer fired - start acceleration/deceleration to zero speed for 10 seconds cover 50 units")
+        accelerator.accelerate(0, 10, 50)
         .then(function()
         {
-            console.log("first acceleration done - accelerate to 10 for 10 seconds and cover 100 units of distance")
-            accelerator.accelerate(10, 10, 100)
+            console.log("first acceleration done - accelerate to 10 for 5 seconds and cover 50 units of distance")
+            accelerator.accelerate(10, 5, 50)
             .then(function()
             {
                 console.log("second acceleration done - now wait 60 ticks and then decelerate to zero")
                 let counter = 0;
                 let waiter = function(delta) {
-                    if( counter++ > 60 ){
-                        console.log("60 ticks done - start decel to zero")
+                    if( counter++ > 180 ){
+                        console.log("180 ticks done - start decel to zero")
                         accelerator.accelerate(0, 10, 50)                
                         .then(function(){
                             console.log("deceleration to zero done - stop ticker")

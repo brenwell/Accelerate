@@ -12,7 +12,7 @@ function logger(s)
 
 /*
 * This class seeks to keep track of the 1 dimensional motion of an object that is subject to
-* multiple velocity changes. 
+* multiple velocity changes.
 *
 * The two relevant properties of this object are position and velocity which can be obtained
 * at any time with methods position() and velocity()
@@ -27,7 +27,7 @@ function logger(s)
 * That method will apply the acceleration on successive calls until the ending condition is encountered
 * tF seconds of acceleration have elapsed AND the body has traveled dF distance during the acceleration
 *
-* On finishing the acceleration the advanceTimeBy() method will call the resolve() function 
+* On finishing the acceleration the advanceTimeBy() method will call the resolve() function
 * of the promise returned by call to accelerate() that setup the acceleration
 *
 *
@@ -43,7 +43,7 @@ export default class Mover
 
     constructor(v0)
     {
-		this.signature = "Mover"
+        this.signature = "Mover"
         this.time = 0.0;
         this.elapsedTimeChangingVelocity = 0.0
         this.timeInterval = 1.0/60.0 // @FIX this is going away
@@ -70,17 +70,17 @@ export default class Mover
 
             let tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity)
             let deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance
-            
+
             this.currentVelocity = deltaDistance / (deltaTime)
             this.totalDistance = this.distanceBeforeVelocityChange + tmp
-            
+
             logger(
                 `Mover::advanceByTime  elapsedTimeChangingVelocity: ${this.elapsedTimeChangingVelocity}`
                 +` timeForChange: ${this.timeForChange}`
                 +` DVdistance: ${tmp} `
                 +` totalDistance: ${this.totalDistance}`
                 + `velocity: ${this.currentVelocity}`)
-            
+
             if( this.elapsedTimeChangingVelocity >= this.timeForChange )
             {
                 logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`)
@@ -133,10 +133,10 @@ export default class Mover
     */
     accelerate(vF, tF, dF)
     {
-		logger(`Mover::accelerate ${vF} ${tF} ${dF}`)
-		if( this.changingVelocity ){
-			throw new Error("cannot have two accelerations underway at the same time")
-		}
+        logger(`Mover::accelerate ${vF} ${tF} ${dF}`)
+        if( this.changingVelocity ){
+            throw new Error("cannot have two accelerations underway at the same time")
+        }
         let v0 = this.currentVelocity
         let p = new Promise(function(resolve){
             this.resolvePromiseFunction = resolve
@@ -196,3 +196,5 @@ export default class Mover
     }
 }
 
+
+window.ACCELERATE = exports;
