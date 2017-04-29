@@ -72,16 +72,19 @@
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = graphFunction;
-/* unused harmony export graphParametricFunction */
+/* unused harmony export graphTable */
+/* harmony export (immutable) */ __webpack_exports__["c"] = drawDot;
+/* unused harmony export graphParameterizedFunction */
 /* harmony export (immutable) */ __webpack_exports__["a"] = drawAxes;
-
+/*
+* some simple utilities for graphing functions
+*/
 function graphFunction (ctx, axes, func, color, thick) {
 	var xx, yy
 	var dx=4, x0=axes.x0, y0=axes.y0, scale=axes.scale;
 
 	var iMax = Math.round((ctx.canvas.width)/dx);
 	var xDelta = (axes.xMax - axes.xMin)/((iMax) * 1.0)
-
 	var iMin = 0;
 	var h = ctx.canvas.height
 	var w = ctx.canvas.width
@@ -89,8 +92,8 @@ function graphFunction (ctx, axes, func, color, thick) {
 	ctx.beginPath();
 	ctx.lineWidth = thick;
 	ctx.strokeStyle = color;
-
-	for (var i = iMin;i <= iMax; i++) {
+	// just to prove we got here
+	for (var i = iMin; i < iMax; i++) {
 		xx = dx*i; 
 		var xValue = i * xDelta;
 		var yValue = func(xValue)
@@ -106,8 +109,116 @@ function graphFunction (ctx, axes, func, color, thick) {
 	}
 	ctx.stroke();
 }
+function yMinMax(table) 
+{
+	let resMax = table[0][1]
+	let resMin = table[0][1]
+	for( let i = 0; i < table.length; i++){
+		if( table[i][1] > resMax)
+			resMax = table[i][1]
+		if( table[i][1] < resMin )
+			resMin = table[i][1]
+	}
+	return [resMin, resMax]
+}
 
-function graphParametricFunction(){}
+/*
+* table is an array of points (x,y) where each point is represented as an array of length 2
+*/
+function graphTable (ctx, axes, table, color, thick) 
+{
+	
+	let h = ctx.canvas.height
+	let w = ctx.canvas.width
+
+	let numberOfPoints = table.length * 1.0
+	let iMax = numberOfPoints
+	let iMin = 0;
+	let xMin = table[0][0]
+	let xMax = table[numberOfPoints - 1][0]
+	let pixelsBetweenXValues = Math.round(w/(xMax - xMin))
+	let dx = (xMax - xMin)/(numberOfPoints*1.0)
+
+	let tmp = yMinMax(table)
+	let yMin = tmp[0]
+	let yMax = tmp[1]
+	let dy = (yMax - yMin)/h
+
+	var xx, yy
+
+	ctx.beginPath();
+	ctx.lineWidth = thick;
+	ctx.strokeStyle = color;
+
+	// let tmp1 = xMin * pixelsBetweenXValues
+	// let tmp2 = xMax * pixelsBetweenXValues
+
+	for (var i = iMin;i < iMax; i++) {
+		var xValue = table[i][0]
+		var yValue = table[i][1]
+		var xScaled = xValue * pixelsBetweenXValues;
+		var yScaled =  ((yValue - yMin)* h)/(yMax - yMin) 
+
+		// console.log(`loop x:${xValue} y:${yValue} xScaled: ${xScaled} yScaled:${yScaled}`)
+		
+		if (i == 0) 
+			ctx.moveTo(xScaled, h - yScaled);
+		else         
+			ctx.lineTo(xScaled, h - yScaled );
+	}
+	ctx.stroke();
+}
+
+function drawDot(ctx, axes, x, y)
+{
+	return // does not work yet
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
+	var xValue = x
+	var yValue = y
+	var xScaled = xValue * axes.xScaleFactor
+	var yScaled = h - yValue * axes.yScaleFactor 
+	ctx.fillRect(0.0, h - 20 - 0.0, 20, 20)
+	// ctx.fillRect(xScaled, yScaled, 100, 100)
+}
+
+function graphParameterizedFunction (ctx, axes, func, color, thick) {
+	var xx, yy
+	var dx=10, x0=axes.x0, y0=axes.y0, scale=axes.scale;
+
+	var iMax = Math.round((ctx.canvas.width)/dx);
+	var xDelta = (axes.xMax - axes.xMin)/((iMax) * 1.0)
+
+	var iMin = 0;
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
+
+	ctx.beginPath();
+	ctx.lineWidth = thick;
+	ctx.strokeStyle = color;
+
+	for (var i = iMin;i <= iMax; i++) {
+		xx = dx*i; 
+		var pValue = i * xDelta;
+
+		var xyValues = func(pValue)
+		var xValue = xyValues[0]
+		var yValue = xyValues[1]
+		console.log("graphParameterizedFunction: raw: " + `x:${xValue} y:${yValue}`)
+		// var xScaled = xx;
+		var xScaled = (xValue * w) / axes.xMax;
+		var yScaled =  (yValue * h) / axes.yMax 
+		console.log("graphParameterizedFunction: scaled: " + `x:${xScaled} y:${yScaled}`)
+		// console.log(`loop x:${xValue} y:${yValue} xScaled: ${xScaled} yScaled:${yScaled}`)
+		// yy = scale*func(xx/scale);
+		
+		if (i == 0) 
+			ctx.moveTo(xScaled, h - yScaled);
+		else         
+			ctx.lineTo(xScaled, h - yScaled );
+	}
+	ctx.stroke();
+}
 
 /*
 * The points are specified in mathematical (x,y) coordinates with (0,0) in the bottom left corner of the
@@ -125,9 +236,8 @@ function drawLine(ctx, startPt, endPt, strokeStyle)
 	ctx.strokeStyle = strokeStyle; 
 	ctx.moveTo(x0, h - y0); ctx.lineTo(x1, h - y1);	
 	ctx.stroke();
-
 }
-function drawAxes(ctx,axes) 
+function drawAxes(ctx, axes) 
 {
 
 	var w = ctx.canvas.width
@@ -148,6 +258,13 @@ function drawAxes(ctx,axes)
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bez_functions__ = __webpack_require__(4);
 
 
+
+/*
+*   @TODO
+*   -   there is a lot of duplicate code in here in the handling of the different cases.
+*       can wind a lot of it into one piece
+*   -   need a general tidyup of names and code nolonger used
+*/
 
 /**
 * This class performs velocity changes on objects in 1-dimensional motion
@@ -180,92 +297,114 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
     const threshold = 0.1;
     let complete = false;
     let callBack = cb;
+    let option1 = true
+    let option2 = false    
+    // I am playing with different calculation techniques here
 
-
-    if( v0 == 0 )
-	{
-        throw new Error('no change in velocity not implemented');
-    } 
-	// Terminal velocity is zero - fit with quadratic
-    else if( vF ==  0)
-	{
-        let P0 = [0.0,0.0];
-        let P2 = [T,D];
-        let P1 = [D/V, D];
-        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* QuadraticBezier */])(P0, P1, P2);
-    }
-	// terminal velocity is low enough (slower than D/T) to simply slow down gradually to achieve goal
-	// hence can fit with a quadratic bezier
-    else if( (vF > 0) && ((D - vF*T) >= (threshold * D) ) )
-	{
-        let P0 = [0.0,0.0];
-        let P2 = [T,D];
-        let p1_x = (D - vF*T)/(v0 - vF);
-        let p1_y = (v0*p1_x);
-        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* QuadraticBezier */])(P0, [p1_x, p1_y], P2);
-    }
-	// terminal velocity higher than D/T or only just a little bit less that D/T 
-	// and hence requires some speed up towards the end
-	// needs a cubic bezier to fit
-    else if( (vF > 0) && ((D - vF*T) <=  (1.0 * threshold * D) ) )
-	{
-        let P0 = [0.0, 0.0];
-        if(true){
-            let P1 = [T/3.0, V*T/3.0]
-            let P3 = [T,D];
-            let P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+    if( option1 ){
+        if( (v0 > 0) && (vF == 0) && ((T*v0) > (D)) )
+        {
+            P0 = [0.0,0.0];
+            P2 = [T,D];
+            let p1_x = (D - vF*T)/(v0 - vF);
+            let p1_y = (v0*p1_x);
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* QuadraticBezier */])(P0, [p1_x, p1_y], P2);
+        }
+        else
+        {
+            P0 = [0.0, 0.0];
+            P1 = [T/3.0, V*T/3.0]
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+            P3 = [T,D];
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
+        }
+    } else if( option2 ) {
+        if( (vF > 0) ) {//&& ((D - vF*T) <=  (1.0 * threshold * D) ) )
+            P0 = [0.0, 0.0];
+            P1 = [T/3.0, V*T/3.0]
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+            P3 = [T,D];
             func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
         }else{
-            // this does not work
-            let P1 = [D/V, D];
-            let P3 = [T,D];
-            let p2_x = T - D/vF; 
-            let p2_y = 0.0; 
-            let P2 = [p2_x, p2_y];
-            let alpha = .75;
+            P0 = [0.0, 0.0]
+            P1 = [T/3.0, 0]
+            let P1_alt = [T/3.0, V*T/3.0]
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+            P3 = [T, D]
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1_alt, P2, P3);   
+        } 
+    }else{
+        if( v0 == 0 )
+    	{
+            // throw new Error('zero initial velocity not implemented');
+    		P0 = [0.0, 0.0]
+    		P1 = [T/3.0, 0]
+    		P3 = [T, D]
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
+        } 
+    	// Terminal velocity is zero - fit with quadratic
+        else if( vF ==  0)
+    	{
+            P0 = [0.0, 0.0]
+            P1 = [T/3.0, 0]
+            P3 = [T, D]
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
 
-            let P1_adj = [P1[0]*alpha, P1[1]*alpha];
-
-    		// attempts to add a stretch factor .. seems to work for alpha 0.0 .. 1.0
-            let P2_adj = [T - D*alpha/vF, D*(1.0 - alpha)]; // alpha 0 .. 1
-
-            func = CubicBezier(P0, P1_adj, P2_adj, P3);
+            // let P0 = [0.0,0.0];
+            // let P2 = [T,D];
+            // let P1 = [D/V, D];
+            // func = QuadraticBezier(P0, P1, P2);
         }
-    }
-	// terminal velocity is close to D/T and simply produces a straightline equal to D/T 
-	// does not seem like a good answer
-	// THIS SHOULD BE OBSOLETE
-    else if( (vF > 0) && ((D - vF*T) <= (threshold * D) ) && ((D - vF*T) >=  (-1.0 * threshold * D) ) )
-	{
-        throw new Error('dont know what to do with these velocities');
-        let P0 = [0.0, 0.0];
-        // let P1 = [D/V, D];
-        if( true ){
-            let P1 = [T/3.0, V*T/3.0]
-            let P3 = [T,D];
-            let P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+    	// terminal velocity is low enough (slower than D/T) to simply slow down gradually to achieve goal
+    	// hence can fit with a quadratic bezier
+        else if( (vF > 0) && ((D - vF*T) >= (threshold * D) ) )
+    	{
+            if(true){
+                P0 = [0.0, 0.0]
+                P1 = [T/3.0, 0]
+                P3 = [T, D]
+                P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+                func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
+
+            }else{
+                P0 = [0.0,0.0];
+                P2 = [T,D];
+                let p1_x = (D - vF*T)/(v0 - vF);
+                let p1_y = (v0*p1_x);
+                func = QuadraticBezier(P0, [p1_x, p1_y], P2);
+            }
+        }
+    	// terminal velocity higher than D/T or only just a little bit less that D/T 
+    	// and hence requires some speed up towards the end
+    	// needs a cubic bezier to fit
+        else if( (vF > 0) && ((D - vF*T) <=  (1.0 * threshold * D) ) )
+    	{
+            P0 = [0.0, 0.0];
+            P1 = [T/3.0, V*T/3.0]
+            P3 = [T,D];
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
+        }
+    	// terminal velocity is close to D/T and simply produces a straightline equal to D/T 
+    	// does not seem like a good answer
+    	// THIS SHOULD BE OBSOLETE
+        else if( (vF > 0) && ((D - vF*T) <= (threshold * D) ) && ((D - vF*T) >=  (-1.0 * threshold * D) ) )
+    	{
+            // throw new Error('dont know what to do with these velocities');
+            P0 = [0.0, 0.0];
+            P1 = [T/3.0, V*T/3.0]
+            P3 = [T,D];
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0]
             func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3); 
-        } else{
-            // this does not work
-            let p2_x = T - D/vF; 
-            let p2_y = 0.0; 
-            let P2 = [p2_x, p2_y];
-            let alpha = .75;
-
-            let P1_adj = [P1[0]*alpha, P1[1]*alpha];
-
-    		// attempts to add a stretch factor .. seems to work for alpha 0.0 .. 1.0
-            let P2_adj = [T - D*alpha/vF, D*(1.0 - alpha)]; // alpha 0 .. 1
-
-            func = CubicBezier(P0, P1_adj, P2_adj, P3);	
         }
-    }
-	// should not be any more cases
-    else
-	{
-        throw new Error('dont know what to do -- not implemented');
-    }
-	
+    	// should not be any more cases
+        else
+    	{
+            throw new Error('dont know what to do -- not implemented');
+        }
+    }	
 	/*
     * this function is the trajectory of the initial velocity. Used only for debugging and demonstration
     * not part of the final exposed package
@@ -274,6 +413,11 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 	{
         return V*t;
     }.bind(this);
+
+    this.dotPositions = function()
+    {
+        return [P0, P1, P2, P3]
+    }
 
 	/* 
     * this function draws the trajectory of the final velocity.Used only for debugging and demonstration
@@ -325,6 +469,10 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_accelerator__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__graph_js__ = __webpack_require__(0);
+/*
+* main entry for bez.html - draws various forms of bezier functions
+*/
+
 
 
 
@@ -334,6 +482,8 @@ $(document).ready(function(){
 	$("#version3").click(doVersion3)
 	$("#version4").click(doVersion4)
 	$("#version5").click(doVersion5)
+	$("#version6").click(doVersion6)
+	$("#version7").click(doVersion7)
 })
 
 // set up the examples that can be plotted
@@ -356,13 +506,26 @@ let version = ""
 function doVersion1()
 {	
 	version = "1"
+	const v0 = 100  // (10*60) 10px / frame (60/sec)
+	const vF = 0
+	const dF = 400
+	const tF = 2
+	let dObj = new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF) 
+	let f = dObj.getDistance
+	main(dObj)
+}
+function doVersion2()
+{	
+	version = "1"
 	const v0 = 800  // (10*60) 10px / frame (60/sec)
 	const vF = 0
 	const dF = 400
 	const tF = 2
-	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
+	let dObj = new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF) 
+	let f = dObj.getDistance
+	main(dObj)
 }
-function doVersion2()
+function doVersion3()
 {
 	version = "2"
 	const v0 = 800  // (10*60) 10px / frame (60/sec)
@@ -371,7 +534,7 @@ function doVersion2()
 	const tF = 2
 	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
 }
-function doVersion3()
+function doVersion4()
 {
 	version = "3"
 	const v0 = 800  // (10*60) 10px / frame (60/sec)
@@ -380,7 +543,7 @@ function doVersion3()
 	const tF = 2
 	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
 }
-function doVersion4()
+function doVersion5()
 {
 	version = "4"
 	const v0 = 800  // (10*60) 10px / frame (60/sec)
@@ -389,7 +552,7 @@ function doVersion4()
 	const tF = 2
 	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
 }
-function doVersion5()
+function doVersion6()
 {
 	version = "5"
 	const v0 = 800  // (10*60) 10px / frame (60/sec)
@@ -398,7 +561,15 @@ function doVersion5()
 	const tF = 2
 	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
 }
-
+function doVersion7()
+{
+	version = "6"
+	const v0 = 0  // (10*60) 10px / frame (60/sec)
+	const vF = 0
+	const dF = 400
+	const tF = 2
+	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
+}
 function main(bezDecelerationObj) 
 {
 	$("#canvas-wrapper").empty()
@@ -409,31 +580,32 @@ function main(bezDecelerationObj)
 	var N = 20
 	const decel = bezDecelerationObj
 
+	var ctx=canvas.getContext("2d");
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
 
 	var axes={} 
-	var ctx=canvas.getContext("2d");
-	axes.x0 = 0; // starting x value
-	axes.xMin = 0; // starting x value
+	axes.xMin = 0
 	axes.xMax = tF
-	axes.xScale = ctx.width / tF
+	axes.yMin = -2*dF
+	axes.yMax = 2*dF
+	axes.xScaleFactor = w / (tF - 0)
+	axes.yScaleFactor = w / (dF - 0)
 
-	axes.yMin = 0
-	axes.yMax = dF
-	axes.yScale = ctx.height / dF
-
-	axes.y0 = 500
-
-	axes.scale = 40;                 // 40 pixels from x=0 to x=1
-	axes.doNegativeX = false;
 
 	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["a" /* drawAxes */])(ctx, axes);
 
 	var ff = decel.dd_func
 	var fd = decel.getDistance
+	let points = decel.dotPositions()
 
 	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["b" /* graphFunction */])(ctx, axes, decel.getDistance, "rgb(66,44,255)", 2);
 	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["b" /* graphFunction */])(ctx, axes, decel.tangent_initial, "rgb(255,44,255)", 2)
 	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["b" /* graphFunction */])(ctx, axes, decel.tangent_final, "rgb(255,44,255)", 2)
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["c" /* drawDot */])(ctx, axes, points[0][0], points[0][1] )
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["c" /* drawDot */])(ctx, axes, points[1][0], points[1][1] )
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["c" /* drawDot */])(ctx, axes, points[2][0], points[2][1] )
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__graph_js__["c" /* drawDot */])(ctx, axes, points[3][0], points[3][1] )
 }
 
 
@@ -494,7 +666,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 
-console.log(__WEBPACK_IMPORTED_MODULE_2_newton_raphson___default.a)
+
+/*
+* @TODO
+*   -    better first guesses for newton-raphson
+*/
 /*
 * The key thing happening here is to convert a parameterized Bezier function
 * into a function of x
@@ -502,7 +678,9 @@ console.log(__WEBPACK_IMPORTED_MODULE_2_newton_raphson___default.a)
 
 /* 
 * This function returns a function which is a bezier Cubic curve as a
-* function of x so that (x, f(x)) is a point on the bezier curve
+* function of x so that (x, f(x)) is a point on the bezier curve.
+* Bezier functions are defined as curves (x(t), y(t)) for a parameter t between 0 .. 1
+* but cannot be rephrased as (x, f(x)). Getting itin this f(x) form takes computational work
 */
 const CubicBezier = function CubicBezier(P0, P1, P2, P3)
 {
@@ -575,7 +753,8 @@ const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
 
         let t_value = __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default()(f, fPrime, 0.5, null)
         if( t_value === false){
-            throw new Error("cannot find t for x in QuadraticBezier")
+            console.log([P0, P1, P2])
+            throw new Error(`cannot find t for x in QuadraticBezier x_value:${x_value}`)
         }
         let check_x_value = bezObj.x_From_t(t_value)
         // console.log(`x_value: ${x_value}  t_value: ${t_value} check_x_value: ${check_x_value}`)

@@ -25,6 +25,18 @@ function public:bez_watch {
   webpack -w  --devtool source-map ./bez ${EXAMPLE_DIST}//bez_bundle.js 
 }
 
+function public:bunny_clean {
+  rm -fv ${EXAMPLE_DIST}/bunny_bundle*
+}
+function public:bunny_build {
+    cd ${EXAMPLE}
+  webpack  --devtool source-map ./bunny.js ${EXAMPLE_DIST}/bunny_bundle.js
+}
+function public:bunny_watch {
+    cd ${EXAMPLE}
+  webpack -w  --devtool source-map ./bunny.js ${EXAMPLE_DIST}//bunny_bundle.js 
+}
+
 function public:mover_clean {
   rm -fv ${EXAMPLE_DIST}/mover_bundle*
 }

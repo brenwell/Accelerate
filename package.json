@@ -25,6 +25,7 @@
   "homepage": "https://github.com/brenwell/Accelerate#readme",
   "devDependencies": {
     "eslint": "^3.19.0",
+    "gsap": "^1.19.1",
     "webpack": "^2.4.1"
   },
   "dependencies": {

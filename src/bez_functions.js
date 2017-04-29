@@ -86,7 +86,8 @@ export const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
 
         let t_value = newtonRaphson(f, fPrime, 0.5, null)
         if( t_value === false){
-            throw new Error("cannot find t for x in QuadraticBezier")
+            console.log([P0, P1, P2])
+            throw new Error(`cannot find t for x in QuadraticBezier x_value:${x_value}`)
         }
         let check_x_value = bezObj.x_From_t(t_value)
         // console.log(`x_value: ${x_value}  t_value: ${t_value} check_x_value: ${check_x_value}`)

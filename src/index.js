@@ -107,6 +107,23 @@ export default class Mover
         return this.currentVelocity
     }
     /*
+    * Convenience function wth more meaningful name
+    * accelerat to a target final velocity
+    */
+    acceleratTo(vF, tF, dF)
+    {
+        return accelerat(vF, tF, dF)
+    }
+    /*
+    * Convenience function wth more meaningful name
+    * accelerat  -  change current velocity by a givn deltaVee
+    */
+    accelerateBy(deltaVee, tF, dF)
+    {
+        let vF = this.currentVelocity + deltaVee
+        return accelerat(vF, tF, dF)
+    }
+    /*
     *   accelerate(vF, tF, dF, cb) - instructs the object to start a velocity change
     *           vF - is the velocity the object is to change to
     *           tF - is the time interval over which the change is to take place

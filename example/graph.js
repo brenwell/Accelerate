@@ -7,7 +7,6 @@ export function graphFunction (ctx, axes, func, color, thick) {
 
 	var iMax = Math.round((ctx.canvas.width)/dx);
 	var xDelta = (axes.xMax - axes.xMin)/((iMax) * 1.0)
-
 	var iMin = 0;
 	var h = ctx.canvas.height
 	var w = ctx.canvas.width
@@ -92,6 +91,18 @@ export function graphTable (ctx, axes, table, color, thick)
 	ctx.stroke();
 }
 
+export function drawDot(ctx, axes, x, y)
+{
+	return // does not work yet
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
+	var xValue = x
+	var yValue = y
+	var xScaled = xValue * axes.xScaleFactor
+	var yScaled = h - yValue * axes.yScaleFactor 
+	ctx.fillRect(0.0, h - 20 - 0.0, 20, 20)
+	// ctx.fillRect(xScaled, yScaled, 100, 100)
+}
 
 export function graphParameterizedFunction (ctx, axes, func, color, thick) {
 	var xx, yy
