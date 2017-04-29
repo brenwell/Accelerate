@@ -1,3 +1,7 @@
+import Accelerator from "../../src/index.js"
+
+console.log(Accelerator)
+
 /*
 * This file implements a function that can run a schedule of accelerations
 */
@@ -52,7 +56,7 @@ export default function (cb, schedule)
 	let iMax = calcDurationOfScheduleInTicks(schedule.accelsTable) + Math.round(2.0/deltaT)
 	let i = 0
 	let accelFlag = false
-	let mover = new Mover(schedule.v0)
+	let mover = new Accelerator(schedule.v0)
 	let table = []
 
 	let moreAccels = (schedule.accelsTable.length > 0)

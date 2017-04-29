@@ -1,7 +1,7 @@
 /*
 * Tests graphing a table of (x,y) values rather that working directly with a/the function
 */
-import {graphTable} from "./graph.js"
+import {graphTable} from "../libs//graph.js"
 
 $(document).ready(function(){
 	$("#go_button").click(main)

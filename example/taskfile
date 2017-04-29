@@ -1,0 +1,114 @@
+#!/bin/bash
+PWD=`pwd`
+PROJ=`realpath ..` 
+PATH=${PROJ}/node_modules/.bin:$PATH
+
+EXAMPLE=${PROJ}/example
+EXAMPLE_DIST=${PROJ}/example/dist
+
+# these are the examples 
+BEZ=${EXAMPLE}/bez
+SQUARE=${EXAMPLE}/square
+MOTION=${EXAMPLE}/motion
+TABLE=${EXAMPLE}/table
+WHEEL=${EXAMPLE}/wheel
+
+WEBPACK=${PROJ}/node_modules/.bin/webpack
+INDEXJS=${PROJ}/src/index.js
+BUNDLE=${PROJ}/dist/accelerate.js
+BUNDLE_MIN=${PROJ}/dist/accelerate.min.js
+
+
+
+## tasks related to example ###############################
+
+#### bez
+function public:bez_clean {
+  rm -fv ${BEZ}/*bundle*
+}
+function public:bez_build {
+  webpack  --devtool source-map ${BEZ}/bez.js ${BEZ}/bez_bundle.js
+}
+function public:bez_watch {
+  webpack -w  --devtool source-map ${BEZ}/bez.js ${BEZ}//bez_bundle.js 
+}
+
+#### square
+function public:square_clean {
+  rm -fv ${SQUARE}/*bundle*
+}
+function public:square_build {
+  webpack  --devtool source-map ${SQUARE}/square.js ${SQUARE}/square_bundle.js
+}
+function public:square_watch {
+  webpack -w  --devtool source-map ${SQUARE}/square.js ${SQUARE}/square_bundle.js 
+}
+
+#### motion
+function public:motion_clean {
+  rm -fv ${MOTION}/*bundle*
+}
+function public:motion_build {
+  echo "Building motion bundle"
+  echo ${MOTION}/mover.js
+
+  webpack  --devtool source-map ${MOTION}/mover.js ${MOTION}/motion_bundle.js
+}
+function public:motion_watch {
+  webpack -w  --devtool source-map ${MOTION}/mover.js ${MOTION}/motion_bundle.js 
+}
+
+#### wheels
+function public:wheel_clean {
+  rm -fv ${WHEEL}/*bundle*
+}
+function public:wheel_build {
+  webpack  --devtool source-map ${WHEEL}/wheel.js ${WHEEL}/wheel_bundle.js
+}
+function public:wheel_watch {
+  webpack -w  --devtool source-map ${WHEEL}/wheel.js ${WHEEL}/wheel_bundle.js 
+}
+
+#### table
+function public:table_clean {
+  rm -fv ${TABLE}/*bundle*
+}
+function public:table_build {
+  webpack  --devtool source-map ${TABLE}/table.js ${TABLE}/table_bundle.js
+}
+function public:table_watch {
+  webpack -w  --devtool source-map ${TABLE}/table.js ${TABLE}/table_bundle.js 
+}
+
+
+## all
+function public:ex_clean {
+  ./taskfile bez_clean
+  ./taskfile motion_clean
+  ./taskfile table_clean
+  ./taskfile square_clean
+}
+
+function public:ex_build {
+  ./taskfile bez_build
+  ./taskfile motion_build
+  ./taskfile table_build
+  ./taskfile square_build
+}
+## tasks related to example ###############################
+
+
+
+# ------------------------------------------
+# DEFAULT public: list all possible commands
+#
+function public:help {
+    echo "$0 <task> <args>"
+    echo "Tasks:"
+    compgen -A function | sed -En 's/public:(.*)/\1/p' | cat -n
+}
+
+# ---------- Do NOT edit below --------------
+
+TIMEFORMAT="Task completed in %3lR"
+time "public:${@:-help}" # make help default

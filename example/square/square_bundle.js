@@ -292,44 +292,61 @@ $(document).ready(function(){
 function main()
 {
 
-  const accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](10)
-  console.log(accelerator)
-  
-  var app = new PIXI.Application(600, 600, {backgroundColor : 0x1099bb, antialias: true});
-  document.body.appendChild(app.view);
+    const accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](10)
+    console.log(accelerator)
 
-	const size = 100;
+    var app = new PIXI.Application(600, 600, {backgroundColor : 0x1099bb, antialias: true});
+    document.body.appendChild(app.view);
 
-  // create a new Sprite from an image path
-  var bunny = new PIXI.Graphics()
-  bunny.beginFill(0xFFCC66)
-  bunny.drawRect(0,0,size,size)
-  bunny.endFill()
-  bunny.pivot.set(size/2)
-  
-  // move the sprite to the center of the screen
-  bunny.x = app.renderer.width / 2;
-  bunny.y = app.renderer.height / 2;
+    const size = 100;
 
-  app.stage.addChild(bunny);
+    // create a new Sprite from an image path
+    var bunny = new PIXI.Graphics()
+    bunny.beginFill(0xFFCC66)
+    bunny.drawRect(0,0,size,size)
+    bunny.endFill()
+    bunny.pivot.set(size/2)
+
+    // move the sprite to the center of the screen
+    bunny.x = app.renderer.width / 2;
+    bunny.y = app.renderer.height / 2;
+
+    app.stage.addChild(bunny);
 
   // Listen for animate update
-  let totalTime = 0
-  app.ticker.add(function(delta) {	
-    totalTime += delta*(1.0/60.0)
-    let r = accelerator.advanceTimeBy(delta*(1.0/60.0))
-    // console.log(`ticker delta:${delta} deltaT:${delta*(1.0/60.0)} totalTime:${totalTime} r:${r}`)
-    bunny.rotation = r
-  });
+    let totalTime = 0
+    app.ticker.add(function(delta) {
+        // this is because the accelerator does no know about pixi's delta value
+        totalTime += delta*(1.0/60.0)
+    
+        let r = accelerator.advanceTimeBy(delta*(1.0/60.0))
+        // console.log(`ticker delta:${delta} deltaT:${delta*(1.0/60.0)} totalTime:${totalTime} r:${r}`)
+        bunny.rotation = r
+    });
+    
     let timer = setTimeout( () => {
-        console.log("timer fired")
+        console.log("timer fired - start acceleration/deceleration to zero speed")
         accelerator.accelerate(0, 20, 100)
-        .then(function(){
-            console.log("first acceleration done")
+        .then(function()
+        {
+            console.log("first acceleration done - accelerate to 10 for 10 seconds and cover 100 units of distance")
             accelerator.accelerate(10, 10, 100)
-            .then(function(){
-                console.log("second acceleration done")
-                app.ticker.stop()
+            .then(function()
+            {
+                console.log("second acceleration done - now wait 60 ticks and then decelerate to zero")
+                let counter = 0;
+                let waiter = function(delta) {
+                    if( counter++ > 60 ){
+                        console.log("60 ticks done - start decel to zero")
+                        accelerator.accelerate(0, 10, 50)                
+                        .then(function(){
+                            console.log("deceleration to zero done - stop ticker")
+                            app.ticker.stop()
+                        })
+                        app.ticker.remove(waiter)
+                    }
+                }
+                app.ticker.add(waiter)
             })
         })
       },1000)
@@ -390,6 +407,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 
+/*
+*   @TODO
+*   -   there is a lot of duplicate code in here in the handling of the different cases.
+*       can wind a lot of it into one piece
+*   -   need a general tidyup of names and code nolonger used
+*/
+
 /**
 * This class performs velocity changes on objects in 1-dimensional motion
 *
@@ -422,104 +446,33 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
     let complete = false;
     let callBack = cb;
 
-
-    if( v0 == 0 )
-	{
-        // throw new Error('zero initial velocity not implemented');
-		let P0 = [0.0, 0.0]
-		let P1 = [T/3.0, 0]
-		let P3 = [T, D]
-        let P2 = [(2.0/3.0)*T, D - vF*T/3.0]
-        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* CubicBezier */])(P0, P1, P2, P3);
-    } 
-	// Terminal velocity is zero - fit with quadratic
-    else if( vF ==  0)
-	{
-        let P0 = [0.0,0.0];
-        let P2 = [T,D];
-        let P1 = [D/V, D];
-        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* QuadraticBezier */])(P0, P1, P2);
-    }
-	// terminal velocity is low enough (slower than D/T) to simply slow down gradually to achieve goal
-	// hence can fit with a quadratic bezier
-    else if( (vF > 0) && ((D - vF*T) >= (threshold * D) ) )
-	{
-        let P0 = [0.0,0.0];
-        let P2 = [T,D];
+    if( (v0 > 0) && (vF == 0) && ((T*v0) > (D)) )
+    {
+        // this is the one special case where a cubic will not do the job
+        P0 = [0.0,0.0];
+        P2 = [T,D];
         let p1_x = (D - vF*T)/(v0 - vF);
         let p1_y = (v0*p1_x);
-        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* QuadraticBezier */])(P0, [p1_x, p1_y], P2);
+        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* QuadraticBezier */])(P0, [p1_x, p1_y], P2);
     }
-	// terminal velocity higher than D/T or only just a little bit less that D/T 
-	// and hence requires some speed up towards the end
-	// needs a cubic bezier to fit
-    else if( (vF > 0) && ((D - vF*T) <=  (1.0 * threshold * D) ) )
-	{
-        let P0 = [0.0, 0.0];
-        if(true){
-            let P1 = [T/3.0, V*T/3.0]
-            let P3 = [T,D];
-            let P2 = [(2.0/3.0)*T, D - vF*T/3.0]
-            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* CubicBezier */])(P0, P1, P2, P3);
-        }else{
-            // this does not work
-            let P1 = [D/V, D];
-            let P3 = [T,D];
-            let p2_x = T - D/vF; 
-            let p2_y = 0.0; 
-            let P2 = [p2_x, p2_y];
-            let alpha = .75;
-
-            let P1_adj = [P1[0]*alpha, P1[1]*alpha];
-
-    		// attempts to add a stretch factor .. seems to work for alpha 0.0 .. 1.0
-            let P2_adj = [T - D*alpha/vF, D*(1.0 - alpha)]; // alpha 0 .. 1
-
-            func = CubicBezier(P0, P1_adj, P2_adj, P3);
-        }
-    }
-	// terminal velocity is close to D/T and simply produces a straightline equal to D/T 
-	// does not seem like a good answer
-	// THIS SHOULD BE OBSOLETE
-    else if( (vF > 0) && ((D - vF*T) <= (threshold * D) ) && ((D - vF*T) >=  (-1.0 * threshold * D) ) )
-	{
-        throw new Error('dont know what to do with these velocities');
-        let P0 = [0.0, 0.0];
-        // let P1 = [D/V, D];
-        if( true ){
-            let P1 = [T/3.0, V*T/3.0]
-            let P3 = [T,D];
-            let P2 = [(2.0/3.0)*T, D - vF*T/3.0]
-            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* CubicBezier */])(P0, P1, P2, P3); 
-        } else{
-            // this does not work
-            let p2_x = T - D/vF; 
-            let p2_y = 0.0; 
-            let P2 = [p2_x, p2_y];
-            let alpha = .75;
-
-            let P1_adj = [P1[0]*alpha, P1[1]*alpha];
-
-    		// attempts to add a stretch factor .. seems to work for alpha 0.0 .. 1.0
-            let P2_adj = [T - D*alpha/vF, D*(1.0 - alpha)]; // alpha 0 .. 1
-
-            func = CubicBezier(P0, P1_adj, P2_adj, P3);	
-        }
-    }
-	// should not be any more cases
     else
-	{
-        throw new Error('dont know what to do -- not implemented');
+    {
+        P0 = [0.0, 0.0];
+        P1 = [T/3.0, V*T/3.0]
+        P2 = [(2.0/3.0)*T, D - vF*T/3.0]
+        P3 = [T,D];
+        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
     }
-	
-	/*
-    * this function is the trajectory of the initial velocity. Used only for debugging and demonstration
-    * not part of the final exposed package
-    */
+
     this.tangent_initial = function(t)
 	{
         return V*t;
     }.bind(this);
+
+    this.dotPositions = function()
+    {
+        return [P0, P1, P2, P3]
+    }
 
 	/* 
     * this function draws the trajectory of the final velocity.Used only for debugging and demonstration
@@ -631,7 +584,7 @@ const CubicBezier = function CubicBezier(P0, P1, P2, P3)
 
     return functionOfX;
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = CubicBezier;
+/* harmony export (immutable) */ __webpack_exports__["b"] = CubicBezier;
 
 /*
 * This function returns a function which is a bezier Quadratuc curve as a
@@ -678,7 +631,7 @@ const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
 
     return functionOfX;
 }
-/* harmony export (immutable) */ __webpack_exports__["b"] = QuadraticBezier;
+/* harmony export (immutable) */ __webpack_exports__["a"] = QuadraticBezier;
 
 
 
@@ -816,4 +769,4 @@ class BezierQuadraticClass
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=bunny_bundle.js.map
+//# sourceMappingURL=square_bundle.js.map

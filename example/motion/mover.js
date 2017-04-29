@@ -3,7 +3,7 @@
 * proves a slection of two motions to display. 
 */
 
-import {drawAxes, graphTable} from "./graph.js"
+import {drawAxes, graphTable} from "../libs//graph.js"
 import motion1 from "./motion_1.js"
 import motion2 from "./motion_2.js"
 

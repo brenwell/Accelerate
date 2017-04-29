@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>Canvas code example</title>
+<script src="../libs/jquery.min.js"></script>
+<script type="text/javascript" src="bez_bundle.js"></script>
+
+</head>
+<body>
+	<div style="float:right; width:400px">
+		<h1>Plot</h1>
+		<p>Plot 4 instances of a deceleration.</p>
+		<ul>
+			<li><p>Duration = 2 secs</p></li>
+			<li><p>distance = 400</p></li>
+			<li><p>initial velocity = 800</p></li>
+		</ul>
+		<p>each case varies the final velocity</p>
+		<div>
+			<button id='version1'>Final velocity = 0 initial velocity 100 </button>
+		</div>
+		<div>
+			<button id='version2'>Final velocity = 0 initial velocity 800 - needs quadratic </button>
+		</div>
+		<div>
+			<button id='version3'>Final velocity substabtially less that 400/2, say 180</button>
+		</div>
+		<div>
+			<button  id='version4'>final velocity greater than initial, say 1200</button>
+		</div>
+		<div>
+			<button  id='version5'>The trickiest case final velocity is close to 400/2 say 190</button>
+		</div>
+		<div>
+			<button  id='version6'>The trickiest case final velocity is close to 400/2 say 2100</button>
+		</div>		
+		<div>
+			<button  id='version7'>From zero to zero but with a time and distance</button>
+		</div>		
+	</div>
+	<div id="canvas-wrapper"><canvas id="canvas" width="1000" height="500"></canvas></div>
+</body>
+</html>

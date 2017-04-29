@@ -2,8 +2,8 @@
 * main entry for bez.html - draws various forms of bezier functions
 */
 
-import {BezDecelerator} from "../src/accelerator"
-import {graphFunction, graphParametricFunction, drawAxes, drawDot} from "./graph.js"
+import {BezDecelerator} from "../../src/accelerator"
+import {graphFunction, graphParametricFunction, drawAxes, drawDot} from "../libs/graph.js"
 
 $(document).ready(function(){
 	$("#version1").click(doVersion1)

@@ -42,6 +42,7 @@ export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 
     if( (v0 > 0) && (vF == 0) && ((T*v0) > (D)) )
     {
+        // this is the one special case where a cubic will not do the job
         P0 = [0.0,0.0];
         P2 = [T,D];
         let p1_x = (D - vF*T)/(v0 - vF);
