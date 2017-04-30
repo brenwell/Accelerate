@@ -1,6 +1,3 @@
-$(document).ready(function(){
-  main()
-})
 
 
 const colors = [
@@ -12,13 +9,14 @@ const colors = [
   0xFF7F00, //Orange
   0xFF0000, //Red
 ]
-
+const NUMBER_OF_SEGMENTS = colors.length
 const PIE_ANGLE = 360 / colors.length
 const PIE_MIDDLE = PIE_ANGLE / 2
 const SPINS = 4 * 360 
 const TIME_LENGTH = 4 //secs
 const SPIN_DELAY = 1 //secs
 const GROWTH = 1.1
+
 
 const options = {
 	backgroundColor : 0xEEEEEE, 
@@ -42,18 +40,8 @@ let tweenInner;
 let isSpinning = false
 let timer
 
-function ContainerWrapper(container)
-{
-    this.container = container
-    this.rotateByDegrees = function(deg)
-    {
-        let rot = this.container.rotation 
-        let newr = rot + degToRad(deg) /(Math.PI*2)
-        this.container.rotation = newr
-    }
-}
 
-function main()
+export function createWheel()
 {
     app = new PIXI.Application(600, 600, options);
     document.body.appendChild(app.view);
@@ -63,6 +51,8 @@ function main()
     containerInner = makeContainer(120, 0xFFFFFF, -PIE_MIDDLE)
 
     containerOuterWrapper = new ContainerWrapper(containerOuter)
+    containerMiddleWrapper = new ContainerWrapper(containerMiddle)
+    containerInnerWrapper = new ContainerWrapper(containerInner)
 
     app.stage.addChild(containerOuter)
     app.stage.addChild(containerMiddle)
@@ -78,6 +68,155 @@ function main()
     // });
     // ticker.start();
 }
+/*
+* Moves the wheels to positions. The positions are indexes
+* in the range 0 .. NUMBER_OF_SEGMENTS - 1
+* Positions each circle so that the specified segment is at the 
+* pointer mark - the mark is in the middle of the segment.
+*
+* Segments are numbered clockwise same as the colors
+*/
+export function setPosition(outter, middle, inner)
+{
+    let oRads = positionToRadians(outter)
+    containerOuterWrapper.positionToRadians(oRads)
+    let mRads = positionToRadians(middle)
+    containerMiddleWrapper.positionToRadians(mRads)
+    let iRads = positionToRadians(inner)
+    containerInnerWrapper.positionToRadians(iRads)
+}
+/*
+* Starts all wheels spinning with velocity for each wheel given by the object
+* Speed units are in radians/sec
+*/
+export function startSpinning(outter, middle, inner)
+{
+    let frameInterval = Math.round(1000*(1.0/60.0))
+
+    containerOuterWrapper.velocity = outter
+    containerMiddleWrapper.velocity = middle
+    containerInnerWrapper.velocity = inner
+
+    app.ticker.add(tickerFunc)
+}
+
+/*
+* Bring all wheels to a stop at the specified position in the given timeInterval
+*/
+export function stopWheelsAtPositionInTimeInterval(outter, middle, inner, timeInterval)
+{
+    let dF_outer = containerOuterWrapper.calculateStoppingDistance(outter, timeInterval)
+    let dF_middle = containerMiddleWrapper.calculateStoppingDistance(middle, timeInterval)
+    let dF_inner = containerInnerWrapper.calculateStoppingDistance(inner, timeInterval)
+    // acceleratorOuter = accelerator(0, timeInterval, dF_outer)
+    // acceleratorMiddle = accelerator(0, timeInterval, dF_middle)
+    // acceleratorInner = accelerator(0, timeInterval, dF_inner)
+    // app.ticker.remove(tickerFunc)
+    // app.ticker.add(acceleratorTickerFunc)
+}
+
+export function stopWheel()
+{
+    app.ticker.remove(tickerFunc)
+}
+
+/*
+* Ticker function for deceleratioin phase
+*/
+function deceleratorTickerFunc(delta)
+{
+
+}
+/*
+* Constant velocity ticker fucntion
+*/
+function tickerFunc(delta)     // currently ignores the delta value
+{
+    let timeInterval = delta * (1.0/60.0)
+    containerOuterWrapper.advanceTimeNonAccelerating(timeInterval)
+    containerMiddleWrapper.advanceTimeNonAccelerating(timeInterval)
+    containerInnerWrapper.advanceTimeNonAccelerating(timeInterval)
+    return
+}
+
+function radiansPerSecToPerTick(radsSec)
+{
+    let tmp = radsSec / 60.0
+    return tmp    
+}
+
+function ContainerWrapper(container)
+{
+    this.container = container
+    this.velocity = 0.0
+
+    this.advanceTimeNonAccelerating = function(timeInterval)
+    {
+        let rads = (timeInterval * this.velocity)
+        this.rotateByRadians(rads)
+    }
+
+    this.rotateByRadians = function(rads)
+    {
+        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
+            throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
+        }
+        let rot = this.container.rotation 
+        let newr = rot + rads
+        if( (rot + rads) > 2*Math.PI )
+            newr = (rot + rads) - 2*Math.PI
+        if( (rot + rads) <  -2*Math.PI )
+            newr = (rot + rads) + 2*Math.PI
+
+        if( (newr > 2*Math.PI) || (newr < -2.0 * Math.PI) ){
+            throw new Error("rotateByRadians - newr should not be greater than 2*PI or less than -2*PI")
+        }
+
+        this.container.rotation = newr
+    }
+
+    this.positionToRadians = function(radians)
+    {
+        this.container.rotation = radians        
+    }
+    /*
+    * Calculate the dF value for an instance of an accelerator object
+    * for this wheel. Find the largest dF value so that
+    * currentVelocity * timeInterval > dF
+    * and for which dF is equivalent to 'position'
+    */
+    this.calculateStoppingDistance = function(position, timeInterval)
+    {
+        let positionInRadians = positionToRadians(position)
+        let v = this.velocity
+        let currentRadians = this.container.rotation
+
+        let deltaRadians = (positionInRadians >= currentRadians) ? 
+                                (positionInRadians - currentRadians) :
+                                (2*Math.PI + positionInRadians - currentRadians)
+
+        let dRequired 
+        let dMax = v * timeInterval
+        let cycles = Math.round(v * timeInterval / (2 * math.PI) ) 
+        if( (cycles * 2 * Math,PI + deltaRadians) < dMax ){
+            dRequired = cycles * 2 * Math.PI + deltaRadians
+        }else{
+            dRequired = (cycles-1) * 2 * Math.PI + deltaRadians            
+        }
+        if( (cycles * 2 * Math,PI + deltaRadians) > dMax ){
+            throw new Error(`calculateStoppingDistance dRequired:${dRequired} too big`)
+        }
+        return dRequired
+    }
+    this.accelerator = function(position, timeInterval)
+    {
+        let v0 = this.velocity
+        let dF = this.calculateStoppingDistance(position, timeInterval)
+        this.accelerator = new Accelerator(v0, 0.0, timeInterval, dF)
+    }
+}
+
+
 function makeContainer(radius, bg, startDeg)
 {
     const container = new PIXI.Container()
@@ -167,31 +306,22 @@ function addCenterButton()
     cirContainer.buttonMode = true
     cirContainer.interactive = true
     cirContainer.pointerup = function(){
-        spinAll()
+        startSpinning({outter: 30, middle:20, inner:10})
         // random()
     }
   button = text  
 }
-function rotateContainerOuter(deg)
+
+function positionToRadians(positionIndex)
 {
-    let rotO = containerOuter.rotation 
-    let newrO = rotO + degToRad(10) /(Math.PI*2)
-    containerOuter.rotation = newrO
+    let t = (2 * Math.PI * positionIndex / NUMBER_OF_SEGMENTS)
+    if( t != 0){
+        t = 2*Math.PI - t
+    }
+    let res = t - degToRad(PIE_MIDDLE)
+    return res
 }
-function calcNewRotation(container, delta)
-{
-    let rot = container.rotation 
-    let new_r = rot + degToRad(delta) /(Math.PI*2)
-    return new_r
-}
-function spinAll()
-{
-    timer = setInterval(function(){
-        containerOuterWrapper.rotateByDegrees(30)
-        containerMiddleWrapper.rotateByDegrees(10)
-        containerInnerWrapper.rotateByDegrees(10)
-    }, 10)
-}
+
 
 /*
 * Starts the separate "wheels" spinning with a delay bewtween the start of each

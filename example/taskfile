@@ -63,10 +63,10 @@ function public:wheel_clean {
   rm -fv ${WHEEL}/*bundle*
 }
 function public:wheel_build {
-  webpack  --devtool source-map ${WHEEL}/wheel.js ${WHEEL}/wheel_bundle.js
+  webpack  --devtool source-map ${WHEEL}/main.js ${WHEEL}/wheel_bundle.js
 }
 function public:wheel_watch {
-  webpack -w  --devtool source-map ${WHEEL}/wheel.js ${WHEEL}/wheel_bundle.js 
+  webpack -w  --devtool source-map ${WHEEL}/main.js ${WHEEL}/wheel_bundle.js 
 }
 
 #### table
