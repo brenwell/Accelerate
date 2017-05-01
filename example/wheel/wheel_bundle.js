@@ -78,7 +78,6 @@
 /* harmony export (immutable) */ __webpack_exports__["e"] = stopWheelsWithLoss;
 /* harmony export (immutable) */ __webpack_exports__["f"] = stopWheelsWithNearWin;
 /* harmony export (immutable) */ __webpack_exports__["g"] = stopWheelsWithWin;
-/* unused harmony export stopWheelsAtPositionInTimeInterval */
 /* harmony export (immutable) */ __webpack_exports__["c"] = stopWheel;
 
 
@@ -116,7 +115,7 @@ const GROWTH = 1.1
 
 const options = {
 	backgroundColor : 0xEEEEEE, 
-  antialias: true
+    antialias: true
 }
 
 let app;
@@ -185,8 +184,8 @@ function startSpinning(outterVelocity, middleVelocity, innerVelocity)
     outerWheel.setVelocity(outterVelocity)
     middleWheel.setVelocity(middleVelocity)
     innerWheel.setVelocity(innerVelocity)
-
-    app.ticker.add(universalTickerFunc)
+    // add ticker function so that time is advanced for each wheel
+    app.ticker.add(tickerFunc)
 }
 
 function stopWheelsWithLoss(
@@ -197,10 +196,13 @@ function stopWheelsWithLoss(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerate(positionOuter, decelerateTimeInterval))
-    allPs.push(middleWheel.accelerate(positionMiddle, decelerateTimeInterval))
-    allPs.push(innerWheel.accelerate(positionInner, decelerateTimeInterval))
-    Promise.all(allPs).then(function(){console.log("all wheels have stopped");})
+    allPs.push(outerWheel.accelerateToZero(positionOuter, decelerateTimeInterval))
+    allPs.push(middleWheel.accelerateToZero(positionMiddle, decelerateTimeInterval))
+    allPs.push(innerWheel.accelerateToZero(positionInner, decelerateTimeInterval))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })
 }
 function stopWheelsWithNearWin(
                     positionTwice, 
@@ -210,10 +212,13 @@ function stopWheelsWithNearWin(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerate(positionOnce, decelerateTimeIntervalLastWheel))
-    allPs.push(middleWheel.accelerate(positionTwice, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerate(positionTwice, decelerateTimeIntervalFirstTwoWheels))
-    Promise.all(allPs).then(function(){console.log("all wheels have stopped");})   
+    allPs.push(outerWheel.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel))
+    allPs.push(middleWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })   
 }
 function stopWheelsWithWin(
                     positionWinner, 
@@ -222,33 +227,29 @@ function stopWheelsWithWin(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerate(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(middleWheel.accelerate(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerate(positionWinner, decelerateTimeIntervalLastWheel))
-    Promise.all(allPs).then(function(){console.log("all wheels have stopped");})       
+    allPs.push(outerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(middleWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })       
 }
 
 /*
-* Bring all wheels to a stop at the specified position in the given timeInterval
+* called after result known so that tickerFunc is not called
 */
-function stopWheelsAtPositionInTimeInterval(outterPosition, middlePosition, innerPosition, timeInterval)
+function removeTickerFunc()
 {
-    let dF_outer = outerWheel.calculateStoppingDistance(outter, timeInterval)
-    let dF_middle = middleWheel.calculateStoppingDistance(middle, timeInterval)
-    let dF_inner = innerWheel.calculateStoppingDistance(inner, timeInterval)
-    // acceleratorOuter = accelerator(0, timeInterval, dF_outer)
-    // acceleratorMiddle = accelerator(0, timeInterval, dF_middle)
-    // acceleratorInner = accelerator(0, timeInterval, dF_inner)
-    // app.ticker.remove(tickerFunc)
-    // app.ticker.add(acceleratorTickerFunc)
+    app.ticker.remove(tickerFunc)    
 }
 
 function stopWheel()
 {
-    app.ticker.remove(universalTickerFunc)
+    app.ticker.remove(tickerFunc)
 }
 
-function universalTickerFunc(delta)
+function tickerFunc(delta)     // currently ignores the delta value
 {
     let timeInterval = delta * (1.0/60.0)
     outerWheel.advanceTimeBy(timeInterval)
@@ -257,28 +258,6 @@ function universalTickerFunc(delta)
     return    
 }
 
-/*
-* Ticker function for deceleratioin phase
-*/
-function deceleratorTickerFunc(delta)
-{
-    let timeInterval = delta * (1.0/60.0)
-    outerWheel.advanceTimeAcceleratingBy(timeInterval)
-    // middleWheel.advanceTimeNonAccelerating(timeInterval)
-    // innerWheel.advanceTimeNonAccelerating(timeInterval)
-    return
-}
-/*
-* Constant velocity ticker fucntion
-*/
-function tickerFunc(delta)     // currently ignores the delta value
-{
-    let timeInterval = delta * (1.0/60.0)
-    outerWheel.advanceTimeNonAccelerating(timeInterval)
-    middleWheel.advanceTimeNonAccelerating(timeInterval)
-    innerWheel.advanceTimeNonAccelerating(timeInterval)
-    return
-}
 
 function radiansPerSecToPerTick(radsSec)
 {
@@ -394,7 +373,7 @@ function stopBtn()
 }
 function startSpinningBtn()
 {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(5, 5, 10)
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(8, 12, 16)
 }
 function lossBtn()
 {
@@ -417,138 +396,134 @@ function winBtn()
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(8);
-/* harmony export (immutable) */ __webpack_exports__["a"] = SingleWheel;
 
 /*
-* This class represents one wheel in a multi wheel game. Multiple instances
-* will be created.
+* This class represents one wheel in a multi wheel game. 
+* It both draws the wheel it is responsible for and adapts 
+* a private instance of the Accelerator class to a world where distance is
+* in radians and hence d and d+2*PI are effectively the same distance
+*
+* This probably means I need a specialized verions of the Accelerator
+* rather than combining drawing an accelerator functions into a single class
 */
-function SingleWheel(app, radius, bg, colors, startDeg)
-{
-    // initialization
-    this.velocity = 0.0
-    this.app = app
-    this.colors = colors
-    this.numberOfSegments = colors.length
-    this.startDegrees = startDeg
-    this.lastRadians = 0
-    this.accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](0)
-
-    const container = new PIXI.Container()
-    container.pivot.x = 0
-    container.pivot.y = 0
-    container.x = 300
-    container.y = 300
-    
-    // draw outter background circle with given background
-    const circle = new PIXI.Graphics()
-    circle.beginFill(bg)
-    circle.lineStyle(10, bg);
-    circle.drawCircle(0,0,radius)
-    circle.endFill()
-    container.addChild(circle)
-
-    // draw inner background circle with white background
-    const mask = new PIXI.Graphics()
-    mask.beginFill(0xFFFFFF)
-    mask.drawCircle(0,0,radius)
-    mask.endFill()
-    container.addChild(mask)
-
-    // get the (x,y) coordinates of the point that bound the sectors
-    const coords = plotCirclePoints(colors.length, radius+50, -90)
-    const size = radius 
-
-    coords.forEach(function(coord, i){   
-        const index = (i == coords.length-1) ? 0 : i+1
-        const nextCoord = coords[index]
-
-        // draw the triangular sector of the correct color - note we are working within container
-        const tri = new PIXI.Graphics()
-        tri.beginFill( colors[i], 0.8);
-        tri.moveTo(0, 0);
-        tri.lineTo(coord.x, coord.y);
-        tri.lineTo(nextCoord.x, nextCoord.y);
-        tri.lineTo(0, 0);
-        tri.endFill();
-        tri.mask = mask
-        container.addChild(tri);
-    })
-    container.rotation = degToRad(startDeg)
-    this.container = container
-
-    this.setVelocity = function(v)
+class SingleWheel {
+    /*
+    * app       {PIXI.application}      - the pixie app for the wheel
+    * radius    {float}                 - radius of the circle
+    * bg        {hex color code}        - the background color behind the wheel
+    * colors    {array of color codes}  - specifies both the number and color of the segments
+    * startDeg  {float}                 - an initial rotation to get the starting image correct. With the
+    *                                       first segment positioned at the pointer
+    */
+    constructor(app, radius, bg, colors, startDeg)
     {
-        // UGH duplicate data
-        this.velocity = v
-        this.accelerator.setVelocity(v)
+        this.velocity = 0.0
+        this.app = app
+        this.colors = colors
+        this.numberOfSegments = colors.length
+        this.startDegrees = startDeg
+        this.lastRadians = 0
+        this.accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](0)
+
+        const container = new PIXI.Container()
+        container.pivot.x = 0
+        container.pivot.y = 0
+        container.x = 300
+        container.y = 300
+        
+        // draw outter background circle with given background
+        const circle = new PIXI.Graphics()
+        circle.beginFill(bg)
+        circle.lineStyle(10, bg);
+        circle.drawCircle(0,0,radius)
+        circle.endFill()
+        container.addChild(circle)
+
+        // draw inner background circle with white background
+        const mask = new PIXI.Graphics()
+        mask.beginFill(0xFFFFFF)
+        mask.drawCircle(0,0,radius)
+        mask.endFill()
+        container.addChild(mask)
+
+        // get the (x,y) coordinates of the point that bound the sectors
+        const coords = plotCirclePoints(colors.length, radius+50, -90)
+        const size = radius 
+
+        coords.forEach(function(coord, i){   
+            const index = (i == coords.length-1) ? 0 : i+1
+            const nextCoord = coords[index]
+
+            // draw the triangular sector of the correct color - note we are working within container
+            const tri = new PIXI.Graphics()
+            tri.beginFill( colors[i], 0.8);
+            tri.moveTo(0, 0);
+            tri.lineTo(coord.x, coord.y);
+            tri.lineTo(nextCoord.x, nextCoord.y);
+            tri.lineTo(0, 0);
+            tri.endFill();
+            tri.mask = mask
+            container.addChild(tri);
+        })
+        container.rotation = degToRad(startDeg)
+        this.container = container
     }
 
     /*
-    * Moves the wheels to positions. The positions are indexes
-    * in the range 0 .. NUMBER_OF_SEGMENTS - 1
-    * Positions each circle so that the specified segment is at the 
-    * pointer mark - the mark is in the middle of the segment.
-    *
-    * Segments are numbered clockwise same as the colors
+    * accelerate to zero
+    * position {int}        - the index of the segment that is to be under the pointer when the velocity reaches zero
+    * timeInterval {float}  - the timeInterval in seconds over which the deleration is to take place
+    * return {Promise}      - resolved when acceleration is complete
     */
-    this.setPosition = function(position)
+    accelerateToZero(position, timeInterval)
     {
-        let rads = this.convertPositionToRadians(position)
-        this.positionToRadians(rads)
-    }.bind(this)
+        let dF = this.calculateStoppingDistance(position, timeInterval)
+        return this.accelerator.accelerate(0.0, timeInterval, dF)
+    }
 
-    this.advanceTimeBy = function(timeInterval)
+    /*
+    * Advances the wheel's time by a timeInterval and redraws the wheel in the new position.
+    * Takes account of the circular nature of the wheel and keeps the new rotation value to less than 2*PI.
+    * does this by remembering the last radian value and ASSUMES the shift in
+    * radians over the timeINterval is less than 2*PI
+    *
+    * timeInterval {float}
+    *
+    * returns nothing
+    */
+    advanceTimeBy(timeInterval)
     {
-        let d = this.accelerator.advanceTimeBy(timeInterval)
+        let d = this.accelerator.advanceTimeBy(timeInterval) 
+        // d - this can be a large number is not restricted to
+        // range -2PI .. 2PI
         let deltaRads = d - this.lastRadians
         this.lastRadians = d
         this.rotateByRadians(deltaRads)
-    }.bind(this)
-
-    this.advanceTimeNonAccelerating = function(timeInterval)
-    {
-        let rads = (timeInterval * this.velocity)
-        this.rotateByRadians(rads)
-    }.bind(this)
-
-    this.advanceTimeAcceleratingBy = function(timeInterval)
-    {
-        let d = this.accelerator.advanceTimeBy(timeInterval)
-        this.rotateByRadians(d)
     }
 
-    this.rotateByRadians = function(rads)
-    {
-        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
-            throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
-        }
-        let rot = this.container.rotation 
-        let newr = rot + rads
-        if( (rot + rads) > 2*Math.PI )
-            newr = (rot + rads) - 2*Math.PI
-        if( (rot + rads) <  -2*Math.PI )
-            newr = (rot + rads) + 2*Math.PI
 
-        if( (newr > 2*Math.PI) || (newr < -2.0 * Math.PI) ){
-            throw new Error("rotateByRadians - newr should not be greater than 2*PI or less than -2*PI")
-        }
-
-        this.container.rotation = newr
-    }.bind(this)
-
-    this.positionToRadians = function(radians)
-    {
-        this.container.rotation = radians        
-    }.bind(this)
     /*
+    * VERY IMPORTANT METHOD - will probably need tuning to get a good visual result
+    *
     * Calculate the dF value to give to our instance of an accelerator object
+    *
+    * Because of the circular nature of the wheel and that rotations are equivalent modulo 2*PI
+    * there are multiple dF values that will give the same rotation result.
+    * The goal of this method is to pick a dF that gives good visual result.
+    *
+    * CURRENT ONLY USES A SIMPLE ALGORITHM 
+    *
     * Find the dF value so that
     *   -   currentVelocity * timeInterval > dF
     *   -   currentVelocity * timeInterval = dF * 2 --- approximately 
     *   -   for which dF is equivalent to 'position'
+    *
+    * position {int} - index of the segment that we want under the pointer
+    * timeInterval {float} - the time interval over which we have to decelerate to the position
+    *
+    * returns dF{float} - the stopping distance in radians 
     */
-    this.calculateStoppingDistance = function(position, timeInterval)
+    calculateStoppingDistance(position, timeInterval)
     {
         console.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`)
         let positionInRadians = this.convertPositionToRadians(position)
@@ -583,15 +558,78 @@ function SingleWheel(app, radius, bg, colors, startDeg)
         // }
         console.log(`calculateStoppingDistance v0 : ${v0} timeInterval: ${timeInterval} dRequired: ${dRequired}`)
         return dRequired
-    }.bind(this)
+    }
 
-    this.accelerate = function(position, timeInterval)
+    /*
+    * Sets the wheels velocity in radians per second
+    * @NOTE - we have duplicate data here BEWARE
+    * velocity {float} - radians per sec
+    */
+    setVelocity(v)
     {
-        let dF = this.calculateStoppingDistance(position, timeInterval)
-        return this.accelerator.accelerate(0.0, timeInterval, dF)
-    }.bind(this)
+        this.velocity = v
+        this.accelerator.setVelocity(v)
+    }
 
-    this.convertPositionToRadians = function(positionIndex)
+    /*
+    * Moves the wheels to positions. The positions are indexes
+    * in the range 0 .. NUMBER_OF_SEGMENTS - 1
+    * Positions the circle so that the specified segment is at the 
+    * pointer mark - the mark is in the middle of the segment.
+    *
+    * Segments are numbered clockwise same as the colors
+    * position {int}
+    * @returns nothing
+    */
+    setPosition(position)
+    {
+        let rads = this.convertPositionToRadians(position)
+        this.positionToRadians(rads)
+    }
+    /*
+    * Increase the rotation of the wheel by rads. Ensures that
+    * the containers position value is always in the range -2*PI .. 2*PI
+    *
+    * rads {float} - radians in the range -2*PI .. 2*PI
+    */
+    rotateByRadians(rads)
+    {
+        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
+            throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
+        }
+        let rot = this.container.rotation 
+        let newr = rot + rads
+        if( (rot + rads) > 2*Math.PI )
+            newr = (rot + rads) - 2*Math.PI
+        if( (rot + rads) <  -2*Math.PI )
+            newr = (rot + rads) + 2*Math.PI
+
+        if( (newr > 2*Math.PI) || (newr < -2.0 * Math.PI) ){
+            throw new Error("rotateByRadians - newr should not be greater than 2*PI or less than -2*PI")
+        }
+        this.container.rotation = newr
+    }
+    /*
+    * Position the wheel so that its rotation is a given value of radians
+    * radians {float} - in range -2*PI .. 2*PI
+    */
+    positionToRadians(radians)
+    {
+        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
+            throw new Error("positionToRadians - radians should not be greater than 2*PI or less than -2*PI")
+        }
+        this.container.rotation = radians        
+    }
+
+    /*
+    * convert a position index into a rotation expressedin radians
+    *
+    * positionIndex {int} - the index of one of the wheels segments
+    *
+    * returns {float} - tha number of radians to set the wheels rotation value to
+    *                   in order that the segment with this positionIndex is under the marker
+    */
+    convertPositionToRadians(positionIndex)
     {
         let t = (2 * Math.PI * positionIndex / this.numberOfSegments)
         if( t != 0){
@@ -599,16 +637,10 @@ function SingleWheel(app, radius, bg, colors, startDeg)
         }
         let res = t + degToRad(this.startDegrees)
         return res
-    }.bind(this)
+    }
 }
+/* harmony export (immutable) */ __webpack_exports__["a"] = SingleWheel;
 
-
-
-// document.getElementById('button').addEventListener('click',random)
-
-// document.getElementById('select').addEventListener('change',function(e){
-// 	win(e.currentTarget.selectedIndex+1)
-// })
 
 
 // Helper functions

@@ -34,7 +34,7 @@ const GROWTH = 1.1
 
 const options = {
 	backgroundColor : 0xEEEEEE, 
-  antialias: true
+    antialias: true
 }
 
 let app;
@@ -103,8 +103,8 @@ export function startSpinning(outterVelocity, middleVelocity, innerVelocity)
     outerWheel.setVelocity(outterVelocity)
     middleWheel.setVelocity(middleVelocity)
     innerWheel.setVelocity(innerVelocity)
-
-    app.ticker.add(universalTickerFunc)
+    // add ticker function so that time is advanced for each wheel
+    app.ticker.add(tickerFunc)
 }
 
 export function stopWheelsWithLoss(
@@ -115,10 +115,13 @@ export function stopWheelsWithLoss(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerate(positionOuter, decelerateTimeInterval))
-    allPs.push(middleWheel.accelerate(positionMiddle, decelerateTimeInterval))
-    allPs.push(innerWheel.accelerate(positionInner, decelerateTimeInterval))
-    Promise.all(allPs).then(function(){console.log("all wheels have stopped");})
+    allPs.push(outerWheel.accelerateToZero(positionOuter, decelerateTimeInterval))
+    allPs.push(middleWheel.accelerateToZero(positionMiddle, decelerateTimeInterval))
+    allPs.push(innerWheel.accelerateToZero(positionInner, decelerateTimeInterval))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })
 }
 export function stopWheelsWithNearWin(
                     positionTwice, 
@@ -128,10 +131,13 @@ export function stopWheelsWithNearWin(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerate(positionOnce, decelerateTimeIntervalLastWheel))
-    allPs.push(middleWheel.accelerate(positionTwice, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerate(positionTwice, decelerateTimeIntervalFirstTwoWheels))
-    Promise.all(allPs).then(function(){console.log("all wheels have stopped");})   
+    allPs.push(outerWheel.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel))
+    allPs.push(middleWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })   
 }
 export function stopWheelsWithWin(
                     positionWinner, 
@@ -140,33 +146,29 @@ export function stopWheelsWithWin(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerate(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(middleWheel.accelerate(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerate(positionWinner, decelerateTimeIntervalLastWheel))
-    Promise.all(allPs).then(function(){console.log("all wheels have stopped");})       
+    allPs.push(outerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(middleWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })       
 }
 
 /*
-* Bring all wheels to a stop at the specified position in the given timeInterval
+* called after result known so that tickerFunc is not called
 */
-export function stopWheelsAtPositionInTimeInterval(outterPosition, middlePosition, innerPosition, timeInterval)
+function removeTickerFunc()
 {
-    let dF_outer = outerWheel.calculateStoppingDistance(outter, timeInterval)
-    let dF_middle = middleWheel.calculateStoppingDistance(middle, timeInterval)
-    let dF_inner = innerWheel.calculateStoppingDistance(inner, timeInterval)
-    // acceleratorOuter = accelerator(0, timeInterval, dF_outer)
-    // acceleratorMiddle = accelerator(0, timeInterval, dF_middle)
-    // acceleratorInner = accelerator(0, timeInterval, dF_inner)
-    // app.ticker.remove(tickerFunc)
-    // app.ticker.add(acceleratorTickerFunc)
+    app.ticker.remove(tickerFunc)    
 }
 
 export function stopWheel()
 {
-    app.ticker.remove(universalTickerFunc)
+    app.ticker.remove(tickerFunc)
 }
 
-function universalTickerFunc(delta)
+function tickerFunc(delta)     // currently ignores the delta value
 {
     let timeInterval = delta * (1.0/60.0)
     outerWheel.advanceTimeBy(timeInterval)
@@ -175,28 +177,6 @@ function universalTickerFunc(delta)
     return    
 }
 
-/*
-* Ticker function for deceleratioin phase
-*/
-function deceleratorTickerFunc(delta)
-{
-    let timeInterval = delta * (1.0/60.0)
-    outerWheel.advanceTimeAcceleratingBy(timeInterval)
-    // middleWheel.advanceTimeNonAccelerating(timeInterval)
-    // innerWheel.advanceTimeNonAccelerating(timeInterval)
-    return
-}
-/*
-* Constant velocity ticker fucntion
-*/
-function tickerFunc(delta)     // currently ignores the delta value
-{
-    let timeInterval = delta * (1.0/60.0)
-    outerWheel.advanceTimeNonAccelerating(timeInterval)
-    middleWheel.advanceTimeNonAccelerating(timeInterval)
-    innerWheel.advanceTimeNonAccelerating(timeInterval)
-    return
-}
 
 function radiansPerSecToPerTick(radsSec)
 {
