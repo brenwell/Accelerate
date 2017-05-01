@@ -77,7 +77,7 @@
 /* harmony export (immutable) */ __webpack_exports__["d"] = startSpinning;
 /* harmony export (immutable) */ __webpack_exports__["e"] = stopWheelsWithLoss;
 /* harmony export (immutable) */ __webpack_exports__["f"] = stopWheelsWithNearWin;
-/* unused harmony export stopWheelsWithWin */
+/* harmony export (immutable) */ __webpack_exports__["g"] = stopWheelsWithWin;
 /* unused harmony export stopWheelsAtPositionInTimeInterval */
 /* harmony export (immutable) */ __webpack_exports__["c"] = stopWheel;
 
@@ -406,7 +406,7 @@ function nearwinBtn()
 }
 function winBtn()
 {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(1, 5, 10)
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["g" /* stopWheelsWithWin */])(2, 2.0, 4.0)
 }
 
 

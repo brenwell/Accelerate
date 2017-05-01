@@ -47,6 +47,6 @@ function nearwinBtn()
 }
 function winBtn()
 {
-    startSpinning(1, 5, 10)
+    stopWheelsWithWin(2, 2.0, 4.0)
 }
 
