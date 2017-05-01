@@ -17,10 +17,10 @@ $(document).ready(function(){
 
 // set up the examples that can be plotted
 
-const v0 = 800  // (10*60) 10px / frame (60/sec)
-const vF = 190
-const dF = 400
-const tF = 2
+let v0 = 800  // (10*60) 10px / frame (60/sec)
+let vF = 190
+let dF = 400
+let tF = 2
 
 // just to see we got here
 
@@ -35,10 +35,10 @@ let version = ""
 function doVersion1()
 {	
 	version = "1"
-	const v0 = 100  // (10*60) 10px / frame (60/sec)
-	const vF = 0
-	const dF = 400
-	const tF = 2
+	v0 = 5  // (10*60) 10px / frame (60/sec)
+	vF = 0
+	dF = 3.5
+	tF = 4
 	let dObj = new BezDecelerator(v0, vF, tF, dF) 
 	let f = dObj.getDistance
 	main(dObj)

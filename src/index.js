@@ -162,6 +162,14 @@ export default class Mover
             +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`)
     }
 
+    setVelocity(v)
+    {
+        if( this.changingVelocity ){
+            throw new Error("cannot setVelocity during an acceleration")
+        }
+        this.currentVelocity = v
+
+    }
 /////////////// below here will disappear
 
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
@@ -197,4 +205,4 @@ export default class Mover
 }
 
 
-window.ACCELERATE = exports;
+// window.ACCELERATE = exports;

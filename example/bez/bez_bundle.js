@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,336 +71,187 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__accelerator_js__ = __webpack_require__(3);
-
-
-function logger(s)
-{
-    //console.log(s)
-}
+/* harmony export (immutable) */ __webpack_exports__["b"] = graphFunction;
+/* unused harmony export graphTable */
+/* harmony export (immutable) */ __webpack_exports__["c"] = drawDot;
+/* unused harmony export graphParameterizedFunction */
+/* harmony export (immutable) */ __webpack_exports__["a"] = drawAxes;
 /*
-* TODO
-*   -   does not correctly support advancing by a time interval that jumps over the end of an acceleration
-*   -   the calc of velocity during an acceleration is crude and probably can be made more accurate
+* some simple utilities for graphing functions
 */
+function graphFunction (ctx, axes, func, color, thick) {
+	var xx, yy
+	var dx=4, x0=axes.x0, y0=axes.y0, scale=axes.scale;
+
+	var iMax = Math.round((ctx.canvas.width)/dx);
+	var xDelta = (axes.xMax - axes.xMin)/((iMax) * 1.0)
+	var iMin = 0;
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
+
+	ctx.beginPath();
+	ctx.lineWidth = thick;
+	ctx.strokeStyle = color;
+	// just to prove we got here
+	for (var i = iMin; i < iMax; i++) {
+		xx = dx*i; 
+		var xValue = i * xDelta;
+		var yValue = func(xValue)
+		var xScaled = xx;
+		var yScaled =  (yValue * h) / axes.yMax 
+		// console.log(`loop x:${xValue} y:${yValue} xScaled: ${xScaled} yScaled:${yScaled}`)
+		// yy = scale*func(xx/scale);
+		
+		if (i == 0) 
+			ctx.moveTo(xScaled, h - yScaled);
+		else         
+			ctx.lineTo(xScaled, h - yScaled );
+	}
+	ctx.stroke();
+}
+function yMinMax(table) 
+{
+	let resMax = table[0][1]
+	let resMin = table[0][1]
+	for( let i = 0; i < table.length; i++){
+		if( table[i][1] > resMax)
+			resMax = table[i][1]
+		if( table[i][1] < resMin )
+			resMin = table[i][1]
+	}
+	return [resMin, resMax]
+}
 
 /*
-* This class seeks to keep track of the 1 dimensional motion of an object that is subject to
-* multiple velocity changes.
-*
-* The two relevant properties of this object are position and velocity which can be obtained
-* at any time with methods position() and velocity()
-*
-* A starting velocity is set via the constructor.
-*
-* Time is advanced, and the position and velocity updated, by calling the method advanceTimeBy(timeInterval)
-* with a timeInterval or deltaTime which is a time interval since the last update and is in SECONDS not FRAMES
-*
-* An acceleration (either positive or negative) can be scheduled by calling the method accelerate(vF, tF, dF)
-* this call will have no effect on the position or velocity until the next call to advanceTimeBy
-* That method will apply the acceleration on successive calls until the ending condition is encountered
-* tF seconds of acceleration have elapsed AND the body has traveled dF distance during the acceleration
-*
-* On finishing the acceleration the advanceTimeBy() method will call the resolve() function
-* of the promise returned by call to accelerate() that setup the acceleration
-*
-*
-*   -   accelerate(v0, vF, tF, dF) - instructs the object to start a velocity change
-*           v0 - is current velocity and is unnecessary since the moving object knows its current velocity
-*           vF - is the velocity the object is to change to
-*           tF - is the time interval over which the change is to take place
-*           dF - is the distance that the object should move while changing velocity
-*       returns a ES6 promise
+* table is an array of points (x,y) where each point is represented as an array of length 2
 */
-class Mover
+function graphTable (ctx, axes, table, color, thick) 
+{
+	
+	let h = ctx.canvas.height
+	let w = ctx.canvas.width
+
+	let numberOfPoints = table.length * 1.0
+	let iMax = numberOfPoints
+	let iMin = 0;
+	let xMin = table[0][0]
+	let xMax = table[numberOfPoints - 1][0]
+	let pixelsBetweenXValues = Math.round(w/(xMax - xMin))
+	let dx = (xMax - xMin)/(numberOfPoints*1.0)
+
+	let tmp = yMinMax(table)
+	let yMin = tmp[0]
+	let yMax = tmp[1]
+	let dy = (yMax - yMin)/h
+
+	var xx, yy
+
+	ctx.beginPath();
+	ctx.lineWidth = thick;
+	ctx.strokeStyle = color;
+
+	// let tmp1 = xMin * pixelsBetweenXValues
+	// let tmp2 = xMax * pixelsBetweenXValues
+
+	for (var i = iMin;i < iMax; i++) {
+		var xValue = table[i][0]
+		var yValue = table[i][1]
+		var xScaled = xValue * pixelsBetweenXValues;
+		var yScaled =  ((yValue - yMin)* h)/(yMax - yMin) 
+
+		// console.log(`loop x:${xValue} y:${yValue} xScaled: ${xScaled} yScaled:${yScaled}`)
+		
+		if (i == 0) 
+			ctx.moveTo(xScaled, h - yScaled);
+		else         
+			ctx.lineTo(xScaled, h - yScaled );
+	}
+	ctx.stroke();
+}
+
+function drawDot(ctx, axes, x, y)
+{
+	return // does not work yet
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
+	var xValue = x
+	var yValue = y
+	var xScaled = xValue * axes.xScaleFactor
+	var yScaled = h - yValue * axes.yScaleFactor 
+	ctx.fillRect(0.0, h - 20 - 0.0, 20, 20)
+	// ctx.fillRect(xScaled, yScaled, 100, 100)
+}
+
+function graphParameterizedFunction (ctx, axes, func, color, thick) {
+	var xx, yy
+	var dx=10, x0=axes.x0, y0=axes.y0, scale=axes.scale;
+
+	var iMax = Math.round((ctx.canvas.width)/dx);
+	var xDelta = (axes.xMax - axes.xMin)/((iMax) * 1.0)
+
+	var iMin = 0;
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
+
+	ctx.beginPath();
+	ctx.lineWidth = thick;
+	ctx.strokeStyle = color;
+
+	for (var i = iMin;i <= iMax; i++) {
+		xx = dx*i; 
+		var pValue = i * xDelta;
+
+		var xyValues = func(pValue)
+		var xValue = xyValues[0]
+		var yValue = xyValues[1]
+		console.log("graphParameterizedFunction: raw: " + `x:${xValue} y:${yValue}`)
+		// var xScaled = xx;
+		var xScaled = (xValue * w) / axes.xMax;
+		var yScaled =  (yValue * h) / axes.yMax 
+		console.log("graphParameterizedFunction: scaled: " + `x:${xScaled} y:${yScaled}`)
+		// console.log(`loop x:${xValue} y:${yValue} xScaled: ${xScaled} yScaled:${yScaled}`)
+		// yy = scale*func(xx/scale);
+		
+		if (i == 0) 
+			ctx.moveTo(xScaled, h - yScaled);
+		else         
+			ctx.lineTo(xScaled, h - yScaled );
+	}
+	ctx.stroke();
+}
+
+/*
+* The points are specified in mathematical (x,y) coordinates with (0,0) in the bottom left corner of the
+* region x > 0 y > 0
+*/
+function drawLine(ctx, startPt, endPt, strokeStyle)
+{
+	var w=ctx.canvas.width
+	var h=ctx.canvas.height
+	var x0 = startPt[0]
+	var x1 = endPt[0]
+	var y0 = startPt[1]
+	var y1 = endPt[1]
+	ctx.beginPath();
+	ctx.strokeStyle = strokeStyle; 
+	ctx.moveTo(x0, h - y0); ctx.lineTo(x1, h - y1);	
+	ctx.stroke();
+}
+function drawAxes(ctx, axes) 
 {
 
-    constructor(v0)
-    {
-        this.signature = "Mover"
-        this.time = 0.0;
-        this.elapsedTimeChangingVelocity = 0.0
-        this.timeInterval = 1.0/60.0 // @FIX this is going away
-        this.totalDistance = 0.0
-        this.changingVelocity = false
-        this.decelerator = null
-        this.currentVelocity = v0
-    }
-    /*
-    * Advance the moving objects time by a time interval
-    *
-    *   deltaTime {float} - interval since the last call to this method
-    *
-    *   returns {float} -   total distance traveled after this time interbal is added to total time
-    *                       of travel. Just for convenience as could get this with position()
-    */
-    advanceTimeBy(deltaTime)
-    {
-        if( ! this.changingVelocity ){
-            this.advanceTimeBy_VelocityNotChanging(deltaTime)
-        }else {
-            this.time += deltaTime
-            this.elapsedTimeChangingVelocity += deltaTime
+	var w = ctx.canvas.width
+	var h = canvas.height
+	drawLine(ctx, [0,0], [w, 0], "rgb(0, 256,0)")
+	drawLine(ctx, [0,0], [0, h], "rgb(0,0,256)")
+	drawLine(ctx, [w,0], [w,h], "rgb(256,0,0)")
+	drawLine(ctx, [0,h], [w,h], "rgb(256,0,0)")
 
-            let tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity)
-            let deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance
-
-            this.currentVelocity = deltaDistance / (deltaTime)
-            this.totalDistance = this.distanceBeforeVelocityChange + tmp
-
-            logger(
-                `Mover::advanceByTime  elapsedTimeChangingVelocity: ${this.elapsedTimeChangingVelocity}`
-                +` timeForChange: ${this.timeForChange}`
-                +` DVdistance: ${tmp} `
-                +` totalDistance: ${this.totalDistance}`
-                + `velocity: ${this.currentVelocity}`)
-
-            if( this.elapsedTimeChangingVelocity >= this.timeForChange )
-            {
-                logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`)
-                this.currentVelocity = this.newVelocity
-                this.changingVelocity = false
-                if( typeof this.resolvePromiseFunction == "function")
-                    this.resolvePromiseFunction()
-            }
-        }
-        return this.totalDistance
-    }
-    /*
-    * returns {float} the current position of the moving object
-    */
-    position()
-    {
-        return this.totalDistance
-    }
-    /*
-    * returns {float} the current velocity of the moving object
-    */
-    velocity()
-    {
-        return this.currentVelocity
-    }
-    /*
-    * Convenience function wth more meaningful name
-    * accelerat to a target final velocity
-    */
-    acceleratTo(vF, tF, dF)
-    {
-        return accelerat(vF, tF, dF)
-    }
-    /*
-    * Convenience function wth more meaningful name
-    * accelerat  -  change current velocity by a givn deltaVee
-    */
-    accelerateBy(deltaVee, tF, dF)
-    {
-        let vF = this.currentVelocity + deltaVee
-        return accelerat(vF, tF, dF)
-    }
-    /*
-    *   accelerate(vF, tF, dF, cb) - instructs the object to start a velocity change
-    *           vF - is the velocity the object is to change to
-    *           tF - is the time interval over which the change is to take place
-    *           dF - is the distance that the object should move while changing velocity
-    *
-    *   returns a ES6 Promise which will be resolved when the acceleration has completed
-    */
-    accelerate(vF, tF, dF)
-    {
-        logger(`Mover::accelerate ${vF} ${tF} ${dF}`)
-        if( this.changingVelocity ){
-            throw new Error("cannot have two accelerations underway at the same time")
-        }
-        let v0 = this.currentVelocity
-        let p = new Promise(function(resolve){
-            this.resolvePromiseFunction = resolve
-        }.bind(this))
-        this.distanceBeforeVelocityChange = this.totalDistance
-        this.changingVelocity = true
-        this.elapsedTimeChangingVelocity = 0.0
-        this.timeForChange = tF
-        this.newVelocity = vF
-        this.distanceForChange = dF
-        this.decelerator = new __WEBPACK_IMPORTED_MODULE_0__accelerator_js__["a" /* BezDecelerator */](v0, vF, tF, dF)
-        return p
-    }
-
-    /*
-    * Internal only - advances time when no acceleration is active
-    */
-    advanceTimeBy_VelocityNotChanging(deltaTime)
-    {
-        this.time += deltaTime
-        this.totalDistance += this.currentVelocity * deltaTime
-        logger(`Mover::advanceTimeBy_VelocityNotChanging velocity:`
-            +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`)
-    }
-
-/////////////// below here will disappear
-
-    // ONLY    HERE DURING TRANSITION TO DELTA TIME
-    advanceTimeByFrames(numberOfFrames)
-    {
-        logger(`Mover::advanceTimeByFrames:numberOfFrames: ${numberOfFrames} time:${this.time}`)
-        let deltaTime = numberOfFrames * this.timeInterval
-        this.advanceTimeBy(deltaTime)
-    }
-
-    // ONLY    HERE DURING TRANSITION TO DELTA TIME
-    /*
-    * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
-    * frames and display issues.
-    */
-    getDistance(numberOfFrames)
-    {
-        this.advanceTimeByFrames(numberOfFrames)
-        return this.totalDistance
-    }
-
-    // ONLY    HERE DURING TRANSITION TO DELTA TIME
-    /*
-    * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
-    * frames and display issues.
-    */
-    getDistanceVelocityNotChanging(numberOfFrames)
-    {
-        this.time += this.timeInterval*numberOfFrames
-        this.totalDistance += this.currentVelocity*this.timeInterval*numberOfFrames
-        return this.totalDistance
-    }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Mover;
 
-
-
-window.ACCELERATE = exports;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(0);
-
-
-
-$(document).ready(function(){
-  main()
-})
-
-
-function main()
-{
-
-    const accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](10)
-    console.log(accelerator)
-
-    var app = new PIXI.Application(600, 600, {backgroundColor : 0x1099bb, antialias: true});
-    document.body.appendChild(app.view);
-
-    const size = 100;
-
-    // create a new Sprite from an image path
-    var bunny = new PIXI.Graphics()
-    bunny.beginFill(0xFFCC66)
-    bunny.drawRect(0,0,size,size)
-    bunny.endFill()
-    bunny.pivot.set(size/2)
-
-    // move the sprite to the center of the screen
-    bunny.x = app.renderer.width / 2;
-    bunny.y = app.renderer.height / 2;
-
-    app.stage.addChild(bunny);
-
-  // Listen for animate update
-    let totalTime = 0
-    app.ticker.add(function(delta) {
-        // this is because the accelerator does no know about pixi's delta value
-        totalTime += delta*(1.0/60.0)
-    
-        let r = accelerator.advanceTimeBy(delta*(1.0/60.0))
-        // console.log(`ticker delta:${delta} deltaT:${delta*(1.0/60.0)} totalTime:${totalTime} r:${r}`)
-        bunny.rotation = r
-    });
-    
-    let timer = setTimeout( () => {
-        console.log("timer fired - start acceleration/deceleration to zero speed for 10 seconds cover 50 units")
-        accelerator.accelerate(0, 10, 50)
-        .then(function()
-        {
-            console.log("first acceleration done - accelerate to 10 for 5 seconds and cover 50 units of distance")
-            accelerator.accelerate(10, 5, 50)
-            .then(function()
-            {
-                console.log("second acceleration done - now wait 60 ticks and then decelerate to zero")
-                let counter = 0;
-                let waiter = function(delta) {
-                    if( counter++ > 180 ){
-                        console.log("180 ticks done - start decel to zero")
-                        accelerator.accelerate(0, 10, 50)                
-                        .then(function(){
-                            console.log("deceleration to zero done - stop ticker")
-                            app.ticker.stop()
-                        })
-                        app.ticker.remove(waiter)
-                    }
-                }
-                app.ticker.add(waiter)
-            })
-        })
-      },1000)
-}
-
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
-    if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.newtonRaphson = factory();
-  }
-}(this, function () {
-  return function findRoot(f, fprime, guess, options) {
-    options = options || {};
-    var tolerance = options.tolerance || 0.00000001;
-    var epsilon = options.epsilon || 0.0000000000001;
-    var maxIterations = options.maxIterations || 20;
-    var haveWeFoundSolution = false; 
-    var newtonX;
-   
-    for (var i = 0; i < maxIterations; ++i) {
-      var denominator = fprime(guess);
-      if (Math.abs(denominator) < epsilon) {
-        return false
-      }
-   
-      result = guess - (f(guess) / denominator);
-      
-      var resultWithinTolerance = Math.abs(result - guess) < tolerance;
-      if (resultWithinTolerance) { 
-        return result
-      }
-
-      guess = result;
-    }
-    
-    return false;
-  }
-}));
-
-/***/ }),
-/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -518,13 +369,206 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_accelerator__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__libs_graph_js__ = __webpack_require__(0);
+/*
+* main entry for bez.html - draws various forms of bezier functions
+*/
+
+
+
+
+$(document).ready(function(){
+	$("#version1").click(doVersion1)
+	$("#version2").click(doVersion2)
+	$("#version3").click(doVersion3)
+	$("#version4").click(doVersion4)
+	$("#version5").click(doVersion5)
+	$("#version6").click(doVersion6)
+	$("#version7").click(doVersion7)
+})
+
+// set up the examples that can be plotted
+
+let v0 = 800  // (10*60) 10px / frame (60/sec)
+let vF = 190
+let dF = 400
+let tF = 2
+
+// just to see we got here
+
+// this defines the regionof the plot
+const rangeDomain = {
+	xMin : 0,
+	xMax : tF,
+	yMin : 0,
+	yMax : dF
+}
+let version = ""
+function doVersion1()
+{	
+	version = "1"
+	v0 = 5  // (10*60) 10px / frame (60/sec)
+	vF = 0
+	dF = 3.5
+	tF = 4
+	let dObj = new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF) 
+	let f = dObj.getDistance
+	main(dObj)
+}
+function doVersion2()
+{	
+	version = "1"
+	const v0 = 800  // (10*60) 10px / frame (60/sec)
+	const vF = 0
+	const dF = 400
+	const tF = 2
+	let dObj = new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF) 
+	let f = dObj.getDistance
+	main(dObj)
+}
+function doVersion3()
+{
+	version = "2"
+	const v0 = 800  // (10*60) 10px / frame (60/sec)
+	const vF = 180
+	const dF = 400
+	const tF = 2
+	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
+}
+function doVersion4()
+{
+	version = "3"
+	const v0 = 800  // (10*60) 10px / frame (60/sec)
+	const vF = 1200
+	const dF = 400
+	const tF = 2
+	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
+}
+function doVersion5()
+{
+	version = "4"
+	const v0 = 800  // (10*60) 10px / frame (60/sec)
+	const vF = 190
+	const dF = 400
+	const tF = 2
+	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
+}
+function doVersion6()
+{
+	version = "5"
+	const v0 = 800  // (10*60) 10px / frame (60/sec)
+	const vF = 210
+	const dF = 400
+	const tF = 2
+	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
+}
+function doVersion7()
+{
+	version = "6"
+	const v0 = 0  // (10*60) 10px / frame (60/sec)
+	const vF = 0
+	const dF = 400
+	const tF = 2
+	main(new __WEBPACK_IMPORTED_MODULE_0__src_accelerator__["a" /* BezDecelerator */](v0, vF, tF, dF))
+}
+function main(bezDecelerationObj) 
+{
+	$("#canvas-wrapper").empty()
+	$("#canvas-wrapper").append('<canvas id="canvas" width="1000" height="500"></canvas>')
+
+	var canvas = document.getElementById("canvas");
+	if (null==canvas || !canvas.getContext) return;
+	var N = 20
+	const decel = bezDecelerationObj
+
+	var ctx=canvas.getContext("2d");
+	var h = ctx.canvas.height
+	var w = ctx.canvas.width
+
+	var axes={} 
+	axes.xMin = 0
+	axes.xMax = tF
+	axes.yMin = -2*dF
+	axes.yMax = 2*dF
+	axes.xScaleFactor = w / (tF - 0)
+	axes.yScaleFactor = w / (dF - 0)
+
+
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["a" /* drawAxes */])(ctx, axes);
+
+	var ff = decel.dd_func
+	var fd = decel.getDistance
+	let points = decel.dotPositions()
+
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["b" /* graphFunction */])(ctx, axes, decel.getDistance, "rgb(66,44,255)", 2);
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["b" /* graphFunction */])(ctx, axes, decel.tangent_initial, "rgb(255,44,255)", 2)
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["b" /* graphFunction */])(ctx, axes, decel.tangent_final, "rgb(255,44,255)", 2)
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["c" /* drawDot */])(ctx, axes, points[0][0], points[0][1] )
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["c" /* drawDot */])(ctx, axes, points[1][0], points[1][1] )
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["c" /* drawDot */])(ctx, axes, points[2][0], points[2][1] )
+	__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__libs_graph_js__["c" /* drawDot */])(ctx, axes, points[3][0], points[3][1] )
+}
+
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
+    } else {
+        root.newtonRaphson = factory();
+  }
+}(this, function () {
+  return function findRoot(f, fprime, guess, options) {
+    options = options || {};
+    var tolerance = options.tolerance || 0.00000001;
+    var epsilon = options.epsilon || 0.0000000000001;
+    var maxIterations = options.maxIterations || 20;
+    var haveWeFoundSolution = false; 
+    var newtonX;
+   
+    for (var i = 0; i < maxIterations; ++i) {
+      var denominator = fprime(guess);
+      if (Math.abs(denominator) < epsilon) {
+        return false
+      }
+   
+      result = guess - (f(guess) / denominator);
+      
+      var resultWithinTolerance = Math.abs(result - guess) < tolerance;
+      if (resultWithinTolerance) { 
+        return result
+      }
+
+      guess = result;
+    }
+    
+    return false;
+  }
+}));
+
+/***/ }),
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bezier_cubic__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bezier_quadratic__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_newton_raphson__);
 
 
@@ -770,4 +814,4 @@ class BezierQuadraticClass
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=square_bundle.js.map
+//# sourceMappingURL=bez_bundle.js.map

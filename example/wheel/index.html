@@ -10,24 +10,25 @@
 <link rel="stylesheet" type="text/css" href="wheel.css">
 </head>
 <body>
-<p>
-Select a random result or choose a win by color
-</p>
+<div id="wheels" style="background-color:pink"></div>
 <div>
-<button id="button">Random</button>
-
-<select id='select'>
-  <option value="7">Violet (win)</option>
-  <option value="6">Indigo (win)</option>
-  <option value="5">Blue (win)</option>
-  <option value="4">Green (win)</option>
-  <option value="3">Yellow (win)</option>
-  <option value="2">Orange (win)</option>
-  <option value="1">Red (win)</option>
-</select>
+	<select id='select'>
+	  <option value="7">Violet (win)</option>
+	  <option value="6">Indigo (win)</option>
+	  <option value="5">Blue (win)</option>
+	  <option value="4">Green (win)</option>
+	  <option value="3">Yellow (win)</option>
+	  <option value="2">Orange (win)</option>
+	  <option value="1">Red (win)</option>
+	</select>
 </div>
-<div><button id='btn-position'>Position First</button></div>
-<div><button id='btn-stop'>Stop</button></div>
-<div><button id='btn-start-spinning'>Start Spinning</button></div>
+<div id="buttons">
+	<div><button id='btn-position'>Position First</button></div>
+	<div><button id='btn-stop'>Stop</button></div>
+	<div><button id='btn-loss'>Loss</button></div>
+	<div><button id='btn-nearwin'>Near Win</button></div>
+	<div><button id='btn-win'>Win</button></div>
+	<div><button id='btn-start-spinning'>Start Spinning</button></div>
+</div>
 </body>
 </html>

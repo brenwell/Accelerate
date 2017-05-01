@@ -1,10 +1,26 @@
-import {setPosition, startSpinning, createWheel, stopWheel} from "./wheel.js"
+import {setPosition, 
+        startSpinning, 
+        createThreeWheels, 
+        stopWheel,
+        stopWheelsWithLoss,
+        stopWheelsWithNearWin,
+        stopWheelsWithWin
+    } from "./three_wheels.js"
 
 $(document).ready(function(){
     $("#btn-position").click(positionBtn)
     $("#btn-stop").click(stopBtn)
     $("#btn-start-spinning").click(startSpinningBtn)
-    createWheel()
+    $("#btn-loss").click(lossBtn)
+    $("#btn-nearwin").click(nearwinBtn)
+    $("#btn-win").click(winBtn)
+
+    $("#wheels").css("background-color", "yellow")
+    $("#wheels").css("width", 600)
+    $("#wheels").css("height", 600)
+    $("#wheels").css("float", "left")
+
+    createThreeWheels($("#wheels")[0], 600, 600)
 })
 function positionBtn()
 {
@@ -18,6 +34,18 @@ function stopBtn()
     stopWheel()  
 }
 function startSpinningBtn()
+{
+    startSpinning(5, 5, 10)
+}
+function lossBtn()
+{
+    stopWheelsWithLoss(1, 2, 3, 2.0)
+}
+function nearwinBtn()
+{
+    stopWheelsWithNearWin(2, 3, 2.0, 4.0)
+}
+function winBtn()
 {
     startSpinning(1, 5, 10)
 }
