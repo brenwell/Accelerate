@@ -35,7 +35,7 @@ function stopBtn()
 }
 function startSpinningBtn()
 {
-    startSpinning(8, 12, 16)
+    startSpinning(4, 8, 16)
 }
 function lossBtn()
 {

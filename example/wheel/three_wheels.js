@@ -1,4 +1,6 @@
-import {SingleWheel} from "./single_wheel.js"
+import {SingleWheelView} from "./single_wheel_view.js"
+import {SingleWheelController} from "./rotating_view_controller.js"
+
 
 /*
 * This is the master module (not a class) that sets up the three spinning wheels and provides
@@ -42,9 +44,9 @@ let containerOuter;
 let containerMiddle;
 let containerInner;
 
-let outerWheel;
-let middleWheel;
-let innerWheel;
+let outerWheelController;
+let middleWheelController;
+let innerWheelController;
 
 let button;
 let tweenOuter;
@@ -61,13 +63,17 @@ export function createThreeWheels(el, width, height)
     // document.body.appendChild(app.view);
     el.appendChild(app.view)
 
-    outerWheel = new SingleWheel(app, 300, 0xFFFFFF, colors, -PIE_MIDDLE)
-    middleWheel = new SingleWheel(app, 210, 0xFFFFFF, colors, -PIE_MIDDLE)
-    innerWheel = new SingleWheel(app, 120, 0xFFFFFF, colors, -PIE_MIDDLE)
+    let outerWheelView = new SingleWheelView(app, 300, 0xFFFFFF, colors, -PIE_MIDDLE)
+    let middleWheelView = new SingleWheelView(app, 210, 0xFFFFFF, colors, -PIE_MIDDLE)
+    let innerWheelView = new SingleWheelView(app, 120, 0xFFFFFF, colors, -PIE_MIDDLE)
 
-    containerOuter = outerWheel.container
-    containerMiddle = middleWheel.container
-    containerInner = innerWheel.container
+    outerWheelController = new SingleWheelController(outerWheelView)
+    middleWheelController = new SingleWheelController(middleWheelView)
+    innerWheelController = new SingleWheelController(innerWheelView)
+
+    containerOuter = outerWheelView.container
+    containerMiddle = middleWheelView.container
+    containerInner = innerWheelView.container
 
     app.stage.addChild(containerOuter)
     app.stage.addChild(containerMiddle)
@@ -88,9 +94,9 @@ export function createThreeWheels(el, width, height)
 */
 export function setPosition(outterPosition, middlePosition, innerPosition)
 {
-    outerWheel.setPosition(outterPosition)
-    middleWheel.setPosition(middlePosition)
-    innerWheel.setPosition(innerPosition)
+    outerWheelController.setPosition(outterPosition)
+    middleWheelController.setPosition(middlePosition)
+    innerWheelController.setPosition(innerPosition)
 }
 /*
 * Starts all wheels spinning with velocity for each wheel given by the object
@@ -100,9 +106,9 @@ export function startSpinning(outterVelocity, middleVelocity, innerVelocity)
 {
     let frameInterval = Math.round(1000*(1.0/60.0))
 
-    outerWheel.setVelocity(outterVelocity)
-    middleWheel.setVelocity(middleVelocity)
-    innerWheel.setVelocity(innerVelocity)
+    outerWheelController.setVelocity(outterVelocity)
+    middleWheelController.setVelocity(middleVelocity)
+    innerWheelController.setVelocity(innerVelocity)
     // add ticker function so that time is advanced for each wheel
     app.ticker.add(tickerFunc)
 }
@@ -115,9 +121,9 @@ export function stopWheelsWithLoss(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerateToZero(positionOuter, decelerateTimeInterval))
-    allPs.push(middleWheel.accelerateToZero(positionMiddle, decelerateTimeInterval))
-    allPs.push(innerWheel.accelerateToZero(positionInner, decelerateTimeInterval))
+    allPs.push(outerWheelController.accelerateToZero(positionOuter, decelerateTimeInterval))
+    allPs.push(middleWheelController.accelerateToZero(positionMiddle, decelerateTimeInterval))
+    allPs.push(innerWheelController.accelerateToZero(positionInner, decelerateTimeInterval))
     Promise.all(allPs).then(function(){
         console.log("all wheels have stopped");
         removeTickerFunc()
@@ -131,9 +137,9 @@ export function stopWheelsWithNearWin(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel))
-    allPs.push(middleWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(outerWheelController.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel))
+    allPs.push(middleWheelController.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheelController.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
     Promise.all(allPs).then(function(){
         console.log("all wheels have stopped");
         removeTickerFunc()
@@ -146,9 +152,9 @@ export function stopWheelsWithWin(
 )
 {
     let allPs = []
-    allPs.push(outerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(middleWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
+    allPs.push(outerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(middleWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
     Promise.all(allPs).then(function(){
         console.log("all wheels have stopped");
         removeTickerFunc()
@@ -171,9 +177,9 @@ export function stopWheel()
 function tickerFunc(delta)     // currently ignores the delta value
 {
     let timeInterval = delta * (1.0/60.0)
-    outerWheel.advanceTimeBy(timeInterval)
-    middleWheel.advanceTimeBy(timeInterval)
-    innerWheel.advanceTimeBy(timeInterval)
+    outerWheelController.advanceTimeBy(timeInterval)
+    middleWheelController.advanceTimeBy(timeInterval)
+    innerWheelController.advanceTimeBy(timeInterval)
     return    
 }
 
@@ -234,22 +240,4 @@ function addCenterButton()
   button = text  
 }
 
-function convertPositionToRadians(positionIndex)
-{
-    let t = (2 * Math.PI * positionIndex / NUMBER_OF_SEGMENTS)
-    if( t != 0){
-        t = 2*Math.PI - t
-    }
-    let res = t - degToRad(PIE_MIDDLE)
-    return res
-}
 
-
-
-/*
-* Converts degrees to radians
-*/
-function degToRad(degrees)
-{
-    return degrees * Math.PI / 180;
-}

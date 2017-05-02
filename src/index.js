@@ -158,8 +158,11 @@ export default class Mover
     {
         this.time += deltaTime
         this.totalDistance += this.currentVelocity * deltaTime
-        logger(`Mover::advanceTimeBy_VelocityNotChanging velocity:`
-            +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`)
+        logger(`\nMover::advanceTimeBy_VelocityNotChanging `
+            +` velocity:${this.currentVelocity}`
+            +` distance:${this.totalDistance}`
+            +` time: ${this.time}`
+            + `deltaTime:${deltaTime}`)
     }
 
     setVelocity(v)
