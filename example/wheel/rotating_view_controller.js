@@ -92,9 +92,15 @@ export class SingleWheelController {
     *
     * Because of the circular nature of the wheel and that rotations are equivalent modulo 2*PI
     * there are multiple dF values that will give the same rotation result.
+    *
     * The goal of this method is to pick a dF that gives good visual result.
     *
-    * CURRENT ONLY USES A SIMPLE ALGORITHM 
+    * VERS 1 CURRENT ONLY USES A SIMPLE ALGORITHM  - it picks the most obvious. 
+    *
+    * VERS 2 But I think we will get a better visual result if we try to make 
+    * dF as long/big as possible with out breaking the restriction that
+    *   -   currentVelocity * timeInterval > dF
+    * that is what VERS == 2 does
     *
     * Find the dF value so that
     *   -   currentVelocity * timeInterval > dF
@@ -120,10 +126,21 @@ export class SingleWheelController {
         let deltaRadians = (positionInRadians >= currentRadians) ? 
                                 (positionInRadians - currentRadians) :
                                 (2*Math.PI + positionInRadians - currentRadians)
+        
+        let dMax = v0 * timeInterval
+        let i_deltaR = deltaRadians
+        let vers = 2
 
+        if(vers == 2){
+            // enhanced algorithm
+            let tmp  = deltaRadians
+            while( tmp < (dMax - 2*Math.PI) ){
+                deltaRadians = tmp
+                tmp += 2*Math.PI
+            }
+        }
         let dRequired = deltaRadians
 
-        let dMax = v0 * timeInterval
 
         if( dMax <= dRequired){
             alert(
@@ -140,7 +157,12 @@ export class SingleWheelController {
         // if( (cycles * 2 * Math.PI + deltaRadians) > dMax ){
         //     throw new Error(`calculateStoppingDistance dRequired:${dRequired} too big`)
         // }
-        console.log(`calculateStoppingDistance v0 : ${v0} timeInterval: ${timeInterval} dRequired: ${dRequired}`)
+        console.log(`calculateStoppingDistance `
+        +` v0 : ${v0} `
+        +` dMax:${dMax}`
+        +` timeInterval: ${timeInterval} `
+        +` initial dReq : ${i_deltaR}`
+        +` dRequired: ${dRequired}`)
         return dRequired
     }
 

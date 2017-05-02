@@ -152,9 +152,9 @@ export function stopWheelsWithWin(
 )
 {
     let allPs = []
-    allPs.push(outerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(outerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
     allPs.push(middleWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
+    allPs.push(innerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
     Promise.all(allPs).then(function(){
         console.log("all wheels have stopped");
         removeTickerFunc()
@@ -235,7 +235,15 @@ function addCenterButton()
     cirContainer.interactive = true
     cirContainer.pointerup = function()
     {
-        startSpinning({outter: 30, middle:20, inner:10})
+        let fn = 'three_wheels.js'
+        // alert(`Not implemented yet\nsee addCenterButton in ${fn}`)
+        // need to invoke the core game processing
+        // does not seem worth in this demo generating random outcomes
+        // but this is a good simulation. Always produces the same near win
+        startSpinning(12, 10, 14)
+        setTimeout(()=>{
+            stopWheelsWithNearWin(2, 3, 2.0, 4.0)
+        }, 4000)
     }
   button = text  
 }
