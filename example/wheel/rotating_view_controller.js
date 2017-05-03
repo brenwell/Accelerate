@@ -49,7 +49,7 @@ export class SingleWheelController {
     {
         this.validatePosition(position)
         let dF = this.calculateStoppingDistance(position, timeInterval)
-        return this.accelerator.accelerate(0.0, timeInterval, dF)
+        return this.accelerator.accelerate(0.0, timeInterval, dF, 2)
     }
 
     /*

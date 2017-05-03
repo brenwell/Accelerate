@@ -3,6 +3,8 @@ PWD=`pwd`
 PROJ=`realpath ..` 
 PATH=${PROJ}/node_modules/.bin:$PATH
 
+echo `which webpack`
+
 EXAMPLE=${PROJ}/example
 EXAMPLE_DIST=${PROJ}/example/dist
 

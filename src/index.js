@@ -30,7 +30,7 @@ function logger(s) // eslint-disable-line
  * On finishing the acceleration the advanceTimeBy() method will call the resolve() function
  * of the promise returned by call to accelerate() that setup the acceleration
  */
-export default class Accelerate
+export default class Accelerator
 {
     /**
      * Constructs the object.
@@ -58,10 +58,24 @@ export default class Accelerate
      */
     advanceTimeBy(deltaTime)
     {
-        if (!this.changingVelocity)
+        if (!this.changingVelocity && ! this.isWaiting)
         {
             this._advanceTimeAndDistanceWhileCoasting(deltaTime);
         }
+        else if(! this.changingVelocity && this.isWaiting )
+        {
+            this.time += deltaTime;
+            this.currentWaitingTime += deltaTime
+            if( this.currentWaitingTime >= this.requiredWaitingTime )
+            {
+                this.isWaiting = false
+                if (typeof this.resolvePromiseFunction === 'function')
+                { 
+                    this.resolvePromiseFunction(); 
+                }
+            } 
+            this._advanceTimeAndDistanceWhileCoasting(deltaTime);
+        }    
         else
         {
             this.time += deltaTime;
@@ -86,7 +100,9 @@ export default class Accelerate
                 this.currentVelocity = this.newVelocity;
                 this.changingVelocity = false;
                 if (typeof this.resolvePromiseFunction === 'function')
-                    { this.resolvePromiseFunction(); }
+                { 
+                    this.resolvePromiseFunction(); 
+                }
             }
         }
 
@@ -136,12 +152,30 @@ export default class Accelerate
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
      */
-    accelerate(vF, tF, dF)
+     accelerate(vF, tF, dF, delayInterval = false)
+     {
+        if( delayInterval === false ){
+            return this._accelerateNoDelay(vF, tF, dF)
+        }else{
+            let q = this.waitFor(delayInterval)
+                    .then( ()=> {
+                        console.log('accelerate waitFor resolved')
+                        return this._accelerate(vF, tF, dF)
+                    })
+            console.log([q])
+            return q
+        }
+     }
+    _accelerateNoDelay(vF, tF, dF, promise)
     {
         logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
         if (this.changingVelocity)
         {
             throw new Error('cannot have two accelerations underway at the same time');
+        }
+        if( this.isWaiting )
+        {
+            throw new Error('cannot have commence acceleration while wait is underway');
         }
         const v0 = this.currentVelocity;
         const p = new Promise((resolve) =>
@@ -159,7 +193,46 @@ export default class Accelerate
 
         return p;
     }
+    accelerateWithDelay(vF, tF, dF, delayInterval)
+    {
+        this.waitFor(delayInterval)
+        .then( ()=>{
+            this.accelerate(vF, tF, dF)
+        })
 
+    }
+    waitFor(timeInterval)
+    {
+        if (this.changingVelocity)
+        {
+            throw new Error('Accelerator: cannot wait while acceleration is underway');
+        }
+            if( this.isWaiting )
+        {
+            throw new Error('cannot have commence acceleration while wait is underway');
+        }
+        this.isWaiting = true
+        this.requiredWaitingTime = timeInterval
+        this.currentWaitingTime = 0.0
+
+        const p = new Promise((resolve) =>
+        {
+            this.resolvePromiseFunction = resolve;
+        });
+
+        return p        
+    }
+
+    kill()
+    {
+        if( this.changingVelocity ){
+            this.changingVelocity = false
+            if (typeof this.resolvePromiseFunction === 'function')
+                { this.resolvePromiseFunction(); }
+        }else{
+            console.log(`WARNING: Accelerator - kill not necessary when no acceleration active`)
+        }
+    }
     /**
      * Advances total time & distance when NO acceleration is active
      *
@@ -179,4 +252,4 @@ export default class Accelerate
 
 }
 
-window.Accelerate = exports;
+// window.Accelerate = exports;

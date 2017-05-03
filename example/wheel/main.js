@@ -1,5 +1,9 @@
-import {setPosition,
-        startSpinning,
+/*
+*/
+import {drawAxes, graphTable} from '../libs/graph.js';
+import {setPosition} from "./three_wheels.js"
+
+import {startSpinning,
         createThreeWheels,
         stopWheel,
         stopWheelsWithLoss,

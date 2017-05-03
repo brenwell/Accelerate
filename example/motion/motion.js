@@ -87,9 +87,9 @@ export default function (cb, schedule)
             logger(`setup accel ${nextAccelIndex}`);
             mover.accelerate(vF, tF, dF)
 			.then(()=>{
-    logger(` ${nextAccelIndex} acceleration ended `);
-    setupNextAcceleration();
-});	
+                logger(` ${nextAccelIndex} acceleration ended `);
+                setupNextAcceleration();
+            });	
         }
         let t = deltaT * i;
         let pos = mover.advanceTimeBy(deltaT);

@@ -3,9 +3,10 @@
 * proves a slection of two motions to display. 
 */
 
-import {drawAxes, graphTable} from '../libs//graph.js';
+import {drawAxes, graphTable} from '../libs/graph.js';
 import motion1 from './motion_1.js';
 import motion2 from './motion_2.js';
+import testWait from "./wait_test.js"
 
 $(document).ready(function(){
     $('#motion_1_button').click(motion_1);
@@ -16,7 +17,8 @@ function motion_1(){
     drawMotion(motion1);
 }
 function motion_2(){
-    drawMotion(motion2);
+    // drawMotion(motion2);
+    testWait()
 }
 function drawMotion(motion) 
 {

@@ -29,7 +29,7 @@ import { QuadraticBezier, CubicBezier } from './bezier-functions';
  * @param  {Function}                 cb  Completion handler
  * @return {(Array|Function|number)}  { description_of_the_return_value }
  */
-export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
+export const BezierAccelerator = function Decelerator(v0, vF, tF, dF, cb)
 {
 	// just changing the notation to what I am using
     const V = v0;
