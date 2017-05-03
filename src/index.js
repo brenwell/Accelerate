@@ -1,4 +1,4 @@
-import { BezierAccelerator } from './bezier-accelerator.js';
+import BezierAccelerator from './bezier-accelerator.js';
 
 function logger(s) // eslint-disable-line
 {
