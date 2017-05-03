@@ -1,32 +1,42 @@
-/*
-* This file implements a class which provides a Cubic Bezier curve and its derivative
-*/
-
-// this function is the first derivative of the cubic bezier. Needed for x_From_t_derivative
-function Q(p0, p1, p2, t)
+/**
+ * Class for bezier cubic class.
+ */
+export class BezierCubic
 {
-    const res = p0 * (1.0 - t) * (1.0 - t) + 2.0 * p1 * (1.0 - t) * t + p2 * t * t;
-
-    return res;
-}
-
-export class BezierCubicClass
-{
+    /**
+     * Constructs the object.
+     *
+     * @param  {<type>}  P0  Inital Point
+     * @param  {<type>}  P1  First attraction point
+     * @param  {<type>}  P2  Second attraction point
+     * @param  {<type>}  P3  End point
+     */
     constructor(P0, P1, P2, P3)
-{
+    {
         this.P0 = P0;
         this.P1 = P1;
         this.P2 = P2;
         this.P3 = P3;
     }
-    // private
+
+    /**
+     * @private
+     */
     derivative(t, p0, p1, p2, p3)
     {
-        const res = 3.0 * (Q(p1, p2, p3, t) - Q(p0, p1, p2, t));
+        function quadratic(p0, p1, p2, t)
+        {
+            const res = p0 * (1.0 - t) * (1.0 - t) + 2.0 * p1 * (1.0 - t) * t + p2 * t * t;
+
+            return res;
+        }
+        const res = 3.0 * (quadratic(p1, p2, p3, t) - quadratic(p0, p1, p2, t));
 
         return res;
     }
-    // private
+    /**
+     * @private
+     */
     bez_func(t, p0, p1, p2, p3)
     {
         const res =   p0 * (1 - t) * (1 - t) * (1 - t)

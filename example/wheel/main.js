@@ -15,10 +15,21 @@ $(document).ready(function(){
     $('#btn-nearwin').click(nearwinBtn);
     $('#btn-win').click(winBtn);
 
+<<<<<<< HEAD
     $('#wheels').css('background-color', 'yellow');
     $('#wheels').css('width', 600);
     $('#wheels').css('height', 600);
     $('#wheels').css('float', 'left');
+=======
+    $("#btn-selected-win").click(selectedWinBtn)
+    $("#btn-selected-nearwin").click(selectedNearWinBtn)
+    $("#btn-selected-loss").click(selectedLossBtn)
+
+    $("#wheels").css("background-color", "yellow")
+    $("#wheels").css("width", 600)
+    $("#wheels").css("height", 600)
+    $("#wheels").css("float", "left")
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
     createThreeWheels($('#wheels')[0], 600, 600);
 });
@@ -35,7 +46,11 @@ function stopBtn()
 }
 function startSpinningBtn()
 {
+<<<<<<< HEAD
     startSpinning(8, 12, 16);
+=======
+    startSpinning(12, 10, 14)
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 }
 function lossBtn()
 {
@@ -49,4 +64,45 @@ function winBtn()
 {
     stopWheelsWithWin(2, 2.0, 4.0);
 }
-
+function selectedWinBtn()
+{
+    var e = document.getElementById("win-select");
+    var p = e.selectedIndex;
+    // var value = e.options[e.selectedIndex].value;
+    // let x = $("#select :selected").text()
+    // let y = $("#selected").val()
+    startSpinning(12, 10, 14)
+    setTimeout(()=>{
+        stopWheelsWithWin(p, 2.0, 4.0)
+    }, 4000)
+}
+function selectedNearWinBtn()
+{
+    var e1 = document.getElementById("near-win-select-1");
+    var p1 = e1.selectedIndex;
+    var e2 = document.getElementById("near-win-select-2");
+    var p2 = e2.selectedIndex;
+    // var value = e.options[e.selectedIndex].value;
+    // let x = $("#select :selected").text()
+    // let y = $("#selected").val()
+    startSpinning(12, 10, 14)
+    setTimeout(()=>{
+        stopWheelsWithNearWin(p1, p2, 2.0, 4.0)
+    }, 4000)
+}
+function selectedLossBtn()
+{
+    var e1 = document.getElementById("loss-select-1");
+    var p1 = e1.selectedIndex;
+    var e2 = document.getElementById("loss-select-2");
+    var p2 = e2.selectedIndex;
+    var e3 = document.getElementById("loss-select-3");
+    var p3 = e3.selectedIndex;
+    // var value = e.options[e.selectedIndex].value;
+    // let x = $("#select :selected").text()
+    // let y = $("#selected").val()
+    startSpinning(12, 10, 14)
+    setTimeout(()=>{
+        stopWheelsWithLoss(p1, p2, p3, 2.0, 4.0)
+    }, 4000)
+}

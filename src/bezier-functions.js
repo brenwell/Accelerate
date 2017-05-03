@@ -1,5 +1,5 @@
-import { BezierCubicClass } from './bezier_cubic';
-import { BezierQuadraticClass } from './bezier_quadratic';
+import { BezierCubic } from './bezier-cubic';
+import { BezierQuadratic } from './bezier-quadratic';
 import newtonRaphson from 'newton-raphson';
 
 /*
@@ -19,7 +19,7 @@ import newtonRaphson from 'newton-raphson';
 */
 export const CubicBezier = function CubicBezier(P0, P1, P2, P3)
 {
-    const bezObj = new BezierCubicClass(P0, P1, P2, P3);
+    const bezObj = new BezierCubic(P0, P1, P2, P3);
 
     const parametricFunc = function (t)
     {
@@ -43,7 +43,7 @@ export const CubicBezier = function CubicBezier(P0, P1, P2, P3)
         const t_value = newtonRaphson(f, fPrime, 0.5, null);
 
         if (t_value === false)
-{
+        {
             throw new Error('cannot find t for x in CubicBezier');
         }
         const check_x_value = bezObj.x_From_t(t_value);
@@ -53,7 +53,7 @@ export const CubicBezier = function CubicBezier(P0, P1, P2, P3)
         const y_value = bezObj.y_From_t(t_value);
 
         if (y_value == 0)
-{
+        {
             console.log('CubicBezier: y_value is zero');
         }
 
@@ -68,7 +68,7 @@ export const CubicBezier = function CubicBezier(P0, P1, P2, P3)
 */
 export const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
  {
-    const bezObj = new BezierQuadraticClass(P0, P1, P2);
+    const bezObj = new BezierQuadratic(P0, P1, P2);
 
     // find the t value that corresponds to the x value
     // get it by newton raphson
@@ -92,7 +92,7 @@ export const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
         const t_value = newtonRaphson(f, fPrime, 0.5, null);
 
         if (t_value === false)
-{
+        {
             console.log([P0, P1, P2]);
             throw new Error(`cannot find t for x in QuadraticBezier x_value:${x_value}`);
         }
@@ -103,7 +103,7 @@ export const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
         const y_value = bezObj.y_From_t(t_value);
 
         if (y_value == 0)
-{
+        {
             console.log('CubicBezier: y_value is zero');
         }
 

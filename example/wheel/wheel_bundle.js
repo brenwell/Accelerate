@@ -70,6 +70,7 @@
 /* 0 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+<<<<<<< HEAD
     'use strict';
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__ = __webpack_require__(2);
     /* harmony export (immutable) */ __webpack_exports__['a'] = createThreeWheels;
@@ -79,6 +80,20 @@
     /* harmony export (immutable) */ __webpack_exports__['f'] = stopWheelsWithNearWin;
     /* harmony export (immutable) */ __webpack_exports__['g'] = stopWheelsWithWin;
     /* harmony export (immutable) */ __webpack_exports__['c'] = stopWheel;
+=======
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__single_wheel_view_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rotating_view_controller_js__ = __webpack_require__(3);
+/* harmony export (immutable) */ __webpack_exports__["a"] = createThreeWheels;
+/* harmony export (immutable) */ __webpack_exports__["b"] = setPosition;
+/* harmony export (immutable) */ __webpack_exports__["d"] = startSpinning;
+/* harmony export (immutable) */ __webpack_exports__["e"] = stopWheelsWithLoss;
+/* harmony export (immutable) */ __webpack_exports__["f"] = stopWheelsWithNearWin;
+/* harmony export (immutable) */ __webpack_exports__["g"] = stopWheelsWithWin;
+/* harmony export (immutable) */ __webpack_exports__["c"] = stopWheel;
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
+
+
 
 
 /*
@@ -123,9 +138,15 @@
     let containerMiddle;
     let containerInner;
 
+<<<<<<< HEAD
     let outerWheel;
     let middleWheel;
     let innerWheel;
+=======
+let outerWheelController;
+let middleWheelController;
+let innerWheelController;
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
     let button;
     let tweenOuter;
@@ -142,6 +163,7 @@
     // document.body.appendChild(app.view);
         el.appendChild(app.view);
 
+<<<<<<< HEAD
         outerWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__['a' /* SingleWheel */](app, 300, 0xFFFFFF, colors, -PIE_MIDDLE);
         middleWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__['a' /* SingleWheel */](app, 210, 0xFFFFFF, colors, -PIE_MIDDLE);
         innerWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__['a' /* SingleWheel */](app, 120, 0xFFFFFF, colors, -PIE_MIDDLE);
@@ -149,6 +171,19 @@
         containerOuter = outerWheel.container;
         containerMiddle = middleWheel.container;
         containerInner = innerWheel.container;
+=======
+    let outerWheelView = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_view_js__["a" /* SingleWheelView */](app, 300, 0xFFFFFF, colors, -PIE_MIDDLE)
+    let middleWheelView = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_view_js__["a" /* SingleWheelView */](app, 210, 0xFFFFFF, colors, -PIE_MIDDLE)
+    let innerWheelView = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_view_js__["a" /* SingleWheelView */](app, 120, 0xFFFFFF, colors, -PIE_MIDDLE)
+
+    outerWheelController = new __WEBPACK_IMPORTED_MODULE_1__rotating_view_controller_js__["a" /* SingleWheelController */](outerWheelView)
+    middleWheelController = new __WEBPACK_IMPORTED_MODULE_1__rotating_view_controller_js__["a" /* SingleWheelController */](middleWheelView)
+    innerWheelController = new __WEBPACK_IMPORTED_MODULE_1__rotating_view_controller_js__["a" /* SingleWheelController */](innerWheelView)
+
+    containerOuter = outerWheelView.container
+    containerMiddle = middleWheelView.container
+    containerInner = innerWheelView.container
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
         app.stage.addChild(containerOuter);
         app.stage.addChild(containerMiddle);
@@ -169,10 +204,17 @@
 */
     function setPosition(outterPosition, middlePosition, innerPosition)
 {
+<<<<<<< HEAD
         outerWheel.setPosition(outterPosition);
         middleWheel.setPosition(middlePosition);
         innerWheel.setPosition(innerPosition);
     }
+=======
+    outerWheelController.setPosition(outterPosition)
+    middleWheelController.setPosition(middlePosition)
+    innerWheelController.setPosition(innerPosition)
+}
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 /*
 * Starts all wheels spinning with velocity for each wheel given by the object
 * Speed units are in radians/sec
@@ -181,9 +223,15 @@
 {
         let frameInterval = Math.round(1000*(1.0/60.0));
 
+<<<<<<< HEAD
         outerWheel.setVelocity(outterVelocity);
         middleWheel.setVelocity(middleVelocity);
         innerWheel.setVelocity(innerVelocity);
+=======
+    outerWheelController.setVelocity(outterVelocity)
+    middleWheelController.setVelocity(middleVelocity)
+    innerWheelController.setVelocity(innerVelocity)
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     // add ticker function so that time is advanced for each wheel
         app.ticker.add(tickerFunc);
     }
@@ -195,6 +243,7 @@
                     decelerateTimeInterval
 )
 {
+<<<<<<< HEAD
         let allPs = [];
         allPs.push(outerWheel.accelerateToZero(positionOuter, decelerateTimeInterval));
         allPs.push(middleWheel.accelerateToZero(positionMiddle, decelerateTimeInterval));
@@ -205,12 +254,25 @@
         });
     }
     function stopWheelsWithNearWin(
+=======
+    let allPs = []
+    allPs.push(outerWheelController.accelerateToZero(positionOuter, decelerateTimeInterval))
+    allPs.push(middleWheelController.accelerateToZero(positionMiddle, decelerateTimeInterval))
+    allPs.push(innerWheelController.accelerateToZero(positionInner, decelerateTimeInterval))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })
+}
+function stopWheelsWithNearWin(
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
                     positionTwice, 
                     positionOnce, 
                     decelerateTimeIntervalFirstTwoWheels,
                     decelerateTimeIntervalLastWheel
 )
 {
+<<<<<<< HEAD
         let allPs = [];
         allPs.push(outerWheel.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel));
         allPs.push(middleWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels));
@@ -221,11 +283,24 @@
         });   
     }
     function stopWheelsWithWin(
+=======
+    let allPs = []
+    allPs.push(outerWheelController.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel))
+    allPs.push(middleWheelController.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheelController.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })   
+}
+function stopWheelsWithWin(
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
                     positionWinner, 
                     decelerateTimeIntervalFirstTwoWheels,
                     decelerateTimeIntervalLastWheel
 )
 {
+<<<<<<< HEAD
         let allPs = [];
         allPs.push(outerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels));
         allPs.push(middleWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels));
@@ -235,6 +310,17 @@
             removeTickerFunc();
         });       
     }
+=======
+    let allPs = []
+    allPs.push(outerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
+    allPs.push(middleWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    Promise.all(allPs).then(function(){
+        console.log("all wheels have stopped");
+        removeTickerFunc()
+    })       
+}
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 /*
 * called after result known so that tickerFunc is not called
@@ -251,12 +337,21 @@
 
     function tickerFunc(delta)     // currently ignores the delta value
 {
+<<<<<<< HEAD
         let timeInterval = delta * (1.0/60.0);
         outerWheel.advanceTimeBy(timeInterval);
         middleWheel.advanceTimeBy(timeInterval);
         innerWheel.advanceTimeBy(timeInterval);
         return;    
     }
+=======
+    let timeInterval = delta * (1.0/60.0)
+    outerWheelController.advanceTimeBy(timeInterval)
+    middleWheelController.advanceTimeBy(timeInterval)
+    innerWheelController.advanceTimeBy(timeInterval)
+    return    
+}
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
     function radiansPerSecToPerTick(radsSec)
@@ -310,11 +405,24 @@
         cirContainer.interactive = true;
         cirContainer.pointerup = function()
     {
+<<<<<<< HEAD
             startSpinning({outter: 30, middle:20, inner:10});
         };
         button = text;  
+=======
+        let fn = 'three_wheels.js'
+        // alert(`Not implemented yet\nsee addCenterButton in ${fn}`)
+        // need to invoke the core game processing
+        // does not seem worth in this demo generating random outcomes
+        // but this is a good simulation. Always produces the same near win
+        startSpinning(12, 10, 14)
+        setTimeout(()=>{
+            stopWheelsWithNearWin(2, 3, 2.0, 4.0)
+        }, 4000)
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     }
 
+<<<<<<< HEAD
     function convertPositionToRadians(positionIndex)
 {
         let t = (2 * Math.PI * positionIndex / NUMBER_OF_SEGMENTS);
@@ -335,6 +443,10 @@
         return degrees * Math.PI / 180;
     }
 
+=======
+
+
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 /***/ }),
 /* 1 */
@@ -353,10 +465,21 @@
         $('#btn-nearwin').click(nearwinBtn);
         $('#btn-win').click(winBtn);
 
+<<<<<<< HEAD
         $('#wheels').css('background-color', 'yellow');
         $('#wheels').css('width', 600);
         $('#wheels').css('height', 600);
         $('#wheels').css('float', 'left');
+=======
+    $("#btn-selected-win").click(selectedWinBtn)
+    $("#btn-selected-nearwin").click(selectedNearWinBtn)
+    $("#btn-selected-loss").click(selectedLossBtn)
+
+    $("#wheels").css("background-color", "yellow")
+    $("#wheels").css("width", 600)
+    $("#wheels").css("height", 600)
+    $("#wheels").css("float", "left")
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['a' /* createThreeWheels */])($('#wheels')[0], 600, 600);
     });
@@ -373,9 +496,15 @@
     }
     function startSpinningBtn()
 {
+<<<<<<< HEAD
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['d' /* startSpinning */])(8, 12, 16);
     }
     function lossBtn()
+=======
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(12, 10, 14)
+}
+function lossBtn()
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 {
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['e' /* stopWheelsWithLoss */])(1, 2, 3, 2.0);
     }
@@ -385,36 +514,142 @@
     }
     function winBtn()
 {
+<<<<<<< HEAD
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['g' /* stopWheelsWithWin */])(2, 2.0, 4.0);
     }
 
+=======
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["g" /* stopWheelsWithWin */])(2, 2.0, 4.0)
+}
+function selectedWinBtn()
+{
+    var e = document.getElementById("win-select");
+    var p = e.selectedIndex;
+    // var value = e.options[e.selectedIndex].value;
+    // let x = $("#select :selected").text()
+    // let y = $("#selected").val()
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(12, 10, 14)
+    setTimeout(()=>{
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["g" /* stopWheelsWithWin */])(p, 2.0, 4.0)
+    }, 4000)
+}
+function selectedNearWinBtn()
+{
+    var e1 = document.getElementById("near-win-select-1");
+    var p1 = e1.selectedIndex;
+    var e2 = document.getElementById("near-win-select-2");
+    var p2 = e2.selectedIndex;
+    // var value = e.options[e.selectedIndex].value;
+    // let x = $("#select :selected").text()
+    // let y = $("#selected").val()
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(12, 10, 14)
+    setTimeout(()=>{
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["f" /* stopWheelsWithNearWin */])(p1, p2, 2.0, 4.0)
+    }, 4000)
+}
+function selectedLossBtn()
+{
+    var e1 = document.getElementById("loss-select-1");
+    var p1 = e1.selectedIndex;
+    var e2 = document.getElementById("loss-select-2");
+    var p2 = e2.selectedIndex;
+    var e3 = document.getElementById("loss-select-3");
+    var p3 = e3.selectedIndex;
+    // var value = e.options[e.selectedIndex].value;
+    // let x = $("#select :selected").text()
+    // let y = $("#selected").val()
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(12, 10, 14)
+    setTimeout(()=>{
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["e" /* stopWheelsWithLoss */])(p1, p2, p3, 2.0, 4.0)
+    }, 4000)
+}
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
 /***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+<<<<<<< HEAD
     'use strict';
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(8);
+=======
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["c"] = degToRad;
+/* harmony export (immutable) */ __webpack_exports__["b"] = modulo2PI;
+/* harmony export (immutable) */ __webpack_exports__["d"] = add;
+/* harmony export (immutable) */ __webpack_exports__["a"] = subtract;
+/*
+* Converts degrees to radians
+*/
+function degToRad(degrees)
+{
+    return degrees * Math.PI / 180;
+}
+function modulo2PI(rads)
+{
+	if( (rads >= 0) && (rads < 2 * Math.PI) )
+		return rads
+	if( rads < 0 )
+		rads = rads + 2*Math.PI
+
+	let tmp = Math.round(rads/(2*Math.PI)) 
+	let tmp2 = rads - 2*Math.PI*tmp
+	return tmp2
+}
+function add(a, b)
+{
+	let tmp = modulo2PI( a + b )
+	return tmp
+}
+function subtract(a, b)
+{
+	let tmp = modulo2PI( a - b )
+	return tmp
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__ = __webpack_require__(2);
+
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 /*
-* This class represents one wheel in a multi wheel game. 
-* It both draws the wheel it is responsible for and adapts 
-* a private instance of the Accelerator class to a world where distance is
-* in radians and hence d and d+2*PI are effectively the same distance
+* This class is a controller for a rotating view.
 *
-* This probably means I need a specialized verions of the Accelerator
-* rather than combining drawing an accelerator functions into a single class
+* If js had the concept of an interface I could define a rotating view,
+* but surfice it to say it is a class with the following methods:
+*
+*   -   getCurrentRotation()                    - returns an angle in radians
+*   -   rotateByRadians(rads)                   - adds rads to the currentRotation given by rads
+*   -   setRotationToRadians(radians)           - sets currentRotation to radians
+*   -   convertPositionToRadians(positionIndex) - converts a positionIndex {int} to radians
+*   -   setPositionTo(positonIndex)
+*   -   getMaxPositionIndex()                   -  returns the lasrgest legal value of a position index
+*
+* Such a class attempts to generalize an object that has a number of positions
+*   -   that can be indexed by integers (like a square or circle with segments),
+*   -   can be rotated to one of those positions
+*   -   can be rotated by an arbitary angle (in radians)
+*
+* This controller manages the starting, speed and deceleration to a specified stopping
+* position index of such a rotating view
 */
+<<<<<<< HEAD
     class SingleWheel {
+=======
+class SingleWheelController {
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     /*
-    * app       {PIXI.application}      - the pixie app for the wheel
-    * radius    {float}                 - radius of the circle
-    * bg        {hex color code}        - the background color behind the wheel
-    * colors    {array of color codes}  - specifies both the number and color of the segments
-    * startDeg  {float}                 - an initial rotation to get the starting image correct. With the
-    *                                       first segment positioned at the pointer
+    * Constructor
+    * param view - rotating view
     */
+<<<<<<< HEAD
         constructor(app, radius, bg, colors, startDeg)
     {
             this.velocity = 0.0;
@@ -468,6 +703,20 @@
             container.rotation = degToRad(startDeg);
             this.container = container;
         }
+=======
+    constructor(view)
+    {
+        this.velocity = 0.0
+        this.view = view
+        // this.app = app
+        // this.colors = colors
+        // this.numberOfSegments = colors.length
+        // this.startDegrees = startDeg
+        this.lastRadians = 0
+        this.accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](0)
+
+    }
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
     /*
     * accelerate to zero
@@ -477,15 +726,22 @@
     */
         accelerateToZero(position, timeInterval)
     {
+<<<<<<< HEAD
             let dF = this.calculateStoppingDistance(position, timeInterval);
             return this.accelerator.accelerate(0.0, timeInterval, dF);
         }
+=======
+        this.validatePosition(position)
+        let dF = this.calculateStoppingDistance(position, timeInterval)
+        return this.accelerator.accelerate(0.0, timeInterval, dF)
+    }
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
     /*
     * Advances the wheel's time by a timeInterval and redraws the wheel in the new position.
     * Takes account of the circular nature of the wheel and keeps the new rotation value to less than 2*PI.
     * does this by remembering the last radian value and ASSUMES the shift in
-    * radians over the timeINterval is less than 2*PI
+    * radians over the timeInterval is less than 2*PI
     *
     * timeInterval {float}
     *
@@ -493,6 +749,7 @@
     */
         advanceTimeBy(timeInterval)
     {
+<<<<<<< HEAD
             let d = this.accelerator.advanceTimeBy(timeInterval); 
         // d - this can be a large number is not restricted to
         // range -2PI .. 2PI
@@ -500,6 +757,27 @@
             this.lastRadians = d;
             this.rotateByRadians(deltaRads);
         }
+=======
+        //d and lastRadians are not modulo2PI
+        let d = this.accelerator.advanceTimeBy(timeInterval)
+        let last_prev = this.lastRadians
+
+        if( d < this.lastRadians){
+            console.log("something is wrong")
+        }
+        let deltaRads = __WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__["a" /* subtract */](__WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__["b" /* modulo2PI */](d), this.lastRadians)
+        this.lastRadians = d
+
+        // console.log(`advanceTimeBy: `
+        //     +` \t\ntimeInterval: ${timeInterval}`
+        //     +` \t\nd:${d} `
+        //     +` \t\nprev_last:${last_prev}`
+        //     +` \t\ndeltaRads:${deltaRads}`
+        //     +` \t\nnew last: ${this.lastRadians}`)
+
+        this.view.rotateByRadians(deltaRads)
+    }
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
     /*
@@ -509,9 +787,15 @@
     *
     * Because of the circular nature of the wheel and that rotations are equivalent modulo 2*PI
     * there are multiple dF values that will give the same rotation result.
+    *
     * The goal of this method is to pick a dF that gives good visual result.
     *
-    * CURRENT ONLY USES A SIMPLE ALGORITHM 
+    * VERS 1 CURRENT ONLY USES A SIMPLE ALGORITHM  - it picks the most obvious. 
+    *
+    * VERS 2 But I think we will get a better visual result if we try to make 
+    * dF as long/big as possible with out breaking the restriction that
+    *   -   currentVelocity * timeInterval > dF
+    * that is what VERS == 2 does
     *
     * Find the dF value so that
     *   -   currentVelocity * timeInterval > dF
@@ -525,6 +809,7 @@
     */
         calculateStoppingDistance(position, timeInterval)
     {
+<<<<<<< HEAD
             console.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
             let positionInRadians = this.convertPositionToRadians(position);
             let v0 = this.velocity;
@@ -532,14 +817,43 @@
                 alert('velocity maybe too low');
             }
             let currentRadians = this.container.rotation;
+=======
+        this.validatePosition(position)
+        console.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`)
+        let positionInRadians = this.view.convertPositionToRadians(position)
+        let v0 = this.velocity
+        if( v0 < (2*Math.PI/timeInterval)){
+            alert("velocity maybe too low")
+        }
+        let currentRadians = this.view.getCurrentRotation()
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
             let deltaRadians = (positionInRadians >= currentRadians) ? 
                                 (positionInRadians - currentRadians) :
+<<<<<<< HEAD
                                 (2*Math.PI + positionInRadians - currentRadians);
 
             let dRequired = deltaRadians;
 
             let dMax = v0 * timeInterval;
+=======
+                                (2*Math.PI + positionInRadians - currentRadians)
+        
+        let dMax = v0 * timeInterval
+        let i_deltaR = deltaRadians
+        let vers = 2
+
+        if(vers == 2){
+            // enhanced algorithm
+            let tmp  = deltaRadians
+            while( tmp < (dMax - 2*Math.PI) ){
+                deltaRadians = tmp
+                tmp += 2*Math.PI
+            }
+        }
+        let dRequired = deltaRadians
+
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
             if( dMax <= dRequired){
                 alert(
@@ -556,12 +870,23 @@
         // if( (cycles * 2 * Math.PI + deltaRadians) > dMax ){
         //     throw new Error(`calculateStoppingDistance dRequired:${dRequired} too big`)
         // }
+<<<<<<< HEAD
             console.log(`calculateStoppingDistance v0 : ${v0} timeInterval: ${timeInterval} dRequired: ${dRequired}`);
             return dRequired;
         }
+=======
+        console.log(`calculateStoppingDistance `
+        +` v0 : ${v0} `
+        +` dMax:${dMax}`
+        +` timeInterval: ${timeInterval} `
+        +` initial dReq : ${i_deltaR}`
+        +` dRequired: ${dRequired}`)
+        return dRequired
+    }
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
     /*
-    * Sets the wheels velocity in radians per second
+    * Sets the views rotational velocity in radians per second
     * @NOTE - we have duplicate data here BEWARE
     * velocity {float} - radians per sec
     */
@@ -572,20 +897,120 @@
         }
 
     /*
-    * Moves the wheels to positions. The positions are indexes
-    * in the range 0 .. NUMBER_OF_SEGMENTS - 1
-    * Positions the circle so that the specified segment is at the 
-    * pointer mark - the mark is in the middle of the segment.
+    * Moves the view to a position index
     *
-    * Segments are numbered clockwise same as the colors
-    * position {int}
-    * @returns nothing
+    * Position index values have meaning only for the view. To this controller
+    * they are just non negative integers
+    *
+    * @param    position {int}
+    * @returns  nothing
     */
         setPosition(position)
     {
+<<<<<<< HEAD
             let rads = this.convertPositionToRadians(position);
             this.positionToRadians(rads);
         }
+=======
+        let rads = this.convertPositionToRadians(position)
+        this.view.positionToRadians(rads)
+    }
+
+    validatePosition(position)
+    {
+        if( (position < 0) || (position > this.view.getMaxPositionIndex()) )
+            throw new Error(`position value ${position} is outside range [0..${this.view.getMaxPositionIndex()}`)
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = SingleWheelController;
+
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__ = __webpack_require__(2);
+
+ 
+/*
+* This class represents visualization of one wheel in a multi wheel game. 
+* It should conform to the interface for a rotating_view as defined
+* in the source for rotating_view_controller
+*
+*/
+class SingleWheelView {
+    /*
+    * app       {PIXI.application}      - the pixie app for the wheel
+    * radius    {float}                 - radius of the circle
+    * bg        {hex color code}        - the background color behind the wheel
+    * colors    {array of color codes}  - specifies both the number and color of the segments
+    * startDeg  {float}                 - an initial rotation to get the starting image correct. With the
+    *                                       first segment positioned at the pointer
+    */
+    constructor(app, radius, bg, colors, startDeg)
+    {
+        this.velocity = 0.0
+        this.app = app
+        this.colors = colors
+        this.numberOfSegments = colors.length
+        this.startDegrees = startDeg
+        this.lastRadians = 0
+
+        const container = new PIXI.Container()
+        container.pivot.x = 0
+        container.pivot.y = 0
+        container.x = 300
+        container.y = 300
+        
+        // draw outter background circle with given background
+        const circle = new PIXI.Graphics()
+        circle.beginFill(bg)
+        circle.lineStyle(10, bg);
+        circle.drawCircle(0,0,radius)
+        circle.endFill()
+        container.addChild(circle)
+
+        // draw inner background circle with white background
+        const mask = new PIXI.Graphics()
+        mask.beginFill(0xFFFFFF)
+        mask.drawCircle(0,0,radius)
+        mask.endFill()
+        container.addChild(mask)
+
+        // get the (x,y) coordinates of the point that bound the sectors
+        const coords = plotCirclePoints(colors.length, radius+50, -90)
+        const size = radius 
+
+        coords.forEach(function(coord, i){   
+            const index = (i == coords.length-1) ? 0 : i+1
+            const nextCoord = coords[index]
+
+            // draw the triangular sector of the correct color - note we are working within container
+            const tri = new PIXI.Graphics()
+            tri.beginFill( colors[i], 0.8);
+            tri.moveTo(0, 0);
+            tri.lineTo(coord.x, coord.y);
+            tri.lineTo(nextCoord.x, nextCoord.y);
+            tri.lineTo(0, 0);
+            tri.endFill();
+            tri.mask = mask
+            container.addChild(tri);
+        })
+        container.rotation = __WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__["c" /* degToRad */](startDeg)
+        this.container = container
+    }
+    getCurrentRotation()
+    {
+        return this.container.rotation
+    }
+    getMaxPositionIndex()
+    {
+        return this.colors.length - 1
+    }
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     /*
     * Increase the rotation of the wheel by rads. Ensures that
     * the containers position value is always in the range -2*PI .. 2*PI
@@ -594,6 +1019,7 @@
     */
         rotateByRadians(rads)
     {
+<<<<<<< HEAD
             if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
                 throw new Error('rotateByRadians - rads should not be greater than 2*PI or less than -2*PI');
             }
@@ -609,11 +1035,25 @@
             }
             this.container.rotation = newr;
         }
+=======
+        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
+            // throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
+            console.log("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
+        }
+        let rot = this.container.rotation 
+        let newr = __WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__["d" /* add */](rot, rads)
+        this.container.rotation = newr
+    }
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     /*
     * Position the wheel so that its rotation is a given value of radians
     * radians {float} - in range -2*PI .. 2*PI
     */
+<<<<<<< HEAD
         positionToRadians(radians)
+=======
+    setRotationToRadians(radians)
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     {
             if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
                 throw new Error('positionToRadians - radians should not be greater than 2*PI or less than -2*PI');
@@ -638,8 +1078,16 @@
             let res = t + degToRad(this.startDegrees);
             return res;
         }
+<<<<<<< HEAD
 }
     /* harmony export (immutable) */ __webpack_exports__['a'] = SingleWheel;
+=======
+        let res = t + __WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__["c" /* degToRad */](this.startDegrees)
+        return res
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = SingleWheelView;
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
 
@@ -663,8 +1111,13 @@
 
         for (let i = 0; i < items; i++)
     {
+<<<<<<< HEAD
             const r = radius;
             const rot = degToRad(rotation);
+=======
+        const r = radius;
+        const rot = __WEBPACK_IMPORTED_MODULE_1__radian_helpers_js__["c" /* degToRad */](rotation);
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
             const x = r * Math.cos((2 * Math.PI * i / items) + rot);
             const y = r * Math.sin((2 * Math.PI * i / items) + rot);
@@ -682,6 +1135,7 @@
             tmp.push(style);
         }
 
+<<<<<<< HEAD
         return tmp;
     }
 /*
@@ -691,10 +1145,14 @@
 {
         return degrees * Math.PI / 180;
     }
+=======
+    return tmp;
+}
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
     var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -738,11 +1196,16 @@
     }));
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+<<<<<<< HEAD
     'use strict';
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bez_functions__ = __webpack_require__(5);
+=======
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bez_functions__ = __webpack_require__(7);
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
 
@@ -856,14 +1319,22 @@
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+<<<<<<< HEAD
     'use strict';
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bezier_cubic__ = __webpack_require__(6);
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bezier_quadratic__ = __webpack_require__(7);
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson__ = __webpack_require__(3);
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_newton_raphson__);
+=======
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bezier_cubic__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bezier_quadratic__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_newton_raphson__);
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
 
@@ -976,7 +1447,7 @@
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
     'use strict';
@@ -1046,7 +1517,7 @@
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
     'use strict';
@@ -1107,11 +1578,16 @@
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+<<<<<<< HEAD
     'use strict';
     /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__accelerator_js__ = __webpack_require__(4);
+=======
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__accelerator_js__ = __webpack_require__(6);
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 
     function logger(s)
@@ -1270,11 +1746,22 @@
     */
         advanceTimeBy_VelocityNotChanging(deltaTime)
     {
+<<<<<<< HEAD
             this.time += deltaTime;
             this.totalDistance += this.currentVelocity * deltaTime;
             logger('Mover::advanceTimeBy_VelocityNotChanging velocity:'
             +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`);
         }
+=======
+        this.time += deltaTime
+        this.totalDistance += this.currentVelocity * deltaTime
+        logger(`\nMover::advanceTimeBy_VelocityNotChanging `
+            +` velocity:${this.currentVelocity}`
+            +` distance:${this.totalDistance}`
+            +` time: ${this.time}`
+            + `deltaTime:${deltaTime}`)
+    }
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
         setVelocity(v)
     {

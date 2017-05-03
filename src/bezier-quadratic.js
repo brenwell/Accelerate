@@ -1,22 +1,31 @@
-// this function is the first derivative of the quadratic bezier. Needed for x_From_t_derivative
-function L(p0, p1, t)
+/**
+ * Class for bezier quadratic class.
+ */
+export class BezierQuadratic
 {
-    const res = p0 * (1.0 - t) + p1 * t;
-
-    return res;
-}
-
-export class BezierQuadraticClass
-{
+    /**
+     * Constructs the object.
+     *
+     * @param  {Float}  P0  Initial point
+     * @param  {Float}  P1  Attraction point
+     * @param  {Float}  P2  End point
+     */
     constructor(P0, P1, P2)
-{
+    {
         this.P0 = P0;
         this.P1 = P1;
         this.P2 = P2;
     }
     derivative(t, p0, p1, p2)
     {
-        const res = 2.0 * (L(p1, p2, t) - L(p0, p1, t));
+        function linear(p0, p1, t)
+        {
+            const res = p0 * (1.0 - t) + p1 * t;
+
+            return res;
+        }
+
+        const res = 2.0 * (linear(p1, p2, t) - linear(p0, p1, t));
 
         return res;
     }
@@ -45,13 +54,6 @@ export class BezierQuadraticClass
     y_From_t(t)
     {
         const res = this.bez_func(t, this.P0[1], this.P1[1], this.P2[1]);
-
-        return res;
-    }
-
-    point_From_t()
-    {
-        const res = [this.x_From_t(t), this.y_From_t(t)];
 
         return res;
     }

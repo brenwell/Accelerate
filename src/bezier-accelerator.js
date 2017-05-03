@@ -1,32 +1,34 @@
-import { QuadraticBezier, CubicBezier } from './bez_functions';
+import { QuadraticBezier, CubicBezier } from './bezier-functions';
 
 /*
 *   @TODO
 *   -   there is a lot of duplicate code in here in the handling of the different cases.
 *       can wind a lot of it into one piece
 *   -   need a general tidyup of names and code nolonger used
+*   - this needs a good tidy-up and reworking into ES6 style - but thats for later
 */
 
 /**
-* This class performs velocity changes on objects in 1-dimensional motion
-*
-* v0 {float} - initial velocity units/time
-* vF {float} - final velocity
-* tF {float} - time interval over which velocity is to change, units are seconds
-* dF {float} - the distance over which the velocity change is to take place
-*
-* provides a single method getDistance(t) - will change name to positionAfter(t) at some point
-* that returns the total distance traveled since after t seconds of the velocity change
-*
-* It does NOT keep track of the moving object outside of the velocity change window
-*
-* Elapsed time is measured from the start of the velocity change
-*
-* You can only use one of these objects once. Once the velocity change is complete
-* any call to getPositionAfter will result in an error
-*
-* @TODO - this needs a good tidy-up and reworking into ES6 style - but thats for later
-*/
+ * This class performs velocity changes on objects in 1-dimensional motion
+ *
+ * provides a single method getDistance(t) - will change name to positionAfter(t) at some point
+ * that returns the total distance traveled since after t seconds of the velocity change
+ *
+ * It does NOT keep track of the moving object outside of the velocity change window
+ *
+ * Elapsed time is measured from the start of the velocity change
+ *
+ * You can only use one of these objects once. Once the velocity change is complete
+ * any call to getPositionAfter will result in an error
+
+ * @class  BezDecelerator (name)
+ * @param  {number}                   v0  Initial velocity
+ * @param  {number}                   vF  Final velocity
+ * @param  {number}                   tF  Final time
+ * @param  {number}                   dF  Final distance
+ * @param  {Function}                 cb  Completion handler
+ * @return {(Array|Function|number)}  { description_of_the_return_value }
+ */
 export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 {
 	// just changing the notation to what I am using
@@ -92,14 +94,14 @@ export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
     *
     * Returns {float} - the distance traveled since the start of the velocity change
     */
-    this.getDistance = function (x_value)
+    this.getDistance = (x_value) =>
     {
         if (this.complete)
-{
+        {
             throw new Error('Accelerator: velocity change is complete. Cannot call this function');
         }
         if ((x_value >= T) && (!complete))
-{
+        {
             complete = true;
             if ((typeof callBack === 'function') && (callBack != null))
                 { callBack(); }
@@ -107,6 +109,6 @@ export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
         const y_value = func(x_value);
 
         return y_value;
-    }.bind(this);
+    };
 };
 // module.exports = BezDecelerator;

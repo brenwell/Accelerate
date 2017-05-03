@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 import {SingleWheel} from './single_wheel.js';
+=======
+import {SingleWheelView} from "./single_wheel_view.js"
+import {SingleWheelController} from "./rotating_view_controller.js"
+
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
 /*
 * This is the master module (not a class) that sets up the three spinning wheels and provides
@@ -42,9 +48,9 @@ let containerOuter;
 let containerMiddle;
 let containerInner;
 
-let outerWheel;
-let middleWheel;
-let innerWheel;
+let outerWheelController;
+let middleWheelController;
+let innerWheelController;
 
 let button;
 let tweenOuter;
@@ -61,6 +67,7 @@ export function createThreeWheels(el, width, height)
     // document.body.appendChild(app.view);
     el.appendChild(app.view);
 
+<<<<<<< HEAD
     outerWheel = new SingleWheel(app, 300, 0xFFFFFF, colors, -PIE_MIDDLE);
     middleWheel = new SingleWheel(app, 210, 0xFFFFFF, colors, -PIE_MIDDLE);
     innerWheel = new SingleWheel(app, 120, 0xFFFFFF, colors, -PIE_MIDDLE);
@@ -68,6 +75,19 @@ export function createThreeWheels(el, width, height)
     containerOuter = outerWheel.container;
     containerMiddle = middleWheel.container;
     containerInner = innerWheel.container;
+=======
+    let outerWheelView = new SingleWheelView(app, 300, 0xFFFFFF, colors, -PIE_MIDDLE)
+    let middleWheelView = new SingleWheelView(app, 210, 0xFFFFFF, colors, -PIE_MIDDLE)
+    let innerWheelView = new SingleWheelView(app, 120, 0xFFFFFF, colors, -PIE_MIDDLE)
+
+    outerWheelController = new SingleWheelController(outerWheelView)
+    middleWheelController = new SingleWheelController(middleWheelView)
+    innerWheelController = new SingleWheelController(innerWheelView)
+
+    containerOuter = outerWheelView.container
+    containerMiddle = middleWheelView.container
+    containerInner = innerWheelView.container
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 
     app.stage.addChild(containerOuter);
     app.stage.addChild(containerMiddle);
@@ -88,9 +108,15 @@ export function createThreeWheels(el, width, height)
 */
 export function setPosition(outerPosition, middlePosition, innerPosition)
 {
+<<<<<<< HEAD
     outerWheel.setPosition(outerPosition);
     middleWheel.setPosition(middlePosition);
     innerWheel.setPosition(innerPosition);
+=======
+    outerWheelController.setPosition(outterPosition)
+    middleWheelController.setPosition(middlePosition)
+    innerWheelController.setPosition(innerPosition)
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 }
 /*
 * Starts all wheels spinning with velocity for each wheel given by the object
@@ -100,9 +126,15 @@ export function startSpinning(outerVelocity, middleVelocity, innerVelocity)
 {
     let frameInterval = Math.round(1000*(1.0/60.0));
 
+<<<<<<< HEAD
     outerWheel.setVelocity(outerVelocity);
     middleWheel.setVelocity(middleVelocity);
     innerWheel.setVelocity(innerVelocity);
+=======
+    outerWheelController.setVelocity(outterVelocity)
+    middleWheelController.setVelocity(middleVelocity)
+    innerWheelController.setVelocity(innerVelocity)
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     // add ticker function so that time is advanced for each wheel
     app.ticker.add(tickerFunc);
 }
@@ -114,10 +146,17 @@ export function stopWheelsWithLoss(
                     decelerateTimeInterval
 )
 {
+<<<<<<< HEAD
     let allPs = [];
     allPs.push(outerWheel.accelerateToZero(positionOuter, decelerateTimeInterval));
     allPs.push(middleWheel.accelerateToZero(positionMiddle, decelerateTimeInterval));
     allPs.push(innerWheel.accelerateToZero(positionInner, decelerateTimeInterval));
+=======
+    let allPs = []
+    allPs.push(outerWheelController.accelerateToZero(positionOuter, decelerateTimeInterval))
+    allPs.push(middleWheelController.accelerateToZero(positionMiddle, decelerateTimeInterval))
+    allPs.push(innerWheelController.accelerateToZero(positionInner, decelerateTimeInterval))
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     Promise.all(allPs).then(function(){
         console.log('all wheels have stopped');
         removeTickerFunc();
@@ -130,10 +169,17 @@ export function stopWheelsWithNearWin(
                     decelerateTimeIntervalLastWheel
 )
 {
+<<<<<<< HEAD
     let allPs = [];
     allPs.push(outerWheel.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel));
     allPs.push(middleWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels));
     allPs.push(innerWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels));
+=======
+    let allPs = []
+    allPs.push(outerWheelController.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel))
+    allPs.push(middleWheelController.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheelController.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     Promise.all(allPs).then(function(){
         console.log('all wheels have stopped');
         removeTickerFunc();
@@ -145,10 +191,17 @@ export function stopWheelsWithWin(
                     decelerateTimeIntervalLastWheel
 )
 {
+<<<<<<< HEAD
     let allPs = [];
     allPs.push(outerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels));
     allPs.push(middleWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels));
     allPs.push(innerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel));
+=======
+    let allPs = []
+    allPs.push(outerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
+    allPs.push(middleWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+    allPs.push(innerWheelController.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
     Promise.all(allPs).then(function(){
         console.log('all wheels have stopped');
         removeTickerFunc();
@@ -170,11 +223,19 @@ export function stopWheel()
 
 function tickerFunc(delta)     // currently ignores the delta value
 {
+<<<<<<< HEAD
     let timeInterval = delta * (1.0/60.0);
     outerWheel.advanceTimeBy(timeInterval);
     middleWheel.advanceTimeBy(timeInterval);
     innerWheel.advanceTimeBy(timeInterval);
     return;
+=======
+    let timeInterval = delta * (1.0/60.0)
+    outerWheelController.advanceTimeBy(timeInterval)
+    middleWheelController.advanceTimeBy(timeInterval)
+    innerWheelController.advanceTimeBy(timeInterval)
+    return    
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
 }
 
 
@@ -229,6 +290,7 @@ function addCenterButton()
     cirContainer.interactive = true;
     cirContainer.pointerup = function()
     {
+<<<<<<< HEAD
         startSpinning(30,30,30);
     };
     button = text;
@@ -244,12 +306,19 @@ function convertPositionToRadians(positionIndex)
     return res;
 }
 
-
-
-/*
-* Converts degrees to radians
-*/
-function degToRad(degrees)
-{
-    return degrees * Math.PI / 180;
+=======
+        let fn = 'three_wheels.js'
+        // alert(`Not implemented yet\nsee addCenterButton in ${fn}`)
+        // need to invoke the core game processing
+        // does not seem worth in this demo generating random outcomes
+        // but this is a good simulation. Always produces the same near win
+        startSpinning(12, 10, 14)
+        setTimeout(()=>{
+            stopWheelsWithNearWin(2, 3, 2.0, 4.0)
+        }, 4000)
+    }
+  button = text  
 }
+
+>>>>>>> f129e6a320c3858df4d0fb04bc031f8097d101e1
+
