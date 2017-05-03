@@ -7,6 +7,23 @@ import {setPosition,
         stopWheelsWithWin
     } from "./three_wheels.js"
 
+let speedOuter
+let speedMiddle
+let speedInner
+let waitTime
+let stopTimeInterval1
+let stopTimeInterval2
+
+function setParameters()
+{
+    speedInner = parseFloat($("#rotation-speed-inner").val())
+    speedMiddle = parseFloat($("#rotation-speed-middle").val())
+    speedOuter = parseFloat($("#rotation-speed-outer").val())
+    waitTime = parseFloat($("#wait-time-interval").val())
+    stopTimeInterval1 = parseFloat($("#stop-time-interval-1").val())
+    stopTimeInterval2 = parseFloat($("#stop-time-interval-2").val())    
+}
+
 $(document).ready(function(){
     $("#btn-position").click(positionBtn)
     $("#btn-stop").click(stopBtn)
@@ -24,6 +41,7 @@ $(document).ready(function(){
     $("#wheels").css("height", 600)
     $("#wheels").css("float", "left")
 
+    setParameters()
     createThreeWheels($("#wheels")[0], 600, 600)
 })
 function positionBtn()
@@ -60,10 +78,11 @@ function selectedWinBtn()
     // var value = e.options[e.selectedIndex].value;
     // let x = $("#select :selected").text()
     // let y = $("#selected").val()
-    startSpinning(12, 10, 14)
+    setParameters()
+    startSpinning(speedOuter, speedMiddle, speedInner)
     setTimeout(()=>{
-        stopWheelsWithWin(p, 2.0, 4.0)
-    }, 4000)
+        stopWheelsWithWin(p, stopTimeInterval1, stopTimeInterval2)
+    }, waitTime)
 }
 function selectedNearWinBtn()
 {
@@ -74,10 +93,11 @@ function selectedNearWinBtn()
     // var value = e.options[e.selectedIndex].value;
     // let x = $("#select :selected").text()
     // let y = $("#selected").val()
-    startSpinning(12, 10, 14)
+    setParameters()
+    startSpinning(speedOuter, speedMiddle, speedInner)
     setTimeout(()=>{
-        stopWheelsWithNearWin(p1, p2, 2.0, 4.0)
-    }, 4000)
+        stopWheelsWithNearWin(p1, p2, stopTimeInterval1, stopTimeInterval2)
+    }, waitTime)
 }
 function selectedLossBtn()
 {
@@ -90,8 +110,9 @@ function selectedLossBtn()
     // var value = e.options[e.selectedIndex].value;
     // let x = $("#select :selected").text()
     // let y = $("#selected").val()
-    startSpinning(12, 10, 14)
+    setParameters()
+    startSpinning(speedOuter, speedMiddle, speedInner)
     setTimeout(()=>{
-        stopWheelsWithLoss(p1, p2, p3, 2.0, 4.0)
-    }, 4000)
+        stopWheelsWithLoss(p1, p2, p3, stopTimeInterval1, stopTimeInterval2)
+    }, waitTime)
 }

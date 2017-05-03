@@ -12,6 +12,16 @@
 <body>
 <div id="wheels" style="background-color:pink"></div>
 <div id="controls">
+	<div id='params-div'>
+		<div><span class='input-label'>Rotating speed inner(rads/sec)</span><input id="rotation-speed-inner" value="12"></div>
+		<div><span class='input-label'>Rotating speed middle(rads/sec)</span><input id="rotation-speed-middle" value="8"></div>
+		<div><span class='input-label'>Rotating speed outer(rads/sec)</span><input id="rotation-speed-outer" value="10"></div>
+
+		<div><span class='input-label'>Time period rotating before deceleration</span><input id="wait-time-interval" value=2></div>
+
+		<div><span class='input-label'>Input time interval to stop first</span><input id="stop-time-interval-1" value='2'></div>
+		<div><span class='input-label'>Input time interval to stop last</span><input id="stop-time-interval-2" value='4'></div>
+	</div>
 	<div  id='play-div' style = "float:left; width:300px;">
 		<div id='win-div'>
 			<h3>Select the winning color</h3>

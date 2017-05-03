@@ -1,6 +1,16 @@
 *{
   font-family: arial;
 }
+#params-div{
+   background-color:#aaaaaa
+}
+
+#params-div span.input-label {
+   display:inline-block;
+   width:300px;
+   background-color:pink
+}
+
 #controls{
    float: right;
    width:700px
