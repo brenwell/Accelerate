@@ -32,7 +32,7 @@ module.exports = function(env)
             {
               loader: 'eslint-loader',
               options:{
-                configFile: '.eslintrc.yml'
+                configFile: '.eslintrc.json'
               }
             }
           ]

@@ -1,6 +1,6 @@
-import {setPosition, 
-        startSpinning, 
-        createThreeWheels, 
+import {setPosition,
+        startSpinning,
+        createThreeWheels,
         stopWheel,
         stopWheelsWithLoss,
         stopWheelsWithNearWin,
@@ -52,8 +52,8 @@ function positionBtn()
 }
 function stopBtn()
 {
-    console.log('stop')  
-    stopWheel()  
+    console.log('stop')
+    stopWheel()
 }
 function startSpinningBtn()
 {

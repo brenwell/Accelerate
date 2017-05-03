@@ -20,7 +20,7 @@ const colors = [
   0x9400D3, //Violet
   0x4B0082, //Indigo
   0x0000FF, //Blue
-  0x00FF00, //Green	
+  0x00FF00, //Green
   0xFFFF00, //Yellow
   0xFF7F00, //Orange
   0xFF0000, //Red
@@ -28,14 +28,14 @@ const colors = [
 const NUMBER_OF_SEGMENTS = colors.length
 const PIE_ANGLE = 360 / colors.length
 const PIE_MIDDLE = PIE_ANGLE / 2
-const SPINS = 4 * 360 
+const SPINS = 4 * 360
 const TIME_LENGTH = 4 //secs
 const SPIN_DELAY = 1 //secs
 const GROWTH = 1.1
 
 
 const options = {
-	backgroundColor : 0xEEEEEE, 
+    backgroundColor : 0xEEEEEE,
     antialias: true
 }
 
@@ -79,7 +79,7 @@ export function createThreeWheels(el, width, height)
     app.stage.addChild(containerMiddle)
     app.stage.addChild(containerInner)
 
-    addIndicator()  
+    addIndicator()
     addCenterButton()
 
 }
@@ -87,7 +87,7 @@ export function createThreeWheels(el, width, height)
 /*
 * Moves the wheels to positions. The positions are indexes
 * in the range 0 .. NUMBER_OF_SEGMENTS - 1
-* Positions each circle so that the specified segment is at the 
+* Positions each circle so that the specified segment is at the
 * pointer mark - the mark is in the middle of the segment.
 *
 * Segments are numbered clockwise same as the colors
@@ -114,9 +114,9 @@ export function startSpinning(outterVelocity, middleVelocity, innerVelocity)
 }
 
 export function stopWheelsWithLoss(
-                    positionOuter, 
-                    positionMiddle, 
-                    positionInner, 
+                    positionOuter,
+                    positionMiddle,
+                    positionInner,
                     decelerateTimeInterval
 )
 {
@@ -130,8 +130,8 @@ export function stopWheelsWithLoss(
     })
 }
 export function stopWheelsWithNearWin(
-                    positionTwice, 
-                    positionOnce, 
+                    positionTwice,
+                    positionOnce,
                     decelerateTimeIntervalFirstTwoWheels,
                     decelerateTimeIntervalLastWheel
 )
@@ -143,10 +143,10 @@ export function stopWheelsWithNearWin(
     Promise.all(allPs).then(function(){
         console.log("all wheels have stopped");
         removeTickerFunc()
-    })   
+    })
 }
 export function stopWheelsWithWin(
-                    positionWinner, 
+                    positionWinner,
                     decelerateTimeIntervalFirstTwoWheels,
                     decelerateTimeIntervalLastWheel
 )
@@ -158,7 +158,7 @@ export function stopWheelsWithWin(
     Promise.all(allPs).then(function(){
         console.log("all wheels have stopped");
         removeTickerFunc()
-    })       
+    })
 }
 
 /*
@@ -166,7 +166,7 @@ export function stopWheelsWithWin(
 */
 function removeTickerFunc()
 {
-    app.ticker.remove(tickerFunc)    
+    app.ticker.remove(tickerFunc)
 }
 
 export function stopWheel()
@@ -180,14 +180,14 @@ function tickerFunc(delta)     // currently ignores the delta value
     outerWheelController.advanceTimeBy(timeInterval)
     middleWheelController.advanceTimeBy(timeInterval)
     innerWheelController.advanceTimeBy(timeInterval)
-    return    
+    return
 }
 
 
 function radiansPerSecToPerTick(radsSec)
 {
     let tmp = radsSec / 60.0
-    return tmp    
+    return tmp
 }
 
 
@@ -245,7 +245,6 @@ function addCenterButton()
             stopWheelsWithNearWin(2, 3, 2.0, 4.0)
         }, 4000)
     }
-  button = text  
+  button = text
 }
-
 
