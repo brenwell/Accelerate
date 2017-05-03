@@ -1,7 +1,5 @@
 import Accelerator from '../../src/index.js';
 
-console.log(Accelerator);
-
 /*
 * This file implements a function that can run a schedule of accelerations
 */

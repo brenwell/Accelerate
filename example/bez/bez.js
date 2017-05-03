@@ -2,7 +2,7 @@
 * main entry for bez.html - draws various forms of bezier functions
 */
 
-import {BezDecelerator} from '../../src/accelerator';
+import BezDecelerator from '../../src/bezier-accelerator';
 import {graphFunction, graphParametricFunction, drawAxes, drawDot} from '../libs/graph.js';
 
 $(document).ready(function(){
@@ -46,10 +46,10 @@ function doVersion1()
 function doVersion2()
 {	
     version = '1';
-    const v0 = 800;  // (10*60) 10px / frame (60/sec)
-    const vF = 0;
-    const dF = 400;
-    const tF = 2;
+    v0 = 800;  // (10*60) 10px / frame (60/sec)
+    vF = 0;
+    dF = 400;
+    tF = 2;
     let dObj = new BezDecelerator(v0, vF, tF, dF); 
     let f = dObj.getDistance;
     main(dObj);
@@ -57,46 +57,46 @@ function doVersion2()
 function doVersion3()
 {
     version = '2';
-    const v0 = 800;  // (10*60) 10px / frame (60/sec)
-    const vF = 180;
-    const dF = 400;
-    const tF = 2;
+    v0 = 800;  // (10*60) 10px / frame (60/sec)
+    vF = 180;
+    dF = 400;
+    tF = 2;
     main(new BezDecelerator(v0, vF, tF, dF));
 }
 function doVersion4()
 {
     version = '3';
-    const v0 = 800;  // (10*60) 10px / frame (60/sec)
-    const vF = 1200;
-    const dF = 400;
-    const tF = 2;
+    v0 = 800;  // (10*60) 10px / frame (60/sec)
+    vF = 1200;
+    dF = 400;
+    tF = 2;
     main(new BezDecelerator(v0, vF, tF, dF));
 }
 function doVersion5()
 {
     version = '4';
-    const v0 = 800;  // (10*60) 10px / frame (60/sec)
-    const vF = 190;
-    const dF = 400;
-    const tF = 2;
+    v0 = 800;  // (10*60) 10px / frame (60/sec)
+    vF = 190;
+    dF = 400;
+    tF = 2;
     main(new BezDecelerator(v0, vF, tF, dF));
 }
 function doVersion6()
 {
     version = '5';
-    const v0 = 800;  // (10*60) 10px / frame (60/sec)
-    const vF = 210;
-    const dF = 400;
-    const tF = 2;
+    v0 = 800;  // (10*60) 10px / frame (60/sec)
+    vF = 210;
+    dF = 400;
+    tF = 2;
     main(new BezDecelerator(v0, vF, tF, dF));
 }
 function doVersion7()
 {
     version = '6';
-    const v0 = 0;  // (10*60) 10px / frame (60/sec)
-    const vF = 0;
-    const dF = 400;
-    const tF = 2;
+    v0 = 0;  // (10*60) 10px / frame (60/sec)
+    vF = 0;
+    dF = 400;
+    tF = 2;
     main(new BezDecelerator(v0, vF, tF, dF));
 }
 function main(bezDecelerationObj) 

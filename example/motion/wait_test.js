@@ -25,16 +25,4 @@ export default function test_wait()
 	})
 	console.log([q1])
 
-
-	// accel.waitFor(1)
-	// .then(function(){
-	// 	console.log('wait for completed')
-	// 	count = 0
-	// 	accel.accelerate(0, 2, 100)
-	// 	.then(function(){
-	// 		console.log('accel complete for completed')
-	// 		clearInterval(t)
-	// 	})
-	// })
-
 }

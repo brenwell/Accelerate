@@ -443,7 +443,7 @@ class Accelerator
         }
         else if(! this.changingVelocity && this.isWaiting )
         {
-            this.time += deltaTime;
+            //this.time += deltaTime; - this will be done in _advanceTimeAndDistance
             this.currentWaitingTime += deltaTime
             if( this.currentWaitingTime >= this.requiredWaitingTime )
             {
@@ -528,6 +528,8 @@ class Accelerator
      * @param  {Float}   vF  is the velocity the object is to change to
      * @param  {Float}   tF  is the time interval over which the change is to take place
      * @param  {Float}   dF  is the distance that the object should move while changing velocity
+     * @param  {Float|false} - a timeInterval to delay the acceleration by or false = no delay. Defaults to false
+     *
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
      */
@@ -538,10 +540,8 @@ class Accelerator
         }else{
             let q = this.waitFor(delayInterval)
                     .then( ()=> {
-                        console.log('accelerate waitFor resolved')
-                        return this._accelerate(vF, tF, dF)
+                        return this._accelerateNoDelay(vF, tF, dF)
                     })
-            console.log([q])
             return q
         }
      }
@@ -572,14 +572,6 @@ class Accelerator
 
         return p;
     }
-    accelerateWithDelay(vF, tF, dF, delayInterval)
-    {
-        this.waitFor(delayInterval)
-        .then( ()=>{
-            this.accelerate(vF, tF, dF)
-        })
-
-    }
     waitFor(timeInterval)
     {
         if (this.changingVelocity)
@@ -607,7 +599,9 @@ class Accelerator
         if( this.changingVelocity ){
             this.changingVelocity = false
             if (typeof this.resolvePromiseFunction === 'function')
-                { this.resolvePromiseFunction(); }
+            {
+                 this.resolvePromiseFunction(); 
+            }
         }else{
             console.log(`WARNING: Accelerator - kill not necessary when no acceleration active`)
         }
@@ -985,10 +979,6 @@ class SingleWheelController {
     {
         this.velocity = 0.0
         this.view = view
-        // this.app = app
-        // this.colors = colors
-        // this.numberOfSegments = colors.length
-        // this.startDegrees = startDeg
         this.lastRadians = 0
         this.accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](0)
 
@@ -1004,7 +994,8 @@ class SingleWheelController {
     {
         this.validatePosition(position)
         let dF = this.calculateStoppingDistance(position, timeInterval)
-        return this.accelerator.accelerate(0.0, timeInterval, dF, 2)
+        return this.accelerator.accelerate(0.0, timeInterval, dF, false) 
+        // important - cannot put a delay here, already calced stopping distance
     }
 
     /*

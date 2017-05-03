@@ -30,10 +30,6 @@ export class SingleWheelController {
     {
         this.velocity = 0.0
         this.view = view
-        // this.app = app
-        // this.colors = colors
-        // this.numberOfSegments = colors.length
-        // this.startDegrees = startDeg
         this.lastRadians = 0
         this.accelerator = new Accelerator(0)
 
@@ -49,7 +45,8 @@ export class SingleWheelController {
     {
         this.validatePosition(position)
         let dF = this.calculateStoppingDistance(position, timeInterval)
-        return this.accelerator.accelerate(0.0, timeInterval, dF, 2)
+        return this.accelerator.accelerate(0.0, timeInterval, dF, false) 
+        // important - cannot put a delay here, already calced stopping distance
     }
 
     /*

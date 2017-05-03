@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -138,7 +138,7 @@ class Accelerator
         }
         else if(! this.changingVelocity && this.isWaiting )
         {
-            this.time += deltaTime;
+            //this.time += deltaTime; - this will be done in _advanceTimeAndDistance
             this.currentWaitingTime += deltaTime
             if( this.currentWaitingTime >= this.requiredWaitingTime )
             {
@@ -223,6 +223,8 @@ class Accelerator
      * @param  {Float}   vF  is the velocity the object is to change to
      * @param  {Float}   tF  is the time interval over which the change is to take place
      * @param  {Float}   dF  is the distance that the object should move while changing velocity
+     * @param  {Float|false} - a timeInterval to delay the acceleration by or false = no delay. Defaults to false
+     *
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
      */
@@ -233,12 +235,69 @@ class Accelerator
         }else{
             let q = this.waitFor(delayInterval)
                     .then( ()=> {
-                        console.log('accelerate waitFor resolved')
-                        return this._accelerate(vF, tF, dF)
+                        return this._accelerateNoDelay(vF, tF, dF)
                     })
-            console.log([q])
+            return q
         }
      }
+    /*
+    * Lets a timeinterval pass during which the accelerator moves along at a constant
+    * velocity.
+    *
+    * @param timeInterval {Float} - the time in units to wait
+    *
+    * @return Promise - that is resolved when the interval runs out
+    *
+    * @error - cannot wait while an acceleration is in progress
+    */
+    waitFor(timeInterval)
+    {
+        if (this.changingVelocity)
+        {
+            throw new Error('Accelerator: cannot wait while acceleration is underway');
+        }
+            if( this.isWaiting )
+        {
+            throw new Error('cannot have commence acceleration while wait is underway');
+        }
+        this.isWaiting = true
+        this.requiredWaitingTime = timeInterval
+        this.currentWaitingTime = 0.0
+
+        const p = new Promise((resolve) =>
+        {
+            this.resolvePromiseFunction = resolve;
+        });
+
+        return p        
+    }
+    /*
+    * Stops any current acceleration. 
+    * @Error - if no acceleration is active
+    *
+    * resolves the acceleration promise
+    */
+    kill()
+    {
+        if( this.changingVelocity ){
+            this.changingVelocity = false
+            if (typeof this.resolvePromiseFunction === 'function')
+            {
+                 this.resolvePromiseFunction(); 
+            }
+        }else{
+            console.log(`WARNING: Accelerator - kill not necessary when no acceleration active`)
+        }
+    }
+    /*
+    * Implements the heavy lifting for the accelerate function
+     * @param  {Float}   vF  is the velocity the object is to change to
+     * @param  {Float}   tF  is the time interval over which the change is to take place
+     * @param  {Float}   dF  is the distance that the object should move while changing velocity
+     *
+     * @return {Promise}  Promise which will be resolved when the acceleration
+     *                    has completed
+    */
     _accelerateNoDelay(vF, tF, dF, promise)
     {
         logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
@@ -265,48 +324,7 @@ class Accelerator
         this.decelerator = new __WEBPACK_IMPORTED_MODULE_0__bezier_accelerator_js__["a" /* BezierAccelerator */](v0, vF, tF, dF);
 
         return p;
-    }
-    accelerateWithDelay(vF, tF, dF, delayInterval)
-    {
-        this.waitFor(delayInterval)
-        .then( ()=>{
-            this.accelerate(vF, tF, dF)
-        })
-
-    }
-    waitFor(timeInterval)
-    {
-        if (this.changingVelocity)
-        {
-            throw new Error('Accelerator: cannot wait while acceleration is underway');
-        }
-            if( this.isWaiting )
-        {
-            throw new Error('cannot have commence acceleration while wait is underway');
-        }
-        this.isWaiting = true
-        this.requiredWaitingTime = timeInterval
-        this.currentWaitingTime = 0.0
-
-        const p = new Promise((resolve) =>
-        {
-            this.resolvePromiseFunction = resolve;
-        });
-
-        return p        
-    }
-
-    kill()
-    {
-        if( this.changingVelocity ){
-            this.changingVelocity = false
-            if (typeof this.resolvePromiseFunction === 'function')
-                { this.resolvePromiseFunction(); }
-        }else{
-            console.log(`WARNING: Accelerator - kill not necessary when no acceleration active`)
-        }
-    }
-    /**
+    }    /**
      * Advances total time & distance when NO acceleration is active
      *
      * @private
@@ -519,7 +537,7 @@ function drawAxes(ctx, axes)
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__motion_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__motion_js__ = __webpack_require__(6);
 // this is a meaningful example of a motion.
 
 
@@ -601,18 +619,6 @@ function test_wait()
 	})
 	console.log([q1])
 
-
-	// accel.waitFor(1)
-	// .then(function(){
-	// 	console.log('wait for completed')
-	// 	count = 0
-	// 	accel.accelerate(0, 2, 100)
-	// 	.then(function(){
-	// 		console.log('accel complete for completed')
-	// 		clearInterval(t)
-	// 	})
-	// })
-
 }
 
 /***/ }),
@@ -620,10 +626,59 @@ function test_wait()
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__libs_graph_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__motion_1_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__motion_2_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wait_test_js__ = __webpack_require__(4);
+
+/* This is the main entry point for the motion.html page.
+* proves a slection of two motions to display. 
+*/
+
+
+
+
+
+
+
+$(document).ready(function(){
+    $('#motion_1_button').click(motion_1);
+    $('#motion_2_button').click(motion_2);
+});
+
+// just to prove we got here
+function motion_1(){
+    drawMotion(__WEBPACK_IMPORTED_MODULE_1__motion_1_js__["a" /* default */]);
+}
+function motion_2(){
+    // drawMotion(motion2);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__wait_test_js__["a" /* default */])()
+}
+function drawMotion(motion) 
+{
+    $('#canvas-wrapper').empty();
+    $('#canvas-wrapper').append('<canvas id="canvas" width="1000" height="500"></canvas>');
+
+    var canvas = document.getElementById('canvas');
+    if (null==canvas || !canvas.getContext) return;
+
+    const positions = motion((table)=>{
+        var axes={}; 
+        var ctx=canvas.getContext('2d');
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__libs_graph_js__["a" /* drawAxes */])(ctx, axes);
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__libs_graph_js__["b" /* graphTable */])(ctx, axes, table, 'rgb(66,44,255)', 2);
+    });
+}
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(0);
 
-
-console.log(__WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */]);
 
 /*
 * This file implements a function that can run a schedule of accelerations
@@ -722,55 +777,6 @@ function logger(s){
     }, 1);
 
 });
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__libs_graph_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__motion_1_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__motion_2_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wait_test_js__ = __webpack_require__(4);
-/*
-* This is the main entry point for the motion.html page.
-* proves a slection of two motions to display. 
-*/
-
-
-
-
-
-
-$(document).ready(function(){
-    $('#motion_1_button').click(motion_1);
-    $('#motion_2_button').click(motion_2);
-});
-// just to prove we got here
-function motion_1(){
-    drawMotion(__WEBPACK_IMPORTED_MODULE_1__motion_1_js__["a" /* default */]);
-}
-function motion_2(){
-    // drawMotion(motion2);
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__wait_test_js__["a" /* default */])()
-}
-function drawMotion(motion) 
-{
-    $('#canvas-wrapper').empty();
-    $('#canvas-wrapper').append('<canvas id="canvas" width="1000" height="500"></canvas>');
-
-    var canvas = document.getElementById('canvas');
-    if (null==canvas || !canvas.getContext) return;
-
-    const positions = motion((table)=>{
-        var axes={}; 
-        var ctx=canvas.getContext('2d');
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__libs_graph_js__["a" /* drawAxes */])(ctx, axes);
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__libs_graph_js__["b" /* graphTable */])(ctx, axes, table, 'rgb(66,44,255)', 2);
-    });
-}
-
 
 /***/ }),
 /* 7 */

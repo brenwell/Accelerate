@@ -54,10 +54,10 @@ function public:motion_build {
   echo "Building motion bundle"
   echo ${MOTION}/mover.js
 
-  webpack  --devtool source-map ${MOTION}/mover.js ${MOTION}/motion_bundle.js
+  webpack  --devtool source-map ${MOTION}/main.js ${MOTION}/motion_bundle.js
 }
 function public:motion_watch {
-  webpack -w  --devtool source-map ${MOTION}/mover.js ${MOTION}/motion_bundle.js 
+  webpack -w  --devtool source-map ${MOTION}/main.js ${MOTION}/motion_bundle.js 
 }
 
 #### wheels

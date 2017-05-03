@@ -1,17 +1,19 @@
-/*
-* This is the main entry point for the motion.html page.
+
+/* This is the main entry point for the motion.html page.
 * proves a slection of two motions to display. 
 */
 
 import {drawAxes, graphTable} from '../libs/graph.js';
 import motion1 from './motion_1.js';
 import motion2 from './motion_2.js';
+
 import testWait from "./wait_test.js"
 
 $(document).ready(function(){
     $('#motion_1_button').click(motion_1);
     $('#motion_2_button').click(motion_2);
 });
+
 // just to prove we got here
 function motion_1(){
     drawMotion(motion1);
