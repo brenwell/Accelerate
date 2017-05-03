@@ -11,104 +11,154 @@ import { QuadraticBezier, CubicBezier } from './bezier-functions';
 /**
  * This class performs velocity changes on objects in 1-dimensional motion
  *
- * provides a single method getDistance(t) - will change name to positionAfter(t) at some point
- * that returns the total distance traveled since after t seconds of the velocity change
+ * provides a single method getDistance(t) - will change name to
+ * positionAfter(t) at some point that returns the total distance traveled since
+ * after t seconds of the velocity change
  *
- * It does NOT keep track of the moving object outside of the velocity change window
+ * It does NOT keep track of the moving object outside of the velocity change
+ * window
  *
  * Elapsed time is measured from the start of the velocity change
  *
- * You can only use one of these objects once. Once the velocity change is complete
- * any call to getPositionAfter will result in an error
-
+ * You can only use one of these objects once. Once the velocity change is
+ * complete any call to getPositionAfter will result in an error
+ *
  * @class  BezDecelerator (name)
- * @param  {number}                   v0  Initial velocity
- * @param  {number}                   vF  Final velocity
- * @param  {number}                   tF  Final time
- * @param  {number}                   dF  Final distance
- * @param  {Function}                 cb  Completion handler
- * @return {(Array|Function|number)}  { description_of_the_return_value }
+ * @param  {number}     v0  Initial velocity
+ * @param  {number}     vF  Final velocity
+ * @param  {number}     tF  Final time
+ * @param  {number}     dF  Final distance
+ * @param  {Function=}  cb  Completion handler
  */
-export default function BezierAccelerator(v0, vF, tF, dF, cb)
+export default class BezierAccelerator
 {
-	// just changing the notation to what I am using
-    const V = v0;
-    const T = tF;
-    const D = dF;
-    let P0 = [],
-        P1 = [],
-        P2 = [],
-        P3 = [];
-    let func;
-    let complete = false;
-    const callBack = cb;
-
-    if ((v0 > 0) && (vF == 0) && ((T * v0) > (D)))
+    /**
+     * Constructs the object.
+     *
+     * @param  {number}    v0  The v 0
+     * @param  {number}    vF  The v f
+     * @param  {number}    tF  The t f
+     * @param  {number}    dF  The d f
+     * @param  {Function}  cb  { parameter_description }
+     */
+    constructor(v0, vF, tF, dF, cb)
     {
-        // this is the one special case where a cubic will not do the job
-        P0 = [0.0, 0.0];
-        P2 = [T, D];
-        const p1_x = (D - vF * T) / (v0 - vF);
-        const p1_y = (v0 * p1_x);
+        // just changing the notation to what I am using
+        const V = v0;
+        const T = tF;
+        const D = dF;
+        let P0 = [];
+        let P1 = [];
+        let P2 = [];
+        let P3 = [];
 
-        func = QuadraticBezier(P0, [p1_x, p1_y], P2);
+        this.callBack = cb;
+
+        if ((v0 > 0) && (vF === 0) && ((T * v0) > (D)))
+        {
+            // this is the one special case where a cubic will not do the job
+            P0 = [0.0, 0.0];
+            P2 = [T, D];
+            const p1X = (D - (vF * T)) / (v0 - vF);
+            const p1Y = (v0 * p1X);
+
+            this.func = QuadraticBezier(P0, [p1X, p1Y], P2);
+        }
+        else
+        {
+            P0 = [0.0, 0.0];
+            P1 = [T / 3.0, V * T / 3.0];
+            P2 = [(2.0 / 3.0) * T, D - (vF * T / 3.0)];
+            P3 = [T, D];
+            this.func = CubicBezier(P0, P1, P2, P3);
+        }
+
+        this.complete = false;
+
+        this.V = v0;
+        this.vF = vF;
+        this.T = tF;
+        this.D = dF;
+
+        this.P0 = P0;
+        this.P1 = P1;
+        this.P2 = P2;
+        this.P3 = P3;
     }
-    else
-    {
-        P0 = [0.0, 0.0];
-        P1 = [T / 3.0, V * T / 3.0];
-        P2 = [(2.0 / 3.0) * T, D - vF * T / 3.0];
-        P3 = [T, D];
-        func = CubicBezier(P0, P1, P2, P3);
+
+    /**
+     * { function_description }
+     *
+     * @param  {number}  t  { parameter_description }
+     * @return {<type>}  { description_of_the_return_value }
+     */
+    tangentInitial(t)
+	{
+        return this.V * t;
     }
 
-    this.tangent_initial = function (t)
-	{
-        return V * t;
-    };
-
-    this.dotPositions = function ()
+    /**
+     * { function_description }
+     *
+     * @return {Array}  { description_of_the_return_value }
+     */
+    dotPositions()
     {
-        return [P0, P1, P2, P3];
-    };
+        return [this.P0, this.P1, this.P2, this.P3];
+    }
 
-	/*
-    * this function draws the trajectory of the final velocity.Used only for debugging and demonstration
-    * not part of the final exposed package
-    */
-    this.tangent_final = function (t)
+	/**
+     * This function draws the trajectory of the final velocity.Used only for debugging and demonstration
+     * not part of the final exposed package
+     *
+     * @param  {<type>}  t  { parameter_description }
+     * @return {<type>}  { description_of_the_return_value }
+     */
+    tangentFinal(t)
 	{
-        const res =  vF * t + (D - vF * T);
+        const res =  (this.vF * t) + (this.D - (this.vF * this.T));
 
         return res;
-    };
+    }
 
-    this.getPositionAfter = function (elapsed_time)
+    /**
+     * Gets the position after.
+     *
+     * @param  {<type>}  elapsedTime  The elapsed time
+     * @return {<type>}  The position after.
+     */
+    getPositionAfter(elapsedTime)
     {
-        return this.getDistance(elapsed_time);
-    }.bind(this);
-    /*
-    * This is the only exposed method of the class that is not simply for debugging.
-    *
-    * x_value {float} - a number in the range  0..tF the elapsed time of the velocity change
-    *
-    * Returns {float} - the distance traveled since the start of the velocity change
-    */
-    this.getDistance = (x_value) =>
+        return this.getDistance(elapsedTime);
+    }
+
+    /**
+     * Gets the distance. This is the only exposed method of the class that is
+     * not simply for debugging.
+     *
+     * @param  {number}  xValue  a number in the range  0..tF the elapsed time
+     *                           of the velocity change
+     * @return {float}   The distance traveled since the start of the velocity
+     *                   change
+     */
+    getDistance(xValue)
     {
         if (this.complete)
         {
             throw new Error('Accelerator: velocity change is complete. Cannot call this function');
         }
-        if ((x_value >= T) && (!complete))
-        {
-            complete = true;
-            if ((typeof callBack === 'function') && (callBack != null))
-                { callBack(); }
-        }
-        const y_value = func(x_value);
 
-        return y_value;
-    };
-};
-// module.exports = BezDecelerator;
+        if ((xValue >= this.T) && (!this.complete))
+        {
+            this.complete = true;
+            if ((typeof this.callBack === 'function'))
+            {
+                this.callBack();
+            }
+        }
+
+        const yValue = this.func(xValue);
+
+        return yValue;
+    }
+}

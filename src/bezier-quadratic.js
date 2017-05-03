@@ -16,11 +16,12 @@ export class BezierQuadratic
         this.P1 = P1;
         this.P2 = P2;
     }
+
     derivative(t, p0, p1, p2)
     {
         function linear(p0, p1, t)
         {
-            const res = p0 * (1.0 - t) + p1 * t;
+            const res = (p0 * (1.0 - t)) + (p1 * t);
 
             return res;
         }
@@ -30,30 +31,30 @@ export class BezierQuadratic
         return res;
     }
 
-    bez_func(t, p0, p1, p2)
+    bezFunc(t, p0, p1, p2)
     {
-        const res =   p0 * (1 - t) * (1 - t) + 2.0 * p1 * (1 - t) * t + p2 * t * t;
+        const res =   (p0 * (1 - t) * (1 - t)) + (2.0 * p1 * (1 - t) * t) + (p2 * t * t);
 
         return res;
     }
 
-    x_From_t(t)
+    xFromT(t)
     {
-        const res = this.bez_func(t, this.P0[0], this.P1[0], this.P2[0]);
+        const res = this.bezFunc(t, this.P0[0], this.P1[0], this.P2[0]);
 
         return res;
     }
 
-    x_From_t_derivative(t)
+    xFromTDerivative(t)
     {
         const res = this.derivative(t, this.P0[0], this.P1[0], this.P2[0]);
 
         return res;
     }
 
-    y_From_t(t)
+    yFromT(t)
     {
-        const res = this.bez_func(t, this.P0[1], this.P1[1], this.P2[1]);
+        const res = this.bezFunc(t, this.P0[1], this.P1[1], this.P2[1]);
 
         return res;
     }
