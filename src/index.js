@@ -35,7 +35,8 @@ export default class Accelerate
     /**
      * Constructs the object.
      *
-     * @param  {Number}  v0  The initial Velocity
+     * @param  {Float}  v0       The initial Velocity
+     * @param  {Object}  options  The options
      */
     constructor(v0, options = {})
     {
@@ -44,12 +45,13 @@ export default class Accelerate
             throw new Error('Initial velocity not defined');
         }
 
-        let defaults = {
-            timeInterval: 1/60, // @FIX this is going away
-            allowOverwrite: false
+        const defaults = {
+            timeInterval: 1 / 60, // @FIX this is going away
+            allowOverwrite: false,
         };
 
-        let actual = Object.assign({}, defaults, options);
+        const actual = Object.assign({}, defaults, options);
+
         this.timeInterval = actual.timeInterval;
         this.allowOverwrite = actual.allowOverwrite;
 
@@ -57,7 +59,7 @@ export default class Accelerate
         this.elapsedTimeChangingVelocity = 0.0;
         this.totalDistance = 0.0;
         this.changingVelocity = false;
-        this.decelerator = null;
+        this.bezAccelerator = null;
         this.currentVelocity = v0;
     }
 
@@ -80,7 +82,7 @@ export default class Accelerate
             this.time += deltaTime;
             this.elapsedTimeChangingVelocity += deltaTime;
 
-            const tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity);
+            const tmp = this.bezAccelerator.getDistance(this.elapsedTimeChangingVelocity);
             const deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance;
 
             this.currentVelocity = deltaDistance / (deltaTime);
@@ -157,20 +159,23 @@ export default class Accelerate
     accelerate(vF, tF, dF, delay)
     {
         logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
-        return new Promise((resolve,reject) =>
+
+        return new Promise((resolve, reject) =>
         {
             // if one is already running
             if (this.changingVelocity && !this.allowOverwrite)
             {
                 reject('cannot have two accelerations underway at the same time');
+
                 return;
             }
 
             this.kill(); // overwrite an existing animation
 
-            this.resolvePromise = resolve
+            this.resolvePromise = resolve;
 
             const v0 = this.currentVelocity;
+
             this.distanceBeforeVelocityChange = this.totalDistance;
             this.changingVelocity = true;
             this.elapsedTimeChangingVelocity = 0.0;
@@ -178,7 +183,7 @@ export default class Accelerate
             this.newVelocity = vF;
             this.distanceForChange = dF;
 
-            this.decelerator = new BezierAccelerator(v0, vF, tF, dF, () =>
+            this.bezAccelerator = new BezierAccelerator(v0, vF, tF, dF, () =>
             {
                 this.currentVelocity = this.newVelocity;
                 this.kill();
@@ -194,8 +199,8 @@ export default class Accelerate
         this.changingVelocity = false;
         if (typeof this.resolvePromise === 'function')
         {
-            this.resolvePromise()
-            this.resolvePromise = undefined
+            this.resolvePromise();
+            this.resolvePromise = undefined;
         }
     }
 

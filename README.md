@@ -1,6 +1,14 @@
 # Accelerate
 
 
+### Things to do
+
+- [ ] Wait function
+- [ ] Kill function
+- [ ] Ammend/Overwrite
+- [ ] Handle last tick
+- [ ] Handle accelerate without distance constraint
+
 ## Usage
 
 ```js
