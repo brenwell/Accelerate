@@ -26,67 +26,84 @@ import { QuadraticBezier, CubicBezier } from './bezier-functions';
  * @param  {number}                   vF  Final velocity
  * @param  {number}                   tF  Final time
  * @param  {number}                   dF  Final distance
- * @param  {Function}                 cb  Completion handler
+ * @param  {Function=}                 cb  Completion handler
  * @return {(Array|Function|number)}  { description_of_the_return_value }
  */
-export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
+
+export default class BezierAccelerator
 {
-	// just changing the notation to what I am using
-    const V = v0;
-    const T = tF;
-    const D = dF;
-    let P0 = [],
-        P1 = [],
-        P2 = [],
-        P3 = [];
-    let func;
-    let complete = false;
-    const callBack = cb;
-
-    if ((v0 > 0) && (vF == 0) && ((T * v0) > (D)))
+    constructor(v0, vF, tF, dF, cb)
     {
-        // this is the one special case where a cubic will not do the job
-        P0 = [0.0, 0.0];
-        P2 = [T, D];
-        const p1_x = (D - vF * T) / (v0 - vF);
-        const p1_y = (v0 * p1_x);
+        // just changing the notation to what I am using
+        const V = v0;
+        const T = tF;
+        const D = dF;
+        let P0 = [],
+            P1 = [],
+            P2 = [],
+            P3 = [];
 
-        func = QuadraticBezier(P0, [p1_x, p1_y], P2);
-    }
-    else
-    {
-        P0 = [0.0, 0.0];
-        P1 = [T / 3.0, V * T / 3.0];
-        P2 = [(2.0 / 3.0) * T, D - vF * T / 3.0];
-        P3 = [T, D];
-        func = CubicBezier(P0, P1, P2, P3);
+
+        this.callBack = cb;
+
+        if ((v0 > 0) && (vF == 0) && ((T * v0) > (D)))
+        {
+            // this is the one special case where a cubic will not do the job
+            P0 = [0.0, 0.0];
+            P2 = [T, D];
+            const p1_x = (D - vF * T) / (v0 - vF);
+            const p1_y = (v0 * p1_x);
+
+            this.func = QuadraticBezier(P0, [p1_x, p1_y], P2);
+        }
+        else
+        {
+            P0 = [0.0, 0.0];
+            P1 = [T / 3.0, V * T / 3.0];
+            P2 = [(2.0 / 3.0) * T, D - vF * T / 3.0];
+            P3 = [T, D];
+            this.func = CubicBezier(P0, P1, P2, P3);
+        }
+
+        this.complete = false;
+
+        this.V = v0;
+        this.vF = vF;
+        this.T = tF;
+        this.D = dF;
+
+        this.P0 = P0;
+        this.P1 = P1;
+        this.P2 = P2;
+        this.P3 = P3;
     }
 
-    this.tangent_initial = function (t)
+    tangent_initial(t)
 	{
-        return V * t;
+        return this.V * t;
     };
 
-    this.dotPositions = function ()
+    dotPositions()
     {
-        return [P0, P1, P2, P3];
+        return [this.P0, this.P1, this.P2, this.P3];
     };
 
 	/*
     * this function draws the trajectory of the final velocity.Used only for debugging and demonstration
     * not part of the final exposed package
     */
-    this.tangent_final = function (t)
+    tangent_final(t)
 	{
-        const res =  vF * t + (D - vF * T);
+        const res =  this.vF * t + (this.D - this.vF * this.T);
 
         return res;
     };
 
-    this.getPositionAfter = function (elapsed_time)
+    getPositionAfter(elapsed_time)
     {
         return this.getDistance(elapsed_time);
-    }.bind(this);
+    }
+
     /*
     * This is the only exposed method of the class that is not simply for debugging.
     *
@@ -94,21 +111,24 @@ export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
     *
     * Returns {float} - the distance traveled since the start of the velocity change
     */
-    this.getDistance = (x_value) =>
+    getDistance(x_value)
     {
         if (this.complete)
         {
             throw new Error('Accelerator: velocity change is complete. Cannot call this function');
         }
-        if ((x_value >= T) && (!complete))
+
+        if ((x_value >= this.T) && (!this.complete))
         {
-            complete = true;
-            if ((typeof callBack === 'function') && (callBack != null))
-                { callBack(); }
+            this.complete = true;
+            if ((typeof this.callBack === 'function'))
+            {
+                this.callBack();
+            }
         }
-        const y_value = func(x_value);
+
+        const y_value = this.func(x_value);
 
         return y_value;
     };
 };
-// module.exports = BezDecelerator;

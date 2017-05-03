@@ -1,4 +1,4 @@
-import { BezierAccelerator } from './bezier-accelerator.js';
+import BezierAccelerator from './bezier-accelerator.js';
 
 function logger(s) // eslint-disable-line
 {
@@ -37,11 +37,24 @@ export default class Accelerate
      *
      * @param  {Number}  v0  The initial Velocity
      */
-    constructor(v0)
+    constructor(v0, options = {})
     {
+        if (v0 === null || v0 === undefined || typeof v0 !== 'number')
+        {
+            throw new Error('Initial velocity not defined');
+        }
+
+        let defaults = {
+            timeInterval: 1/60, // @FIX this is going away
+            allowOverwrite: false
+        };
+
+        let actual = Object.assign({}, defaults, options);
+        this.timeInterval = actual.timeInterval;
+        this.allowOverwrite = actual.allowOverwrite;
+
         this.time = 0.0;
         this.elapsedTimeChangingVelocity = 0.0;
-        this.timeInterval = 1.0 / 60.0; // @FIX this is going away
         this.totalDistance = 0.0;
         this.changingVelocity = false;
         this.decelerator = null;
@@ -86,7 +99,9 @@ export default class Accelerate
                 this.currentVelocity = this.newVelocity;
                 this.changingVelocity = false;
                 if (typeof this.resolvePromiseFunction === 'function')
-                    { this.resolvePromiseFunction(); }
+                {
+                    this.resolvePromiseFunction();
+                }
             }
         }
 
@@ -130,34 +145,58 @@ export default class Accelerate
     /**
      * Instructs the object to start a velocity change
      *
-     * @param  {Float}   vF  is the velocity the object is to change to
-     * @param  {Float}   tF  is the time interval over which the change is to take place
-     * @param  {Float}   dF  is the distance that the object should move while changing velocity
+     * @param  {Float}    vF     is the velocity the object is to change to
+     * @param  {Float}    tF     is the time interval over which the change is
+     *                           to take place
+     * @param  {Float}    dF     is the distance that the object should move
+     *                           while changing velocity
+     * @param  {Float=}   delay  The delay before starting
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
      */
-    accelerate(vF, tF, dF)
+    accelerate(vF, tF, dF, delay)
     {
         logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
-        if (this.changingVelocity)
+        return new Promise((resolve,reject) =>
         {
-            throw new Error('cannot have two accelerations underway at the same time');
-        }
-        const v0 = this.currentVelocity;
-        const p = new Promise((resolve) =>
-        {
-            this.resolvePromiseFunction = resolve;
+            // if one is already running
+            if (this.changingVelocity && !this.allowOverwrite)
+            {
+                reject('cannot have two accelerations underway at the same time');
+                return;
+            }
+
+            this.kill(); // overwrite an existing animation
+
+            this.resolvePromise = resolve
+
+            const v0 = this.currentVelocity;
+            this.distanceBeforeVelocityChange = this.totalDistance;
+            this.changingVelocity = true;
+            this.elapsedTimeChangingVelocity = 0.0;
+            this.timeForChange = tF;
+            this.newVelocity = vF;
+            this.distanceForChange = dF;
+
+            this.decelerator = new BezierAccelerator(v0, vF, tF, dF, () =>
+            {
+                this.currentVelocity = this.newVelocity;
+                this.kill();
+            });
         });
+    }
 
-        this.distanceBeforeVelocityChange = this.totalDistance;
-        this.changingVelocity = true;
-        this.elapsedTimeChangingVelocity = 0.0;
-        this.timeForChange = tF;
-        this.newVelocity = vF;
-        this.distanceForChange = dF;
-        this.decelerator = new BezierAccelerator(v0, vF, tF, dF);
-
-        return p;
+    /**
+     * kills ongoing acceleration at currentVelocity
+     */
+    kill()
+    {
+        this.changingVelocity = false;
+        if (typeof this.resolvePromise === 'function')
+        {
+            this.resolvePromise()
+            this.resolvePromise = undefined
+        }
     }
 
     /**
