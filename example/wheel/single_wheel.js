@@ -1,4 +1,4 @@
-import Accelerator from "../../src/index.js"
+import Accelerator from '../../src/index.js';
 /*
 * This class represents one wheel in a multi wheel game. 
 * It both draws the wheel it is responsible for and adapts 
@@ -19,56 +19,56 @@ export class SingleWheel {
     */
     constructor(app, radius, bg, colors, startDeg)
     {
-        this.velocity = 0.0
-        this.app = app
-        this.colors = colors
-        this.numberOfSegments = colors.length
-        this.startDegrees = startDeg
-        this.lastRadians = 0
-        this.accelerator = new Accelerator(0)
+        this.velocity = 0.0;
+        this.app = app;
+        this.colors = colors;
+        this.numberOfSegments = colors.length;
+        this.startDegrees = startDeg;
+        this.lastRadians = 0;
+        this.accelerator = new Accelerator(0);
 
-        const container = new PIXI.Container()
-        container.pivot.x = 0
-        container.pivot.y = 0
-        container.x = 300
-        container.y = 300
+        const container = new PIXI.Container();
+        container.pivot.x = 0;
+        container.pivot.y = 0;
+        container.x = 300;
+        container.y = 300;
         
         // draw outter background circle with given background
-        const circle = new PIXI.Graphics()
-        circle.beginFill(bg)
+        const circle = new PIXI.Graphics();
+        circle.beginFill(bg);
         circle.lineStyle(10, bg);
-        circle.drawCircle(0,0,radius)
-        circle.endFill()
-        container.addChild(circle)
+        circle.drawCircle(0,0,radius);
+        circle.endFill();
+        container.addChild(circle);
 
         // draw inner background circle with white background
-        const mask = new PIXI.Graphics()
-        mask.beginFill(0xFFFFFF)
-        mask.drawCircle(0,0,radius)
-        mask.endFill()
-        container.addChild(mask)
+        const mask = new PIXI.Graphics();
+        mask.beginFill(0xFFFFFF);
+        mask.drawCircle(0,0,radius);
+        mask.endFill();
+        container.addChild(mask);
 
         // get the (x,y) coordinates of the point that bound the sectors
-        const coords = plotCirclePoints(colors.length, radius+50, -90)
-        const size = radius 
+        const coords = plotCirclePoints(colors.length, radius+50, -90);
+        const size = radius; 
 
         coords.forEach(function(coord, i){   
-            const index = (i == coords.length-1) ? 0 : i+1
-            const nextCoord = coords[index]
+            const index = (i == coords.length-1) ? 0 : i+1;
+            const nextCoord = coords[index];
 
             // draw the triangular sector of the correct color - note we are working within container
-            const tri = new PIXI.Graphics()
+            const tri = new PIXI.Graphics();
             tri.beginFill( colors[i], 0.8);
             tri.moveTo(0, 0);
             tri.lineTo(coord.x, coord.y);
             tri.lineTo(nextCoord.x, nextCoord.y);
             tri.lineTo(0, 0);
             tri.endFill();
-            tri.mask = mask
+            tri.mask = mask;
             container.addChild(tri);
-        })
-        container.rotation = degToRad(startDeg)
-        this.container = container
+        });
+        container.rotation = degToRad(startDeg);
+        this.container = container;
     }
 
     /*
@@ -79,8 +79,8 @@ export class SingleWheel {
     */
     accelerateToZero(position, timeInterval)
     {
-        let dF = this.calculateStoppingDistance(position, timeInterval)
-        return this.accelerator.accelerate(0.0, timeInterval, dF)
+        let dF = this.calculateStoppingDistance(position, timeInterval);
+        return this.accelerator.accelerate(0.0, timeInterval, dF);
     }
 
     /*
@@ -95,12 +95,12 @@ export class SingleWheel {
     */
     advanceTimeBy(timeInterval)
     {
-        let d = this.accelerator.advanceTimeBy(timeInterval) 
+        let d = this.accelerator.advanceTimeBy(timeInterval); 
         // d - this can be a large number is not restricted to
         // range -2PI .. 2PI
-        let deltaRads = d - this.lastRadians
-        this.lastRadians = d
-        this.rotateByRadians(deltaRads)
+        let deltaRads = d - this.lastRadians;
+        this.lastRadians = d;
+        this.rotateByRadians(deltaRads);
     }
 
 
@@ -127,27 +127,27 @@ export class SingleWheel {
     */
     calculateStoppingDistance(position, timeInterval)
     {
-        console.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`)
-        let positionInRadians = this.convertPositionToRadians(position)
-        let v0 = this.velocity
+        console.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
+        let positionInRadians = this.convertPositionToRadians(position);
+        let v0 = this.velocity;
         if( v0 < (2*Math.PI/timeInterval)){
-            alert("velocity maybe too low")
+            alert('velocity maybe too low');
         }
-        let currentRadians = this.container.rotation
+        let currentRadians = this.container.rotation;
 
         let deltaRadians = (positionInRadians >= currentRadians) ? 
                                 (positionInRadians - currentRadians) :
-                                (2*Math.PI + positionInRadians - currentRadians)
+                                (2*Math.PI + positionInRadians - currentRadians);
 
-        let dRequired = deltaRadians
+        let dRequired = deltaRadians;
 
-        let dMax = v0 * timeInterval
+        let dMax = v0 * timeInterval;
 
         if( dMax <= dRequired){
             alert(
                 `dRequired too big  or velocity too low\n dMax: ${dMax} dRequired:${dRequired}`
-                +` \nmay be suboptimal deceleration shape`
-                )
+                +' \nmay be suboptimal deceleration shape'
+                );
         }
         // let cycles = Math.round(v * timeInterval / (2 * Math.PI) ) 
         // if( (cycles * 2 * Math.PI + deltaRadians) < dMax ){
@@ -158,8 +158,8 @@ export class SingleWheel {
         // if( (cycles * 2 * Math.PI + deltaRadians) > dMax ){
         //     throw new Error(`calculateStoppingDistance dRequired:${dRequired} too big`)
         // }
-        console.log(`calculateStoppingDistance v0 : ${v0} timeInterval: ${timeInterval} dRequired: ${dRequired}`)
-        return dRequired
+        console.log(`calculateStoppingDistance v0 : ${v0} timeInterval: ${timeInterval} dRequired: ${dRequired}`);
+        return dRequired;
     }
 
     /*
@@ -169,8 +169,8 @@ export class SingleWheel {
     */
     setVelocity(v)
     {
-        this.velocity = v
-        this.accelerator.setVelocity(v)
+        this.velocity = v;
+        this.accelerator.setVelocity(v);
     }
 
     /*
@@ -185,8 +185,8 @@ export class SingleWheel {
     */
     setPosition(position)
     {
-        let rads = this.convertPositionToRadians(position)
-        this.positionToRadians(rads)
+        let rads = this.convertPositionToRadians(position);
+        this.positionToRadians(rads);
     }
     /*
     * Increase the rotation of the wheel by rads. Ensures that
@@ -197,19 +197,19 @@ export class SingleWheel {
     rotateByRadians(rads)
     {
         if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
-            throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
+            throw new Error('rotateByRadians - rads should not be greater than 2*PI or less than -2*PI');
         }
-        let rot = this.container.rotation 
-        let newr = rot + rads
+        let rot = this.container.rotation; 
+        let newr = rot + rads;
         if( (rot + rads) > 2*Math.PI )
-            newr = (rot + rads) - 2*Math.PI
+            newr = (rot + rads) - 2*Math.PI;
         if( (rot + rads) <  -2*Math.PI )
-            newr = (rot + rads) + 2*Math.PI
+            newr = (rot + rads) + 2*Math.PI;
 
         if( (newr > 2*Math.PI) || (newr < -2.0 * Math.PI) ){
-            throw new Error("rotateByRadians - newr should not be greater than 2*PI or less than -2*PI")
+            throw new Error('rotateByRadians - newr should not be greater than 2*PI or less than -2*PI');
         }
-        this.container.rotation = newr
+        this.container.rotation = newr;
     }
     /*
     * Position the wheel so that its rotation is a given value of radians
@@ -218,9 +218,9 @@ export class SingleWheel {
     positionToRadians(radians)
     {
         if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
-            throw new Error("positionToRadians - radians should not be greater than 2*PI or less than -2*PI")
+            throw new Error('positionToRadians - radians should not be greater than 2*PI or less than -2*PI');
         }
-        this.container.rotation = radians        
+        this.container.rotation = radians;        
     }
 
     /*
@@ -233,12 +233,12 @@ export class SingleWheel {
     */
     convertPositionToRadians(positionIndex)
     {
-        let t = (2 * Math.PI * positionIndex / this.numberOfSegments)
+        let t = (2 * Math.PI * positionIndex / this.numberOfSegments);
         if( t != 0){
-            t = 2*Math.PI - t
+            t = 2*Math.PI - t;
         }
-        let res = t + degToRad(this.startDegrees)
-        return res
+        let res = t + degToRad(this.startDegrees);
+        return res;
     }
 }
 

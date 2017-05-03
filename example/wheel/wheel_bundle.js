@@ -1,84 +1,84 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
-/******/ 	var installedModules = {};
+    /******/ 	var installedModules = {};
 /******/
 /******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
+    /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
+        /******/ 		if(installedModules[moduleId]) {
+            /******/ 			return installedModules[moduleId].exports;
+        /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
+        /******/ 		var module = installedModules[moduleId] = {
+            /******/ 			i: moduleId,
+            /******/ 			l: false,
+            /******/ 			exports: {}
+        /******/ 		};
 /******/
 /******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+        /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/
 /******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
+        /******/ 		module.l = true;
 /******/
 /******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
+        /******/ 		return module.exports;
+    /******/ 	}
 /******/
 /******/
 /******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
+    /******/ 	__webpack_require__.m = modules;
 /******/
 /******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
+    /******/ 	__webpack_require__.c = installedModules;
 /******/
 /******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
+    /******/ 	__webpack_require__.i = function(value) { return value; };
 /******/
 /******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
+    /******/ 	__webpack_require__.d = function(exports, name, getter) {
+        /******/ 		if(!__webpack_require__.o(exports, name)) {
+            /******/ 			Object.defineProperty(exports, name, {
+                /******/ 				configurable: false,
+                /******/ 				enumerable: true,
+                /******/ 				get: getter
+            /******/ 			});
+        /******/ 		}
+    /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
+    /******/ 	__webpack_require__.n = function(module) {
+        /******/ 		var getter = module && module.__esModule ?
 /******/ 			function getDefault() { return module['default']; } :
 /******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
+        /******/ 		__webpack_require__.d(getter, 'a', getter);
+        /******/ 		return getter;
+    /******/ 	};
 /******/
 /******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+    /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+    /******/ 	__webpack_require__.p = '';
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+    /******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__ = __webpack_require__(2);
-/* harmony export (immutable) */ __webpack_exports__["a"] = createThreeWheels;
-/* harmony export (immutable) */ __webpack_exports__["b"] = setPosition;
-/* harmony export (immutable) */ __webpack_exports__["d"] = startSpinning;
-/* harmony export (immutable) */ __webpack_exports__["e"] = stopWheelsWithLoss;
-/* harmony export (immutable) */ __webpack_exports__["f"] = stopWheelsWithNearWin;
-/* harmony export (immutable) */ __webpack_exports__["g"] = stopWheelsWithWin;
-/* harmony export (immutable) */ __webpack_exports__["c"] = stopWheel;
+    'use strict';
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__ = __webpack_require__(2);
+    /* harmony export (immutable) */ __webpack_exports__['a'] = createThreeWheels;
+    /* harmony export (immutable) */ __webpack_exports__['b'] = setPosition;
+    /* harmony export (immutable) */ __webpack_exports__['d'] = startSpinning;
+    /* harmony export (immutable) */ __webpack_exports__['e'] = stopWheelsWithLoss;
+    /* harmony export (immutable) */ __webpack_exports__['f'] = stopWheelsWithNearWin;
+    /* harmony export (immutable) */ __webpack_exports__['g'] = stopWheelsWithWin;
+    /* harmony export (immutable) */ __webpack_exports__['c'] = stopWheel;
 
 
 /*
@@ -95,69 +95,69 @@
 *
 */
 
-const colors = [
-  0x9400D3, //Violet
-  0x4B0082, //Indigo
-  0x0000FF, //Blue
-  0x00FF00, //Green	
-  0xFFFF00, //Yellow
-  0xFF7F00, //Orange
-  0xFF0000, //Red
-]
-const NUMBER_OF_SEGMENTS = colors.length
-const PIE_ANGLE = 360 / colors.length
-const PIE_MIDDLE = PIE_ANGLE / 2
-const SPINS = 4 * 360 
-const TIME_LENGTH = 4 //secs
-const SPIN_DELAY = 1 //secs
-const GROWTH = 1.1
+    const colors = [
+        0x9400D3, //Violet
+        0x4B0082, //Indigo
+        0x0000FF, //Blue
+        0x00FF00, //Green	
+        0xFFFF00, //Yellow
+        0xFF7F00, //Orange
+        0xFF0000, //Red
+    ];
+    const NUMBER_OF_SEGMENTS = colors.length;
+    const PIE_ANGLE = 360 / colors.length;
+    const PIE_MIDDLE = PIE_ANGLE / 2;
+    const SPINS = 4 * 360; 
+    const TIME_LENGTH = 4; //secs
+    const SPIN_DELAY = 1; //secs
+    const GROWTH = 1.1;
 
 
-const options = {
-	backgroundColor : 0xEEEEEE, 
-    antialias: true
-}
+    const options = {
+        backgroundColor : 0xEEEEEE, 
+        antialias: true
+    };
 
-let app;
-let containerOuter;
-let containerMiddle;
-let containerInner;
+    let app;
+    let containerOuter;
+    let containerMiddle;
+    let containerInner;
 
-let outerWheel;
-let middleWheel;
-let innerWheel;
+    let outerWheel;
+    let middleWheel;
+    let innerWheel;
 
-let button;
-let tweenOuter;
-let tweenMiddle;
-let tweenInner;
+    let button;
+    let tweenOuter;
+    let tweenMiddle;
+    let tweenInner;
 
-let isSpinning = false
-let timer
+    let isSpinning = false;
+    let timer;
 
 
-function createThreeWheels(el, width, height)
+    function createThreeWheels(el, width, height)
 {
-    app = new PIXI.Application(width, height, options);
+        app = new PIXI.Application(width, height, options);
     // document.body.appendChild(app.view);
-    el.appendChild(app.view)
+        el.appendChild(app.view);
 
-    outerWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__["a" /* SingleWheel */](app, 300, 0xFFFFFF, colors, -PIE_MIDDLE)
-    middleWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__["a" /* SingleWheel */](app, 210, 0xFFFFFF, colors, -PIE_MIDDLE)
-    innerWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__["a" /* SingleWheel */](app, 120, 0xFFFFFF, colors, -PIE_MIDDLE)
+        outerWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__['a' /* SingleWheel */](app, 300, 0xFFFFFF, colors, -PIE_MIDDLE);
+        middleWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__['a' /* SingleWheel */](app, 210, 0xFFFFFF, colors, -PIE_MIDDLE);
+        innerWheel = new __WEBPACK_IMPORTED_MODULE_0__single_wheel_js__['a' /* SingleWheel */](app, 120, 0xFFFFFF, colors, -PIE_MIDDLE);
 
-    containerOuter = outerWheel.container
-    containerMiddle = middleWheel.container
-    containerInner = innerWheel.container
+        containerOuter = outerWheel.container;
+        containerMiddle = middleWheel.container;
+        containerInner = innerWheel.container;
 
-    app.stage.addChild(containerOuter)
-    app.stage.addChild(containerMiddle)
-    app.stage.addChild(containerInner)
+        app.stage.addChild(containerOuter);
+        app.stage.addChild(containerMiddle);
+        app.stage.addChild(containerInner);
 
-    addIndicator()  
-    addCenterButton()
+        addIndicator();  
+        addCenterButton();
 
-}
+    }
 
 /*
 * Moves the wheels to positions. The positions are indexes
@@ -167,226 +167,226 @@ function createThreeWheels(el, width, height)
 *
 * Segments are numbered clockwise same as the colors
 */
-function setPosition(outterPosition, middlePosition, innerPosition)
+    function setPosition(outterPosition, middlePosition, innerPosition)
 {
-    outerWheel.setPosition(outterPosition)
-    middleWheel.setPosition(middlePosition)
-    innerWheel.setPosition(innerPosition)
-}
+        outerWheel.setPosition(outterPosition);
+        middleWheel.setPosition(middlePosition);
+        innerWheel.setPosition(innerPosition);
+    }
 /*
 * Starts all wheels spinning with velocity for each wheel given by the object
 * Speed units are in radians/sec
 */
-function startSpinning(outterVelocity, middleVelocity, innerVelocity)
+    function startSpinning(outterVelocity, middleVelocity, innerVelocity)
 {
-    let frameInterval = Math.round(1000*(1.0/60.0))
+        let frameInterval = Math.round(1000*(1.0/60.0));
 
-    outerWheel.setVelocity(outterVelocity)
-    middleWheel.setVelocity(middleVelocity)
-    innerWheel.setVelocity(innerVelocity)
+        outerWheel.setVelocity(outterVelocity);
+        middleWheel.setVelocity(middleVelocity);
+        innerWheel.setVelocity(innerVelocity);
     // add ticker function so that time is advanced for each wheel
-    app.ticker.add(tickerFunc)
-}
+        app.ticker.add(tickerFunc);
+    }
 
-function stopWheelsWithLoss(
+    function stopWheelsWithLoss(
                     positionOuter, 
                     positionMiddle, 
                     positionInner, 
                     decelerateTimeInterval
 )
 {
-    let allPs = []
-    allPs.push(outerWheel.accelerateToZero(positionOuter, decelerateTimeInterval))
-    allPs.push(middleWheel.accelerateToZero(positionMiddle, decelerateTimeInterval))
-    allPs.push(innerWheel.accelerateToZero(positionInner, decelerateTimeInterval))
-    Promise.all(allPs).then(function(){
-        console.log("all wheels have stopped");
-        removeTickerFunc()
-    })
-}
-function stopWheelsWithNearWin(
+        let allPs = [];
+        allPs.push(outerWheel.accelerateToZero(positionOuter, decelerateTimeInterval));
+        allPs.push(middleWheel.accelerateToZero(positionMiddle, decelerateTimeInterval));
+        allPs.push(innerWheel.accelerateToZero(positionInner, decelerateTimeInterval));
+        Promise.all(allPs).then(function(){
+            console.log('all wheels have stopped');
+            removeTickerFunc();
+        });
+    }
+    function stopWheelsWithNearWin(
                     positionTwice, 
                     positionOnce, 
                     decelerateTimeIntervalFirstTwoWheels,
                     decelerateTimeIntervalLastWheel
 )
 {
-    let allPs = []
-    allPs.push(outerWheel.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel))
-    allPs.push(middleWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels))
-    Promise.all(allPs).then(function(){
-        console.log("all wheels have stopped");
-        removeTickerFunc()
-    })   
-}
-function stopWheelsWithWin(
+        let allPs = [];
+        allPs.push(outerWheel.accelerateToZero(positionOnce, decelerateTimeIntervalLastWheel));
+        allPs.push(middleWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels));
+        allPs.push(innerWheel.accelerateToZero(positionTwice, decelerateTimeIntervalFirstTwoWheels));
+        Promise.all(allPs).then(function(){
+            console.log('all wheels have stopped');
+            removeTickerFunc();
+        });   
+    }
+    function stopWheelsWithWin(
                     positionWinner, 
                     decelerateTimeIntervalFirstTwoWheels,
                     decelerateTimeIntervalLastWheel
 )
 {
-    let allPs = []
-    allPs.push(outerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(middleWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels))
-    allPs.push(innerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel))
-    Promise.all(allPs).then(function(){
-        console.log("all wheels have stopped");
-        removeTickerFunc()
-    })       
-}
+        let allPs = [];
+        allPs.push(outerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels));
+        allPs.push(middleWheel.accelerateToZero(positionWinner, decelerateTimeIntervalFirstTwoWheels));
+        allPs.push(innerWheel.accelerateToZero(positionWinner, decelerateTimeIntervalLastWheel));
+        Promise.all(allPs).then(function(){
+            console.log('all wheels have stopped');
+            removeTickerFunc();
+        });       
+    }
 
 /*
 * called after result known so that tickerFunc is not called
 */
-function removeTickerFunc()
+    function removeTickerFunc()
 {
-    app.ticker.remove(tickerFunc)    
-}
+        app.ticker.remove(tickerFunc);    
+    }
 
-function stopWheel()
+    function stopWheel()
 {
-    app.ticker.remove(tickerFunc)
-}
+        app.ticker.remove(tickerFunc);
+    }
 
-function tickerFunc(delta)     // currently ignores the delta value
+    function tickerFunc(delta)     // currently ignores the delta value
 {
-    let timeInterval = delta * (1.0/60.0)
-    outerWheel.advanceTimeBy(timeInterval)
-    middleWheel.advanceTimeBy(timeInterval)
-    innerWheel.advanceTimeBy(timeInterval)
-    return    
-}
+        let timeInterval = delta * (1.0/60.0);
+        outerWheel.advanceTimeBy(timeInterval);
+        middleWheel.advanceTimeBy(timeInterval);
+        innerWheel.advanceTimeBy(timeInterval);
+        return;    
+    }
 
 
-function radiansPerSecToPerTick(radsSec)
+    function radiansPerSecToPerTick(radsSec)
 {
-    let tmp = radsSec / 60.0
-    return tmp    
-}
+        let tmp = radsSec / 60.0;
+        return tmp;    
+    }
 
 
 /*
 * Add a triangular pointer to the top of the 'wheel'
 */
-function addIndicator()
+    function addIndicator()
 {
-    const tri = new PIXI.Graphics()
-    tri.beginFill(0xFFFFFF);
-    tri.moveTo(0, 0);
-    tri.lineTo(30, 0);
-    tri.lineTo(15, 30);
-    tri.endFill();
+        const tri = new PIXI.Graphics();
+        tri.beginFill(0xFFFFFF);
+        tri.moveTo(0, 0);
+        tri.lineTo(30, 0);
+        tri.lineTo(15, 30);
+        tri.endFill();
 
-    const triContainer = new PIXI.Container()
-    triContainer.addChild(tri)
-    app.stage.addChild(triContainer)
-    triContainer.x = 300 - 15
-}
+        const triContainer = new PIXI.Container();
+        triContainer.addChild(tri);
+        app.stage.addChild(triContainer);
+        triContainer.x = 300 - 15;
+    }
 
 /*
 * Add a center button to the wheel and hooks the press of that
 * button to the randon function
 */
-function addCenterButton()
+    function addCenterButton()
 {
-    const cir = new PIXI.Graphics()
-    cir.beginFill(0xFFFFFF);
-    cir.drawCircle(0,0,50)
-    cir.endFill();
+        const cir = new PIXI.Graphics();
+        cir.beginFill(0xFFFFFF);
+        cir.drawCircle(0,0,50);
+        cir.endFill();
 
-    const text = new PIXI.Text('Click',{fill: 0xFF66CC})
-    text.x = Math.round(-text.width/2)
-    text.y = -14
+        const text = new PIXI.Text('Click',{fill: 0xFF66CC});
+        text.x = Math.round(-text.width/2);
+        text.y = -14;
 
-    const cirContainer = new PIXI.Container()
-    cirContainer.addChild(cir)
-    cirContainer.addChild(text)
-    app.stage.addChild(cirContainer)
-    cirContainer.x = 300
-    cirContainer.y = 300
+        const cirContainer = new PIXI.Container();
+        cirContainer.addChild(cir);
+        cirContainer.addChild(text);
+        app.stage.addChild(cirContainer);
+        cirContainer.x = 300;
+        cirContainer.y = 300;
 
-    cirContainer.buttonMode = true
-    cirContainer.interactive = true
-    cirContainer.pointerup = function()
+        cirContainer.buttonMode = true;
+        cirContainer.interactive = true;
+        cirContainer.pointerup = function()
     {
-        startSpinning({outter: 30, middle:20, inner:10})
+            startSpinning({outter: 30, middle:20, inner:10});
+        };
+        button = text;  
     }
-  button = text  
-}
 
-function convertPositionToRadians(positionIndex)
+    function convertPositionToRadians(positionIndex)
 {
-    let t = (2 * Math.PI * positionIndex / NUMBER_OF_SEGMENTS)
-    if( t != 0){
-        t = 2*Math.PI - t
+        let t = (2 * Math.PI * positionIndex / NUMBER_OF_SEGMENTS);
+        if( t != 0){
+            t = 2*Math.PI - t;
+        }
+        let res = t - degToRad(PIE_MIDDLE);
+        return res;
     }
-    let res = t - degToRad(PIE_MIDDLE)
-    return res
-}
 
 
 
 /*
 * Converts degrees to radians
 */
-function degToRad(degrees)
+    function degToRad(degrees)
 {
-    return degrees * Math.PI / 180;
-}
+        return degrees * Math.PI / 180;
+    }
 
 
 /***/ }),
 /* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__three_wheels_js__ = __webpack_require__(0);
+    'use strict';
+    Object.defineProperty(__webpack_exports__, '__esModule', { value: true });
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__three_wheels_js__ = __webpack_require__(0);
 
 
-$(document).ready(function(){
-    $("#btn-position").click(positionBtn)
-    $("#btn-stop").click(stopBtn)
-    $("#btn-start-spinning").click(startSpinningBtn)
-    $("#btn-loss").click(lossBtn)
-    $("#btn-nearwin").click(nearwinBtn)
-    $("#btn-win").click(winBtn)
+    $(document).ready(function(){
+        $('#btn-position').click(positionBtn);
+        $('#btn-stop').click(stopBtn);
+        $('#btn-start-spinning').click(startSpinningBtn);
+        $('#btn-loss').click(lossBtn);
+        $('#btn-nearwin').click(nearwinBtn);
+        $('#btn-win').click(winBtn);
 
-    $("#wheels").css("background-color", "yellow")
-    $("#wheels").css("width", 600)
-    $("#wheels").css("height", 600)
-    $("#wheels").css("float", "left")
+        $('#wheels').css('background-color', 'yellow');
+        $('#wheels').css('width', 600);
+        $('#wheels').css('height', 600);
+        $('#wheels').css('float', 'left');
 
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["a" /* createThreeWheels */])($("#wheels")[0], 600, 600)
-})
-function positionBtn()
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['a' /* createThreeWheels */])($('#wheels')[0], 600, 600);
+    });
+    function positionBtn()
 {
-    console.log('positionFirst')
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["b" /* setPosition */])(0,1,2)
+        console.log('positionFirst');
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['b' /* setPosition */])(0,1,2);
 
-}
-function stopBtn()
+    }
+    function stopBtn()
 {
-    console.log('stop')  
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["c" /* stopWheel */])()  
-}
-function startSpinningBtn()
+        console.log('stop');  
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['c' /* stopWheel */])();  
+    }
+    function startSpinningBtn()
 {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["d" /* startSpinning */])(8, 12, 16)
-}
-function lossBtn()
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['d' /* startSpinning */])(8, 12, 16);
+    }
+    function lossBtn()
 {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["e" /* stopWheelsWithLoss */])(1, 2, 3, 2.0)
-}
-function nearwinBtn()
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['e' /* stopWheelsWithLoss */])(1, 2, 3, 2.0);
+    }
+    function nearwinBtn()
 {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["f" /* stopWheelsWithNearWin */])(2, 3, 2.0, 4.0)
-}
-function winBtn()
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['f' /* stopWheelsWithNearWin */])(2, 3, 2.0, 4.0);
+    }
+    function winBtn()
 {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__["g" /* stopWheelsWithWin */])(2, 2.0, 4.0)
-}
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__three_wheels_js__['g' /* stopWheelsWithWin */])(2, 2.0, 4.0);
+    }
 
 
 
@@ -394,8 +394,8 @@ function winBtn()
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(8);
+    'use strict';
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_index_js__ = __webpack_require__(8);
 
 /*
 * This class represents one wheel in a multi wheel game. 
@@ -406,7 +406,7 @@ function winBtn()
 * This probably means I need a specialized verions of the Accelerator
 * rather than combining drawing an accelerator functions into a single class
 */
-class SingleWheel {
+    class SingleWheel {
     /*
     * app       {PIXI.application}      - the pixie app for the wheel
     * radius    {float}                 - radius of the circle
@@ -415,59 +415,59 @@ class SingleWheel {
     * startDeg  {float}                 - an initial rotation to get the starting image correct. With the
     *                                       first segment positioned at the pointer
     */
-    constructor(app, radius, bg, colors, startDeg)
+        constructor(app, radius, bg, colors, startDeg)
     {
-        this.velocity = 0.0
-        this.app = app
-        this.colors = colors
-        this.numberOfSegments = colors.length
-        this.startDegrees = startDeg
-        this.lastRadians = 0
-        this.accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__["a" /* default */](0)
+            this.velocity = 0.0;
+            this.app = app;
+            this.colors = colors;
+            this.numberOfSegments = colors.length;
+            this.startDegrees = startDeg;
+            this.lastRadians = 0;
+            this.accelerator = new __WEBPACK_IMPORTED_MODULE_0__src_index_js__['a' /* default */](0);
 
-        const container = new PIXI.Container()
-        container.pivot.x = 0
-        container.pivot.y = 0
-        container.x = 300
-        container.y = 300
+            const container = new PIXI.Container();
+            container.pivot.x = 0;
+            container.pivot.y = 0;
+            container.x = 300;
+            container.y = 300;
         
         // draw outter background circle with given background
-        const circle = new PIXI.Graphics()
-        circle.beginFill(bg)
-        circle.lineStyle(10, bg);
-        circle.drawCircle(0,0,radius)
-        circle.endFill()
-        container.addChild(circle)
+            const circle = new PIXI.Graphics();
+            circle.beginFill(bg);
+            circle.lineStyle(10, bg);
+            circle.drawCircle(0,0,radius);
+            circle.endFill();
+            container.addChild(circle);
 
         // draw inner background circle with white background
-        const mask = new PIXI.Graphics()
-        mask.beginFill(0xFFFFFF)
-        mask.drawCircle(0,0,radius)
-        mask.endFill()
-        container.addChild(mask)
+            const mask = new PIXI.Graphics();
+            mask.beginFill(0xFFFFFF);
+            mask.drawCircle(0,0,radius);
+            mask.endFill();
+            container.addChild(mask);
 
         // get the (x,y) coordinates of the point that bound the sectors
-        const coords = plotCirclePoints(colors.length, radius+50, -90)
-        const size = radius 
+            const coords = plotCirclePoints(colors.length, radius+50, -90);
+            const size = radius; 
 
-        coords.forEach(function(coord, i){   
-            const index = (i == coords.length-1) ? 0 : i+1
-            const nextCoord = coords[index]
+            coords.forEach(function(coord, i){   
+                const index = (i == coords.length-1) ? 0 : i+1;
+                const nextCoord = coords[index];
 
             // draw the triangular sector of the correct color - note we are working within container
-            const tri = new PIXI.Graphics()
-            tri.beginFill( colors[i], 0.8);
-            tri.moveTo(0, 0);
-            tri.lineTo(coord.x, coord.y);
-            tri.lineTo(nextCoord.x, nextCoord.y);
-            tri.lineTo(0, 0);
-            tri.endFill();
-            tri.mask = mask
-            container.addChild(tri);
-        })
-        container.rotation = degToRad(startDeg)
-        this.container = container
-    }
+                const tri = new PIXI.Graphics();
+                tri.beginFill( colors[i], 0.8);
+                tri.moveTo(0, 0);
+                tri.lineTo(coord.x, coord.y);
+                tri.lineTo(nextCoord.x, nextCoord.y);
+                tri.lineTo(0, 0);
+                tri.endFill();
+                tri.mask = mask;
+                container.addChild(tri);
+            });
+            container.rotation = degToRad(startDeg);
+            this.container = container;
+        }
 
     /*
     * accelerate to zero
@@ -475,11 +475,11 @@ class SingleWheel {
     * timeInterval {float}  - the timeInterval in seconds over which the deleration is to take place
     * return {Promise}      - resolved when acceleration is complete
     */
-    accelerateToZero(position, timeInterval)
+        accelerateToZero(position, timeInterval)
     {
-        let dF = this.calculateStoppingDistance(position, timeInterval)
-        return this.accelerator.accelerate(0.0, timeInterval, dF)
-    }
+            let dF = this.calculateStoppingDistance(position, timeInterval);
+            return this.accelerator.accelerate(0.0, timeInterval, dF);
+        }
 
     /*
     * Advances the wheel's time by a timeInterval and redraws the wheel in the new position.
@@ -491,15 +491,15 @@ class SingleWheel {
     *
     * returns nothing
     */
-    advanceTimeBy(timeInterval)
+        advanceTimeBy(timeInterval)
     {
-        let d = this.accelerator.advanceTimeBy(timeInterval) 
+            let d = this.accelerator.advanceTimeBy(timeInterval); 
         // d - this can be a large number is not restricted to
         // range -2PI .. 2PI
-        let deltaRads = d - this.lastRadians
-        this.lastRadians = d
-        this.rotateByRadians(deltaRads)
-    }
+            let deltaRads = d - this.lastRadians;
+            this.lastRadians = d;
+            this.rotateByRadians(deltaRads);
+        }
 
 
     /*
@@ -523,30 +523,30 @@ class SingleWheel {
     *
     * returns dF{float} - the stopping distance in radians 
     */
-    calculateStoppingDistance(position, timeInterval)
+        calculateStoppingDistance(position, timeInterval)
     {
-        console.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`)
-        let positionInRadians = this.convertPositionToRadians(position)
-        let v0 = this.velocity
-        if( v0 < (2*Math.PI/timeInterval)){
-            alert("velocity maybe too low")
-        }
-        let currentRadians = this.container.rotation
+            console.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
+            let positionInRadians = this.convertPositionToRadians(position);
+            let v0 = this.velocity;
+            if( v0 < (2*Math.PI/timeInterval)){
+                alert('velocity maybe too low');
+            }
+            let currentRadians = this.container.rotation;
 
-        let deltaRadians = (positionInRadians >= currentRadians) ? 
+            let deltaRadians = (positionInRadians >= currentRadians) ? 
                                 (positionInRadians - currentRadians) :
-                                (2*Math.PI + positionInRadians - currentRadians)
+                                (2*Math.PI + positionInRadians - currentRadians);
 
-        let dRequired = deltaRadians
+            let dRequired = deltaRadians;
 
-        let dMax = v0 * timeInterval
+            let dMax = v0 * timeInterval;
 
-        if( dMax <= dRequired){
-            alert(
+            if( dMax <= dRequired){
+                alert(
                 `dRequired too big  or velocity too low\n dMax: ${dMax} dRequired:${dRequired}`
-                +` \nmay be suboptimal deceleration shape`
-                )
-        }
+                +' \nmay be suboptimal deceleration shape'
+                );
+            }
         // let cycles = Math.round(v * timeInterval / (2 * Math.PI) ) 
         // if( (cycles * 2 * Math.PI + deltaRadians) < dMax ){
         //     dRequired = cycles * 2 * Math.PI + deltaRadians
@@ -556,20 +556,20 @@ class SingleWheel {
         // if( (cycles * 2 * Math.PI + deltaRadians) > dMax ){
         //     throw new Error(`calculateStoppingDistance dRequired:${dRequired} too big`)
         // }
-        console.log(`calculateStoppingDistance v0 : ${v0} timeInterval: ${timeInterval} dRequired: ${dRequired}`)
-        return dRequired
-    }
+            console.log(`calculateStoppingDistance v0 : ${v0} timeInterval: ${timeInterval} dRequired: ${dRequired}`);
+            return dRequired;
+        }
 
     /*
     * Sets the wheels velocity in radians per second
     * @NOTE - we have duplicate data here BEWARE
     * velocity {float} - radians per sec
     */
-    setVelocity(v)
+        setVelocity(v)
     {
-        this.velocity = v
-        this.accelerator.setVelocity(v)
-    }
+            this.velocity = v;
+            this.accelerator.setVelocity(v);
+        }
 
     /*
     * Moves the wheels to positions. The positions are indexes
@@ -581,45 +581,45 @@ class SingleWheel {
     * position {int}
     * @returns nothing
     */
-    setPosition(position)
+        setPosition(position)
     {
-        let rads = this.convertPositionToRadians(position)
-        this.positionToRadians(rads)
-    }
+            let rads = this.convertPositionToRadians(position);
+            this.positionToRadians(rads);
+        }
     /*
     * Increase the rotation of the wheel by rads. Ensures that
     * the containers position value is always in the range -2*PI .. 2*PI
     *
     * rads {float} - radians in the range -2*PI .. 2*PI
     */
-    rotateByRadians(rads)
+        rotateByRadians(rads)
     {
-        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
-            throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
-        }
-        let rot = this.container.rotation 
-        let newr = rot + rads
-        if( (rot + rads) > 2*Math.PI )
-            newr = (rot + rads) - 2*Math.PI
-        if( (rot + rads) <  -2*Math.PI )
-            newr = (rot + rads) + 2*Math.PI
+            if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
+                throw new Error('rotateByRadians - rads should not be greater than 2*PI or less than -2*PI');
+            }
+            let rot = this.container.rotation; 
+            let newr = rot + rads;
+            if( (rot + rads) > 2*Math.PI )
+                newr = (rot + rads) - 2*Math.PI;
+            if( (rot + rads) <  -2*Math.PI )
+                newr = (rot + rads) + 2*Math.PI;
 
-        if( (newr > 2*Math.PI) || (newr < -2.0 * Math.PI) ){
-            throw new Error("rotateByRadians - newr should not be greater than 2*PI or less than -2*PI")
+            if( (newr > 2*Math.PI) || (newr < -2.0 * Math.PI) ){
+                throw new Error('rotateByRadians - newr should not be greater than 2*PI or less than -2*PI');
+            }
+            this.container.rotation = newr;
         }
-        this.container.rotation = newr
-    }
     /*
     * Position the wheel so that its rotation is a given value of radians
     * radians {float} - in range -2*PI .. 2*PI
     */
-    positionToRadians(radians)
+        positionToRadians(radians)
     {
-        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
-            throw new Error("positionToRadians - radians should not be greater than 2*PI or less than -2*PI")
+            if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
+                throw new Error('positionToRadians - radians should not be greater than 2*PI or less than -2*PI');
+            }
+            this.container.rotation = radians;        
         }
-        this.container.rotation = radians        
-    }
 
     /*
     * convert a position index into a rotation expressedin radians
@@ -629,17 +629,17 @@ class SingleWheel {
     * returns {float} - tha number of radians to set the wheels rotation value to
     *                   in order that the segment with this positionIndex is under the marker
     */
-    convertPositionToRadians(positionIndex)
+        convertPositionToRadians(positionIndex)
     {
-        let t = (2 * Math.PI * positionIndex / this.numberOfSegments)
-        if( t != 0){
-            t = 2*Math.PI - t
+            let t = (2 * Math.PI * positionIndex / this.numberOfSegments);
+            if( t != 0){
+                t = 2*Math.PI - t;
+            }
+            let res = t + degToRad(this.startDegrees);
+            return res;
         }
-        let res = t + degToRad(this.startDegrees)
-        return res
-    }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = SingleWheel;
+    /* harmony export (immutable) */ __webpack_exports__['a'] = SingleWheel;
 
 
 
@@ -657,92 +657,92 @@ class SingleWheel {
 * Normally the first sector boundary would be the point (0, radius) (12 oclock)
 * but offset the boundary points by "rotation" degrees to the right 
 */
-function plotCirclePoints(items, radius, rotation)
+    function plotCirclePoints(items, radius, rotation)
 {
-    const tmp = [];
+        const tmp = [];
 
-    for (let i = 0; i < items; i++)
+        for (let i = 0; i < items; i++)
     {
-        const r = radius;
-        const rot = degToRad(rotation);
+            const r = radius;
+            const rot = degToRad(rotation);
 
-        const x = r * Math.cos((2 * Math.PI * i / items) + rot);
-        const y = r * Math.sin((2 * Math.PI * i / items) + rot);
+            const x = r * Math.cos((2 * Math.PI * i / items) + rot);
+            const y = r * Math.sin((2 * Math.PI * i / items) + rot);
 
-        const offset = (x < 0) ? 270 : 90;
-        let angle = Math.atan(y / x) * 180 / Math.PI;
+            const offset = (x < 0) ? 270 : 90;
+            let angle = Math.atan(y / x) * 180 / Math.PI;
 
-        angle = angle + offset;
-        const style = {
-            x,
-            y,
+            angle = angle + offset;
+            const style = {
+                x,
+                y,
             // angle, - this is not used anywhere
-        };
+            };
 
-        tmp.push(style);
+            tmp.push(style);
+        }
+
+        return tmp;
     }
-
-    return tmp;
-}
 /*
 * Converts degrees to radians
 */
-function degToRad(degrees)
+    function degToRad(degrees)
 {
-    return degrees * Math.PI / 180;
-}
+        return degrees * Math.PI / 180;
+    }
 
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
-    if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
+        if (true) {
+            !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.newtonRaphson = factory();
-  }
-}(this, function () {
-  return function findRoot(f, fprime, guess, options) {
-    options = options || {};
-    var tolerance = options.tolerance || 0.00000001;
-    var epsilon = options.epsilon || 0.0000000000001;
-    var maxIterations = options.maxIterations || 20;
-    var haveWeFoundSolution = false; 
-    var newtonX;
+        } else if (typeof exports === 'object') {
+            module.exports = factory();
+        } else {
+            root.newtonRaphson = factory();
+        }
+    }(this, function () {
+        return function findRoot(f, fprime, guess, options) {
+            options = options || {};
+            var tolerance = options.tolerance || 0.00000001;
+            var epsilon = options.epsilon || 0.0000000000001;
+            var maxIterations = options.maxIterations || 20;
+            var haveWeFoundSolution = false; 
+            var newtonX;
    
-    for (var i = 0; i < maxIterations; ++i) {
-      var denominator = fprime(guess);
-      if (Math.abs(denominator) < epsilon) {
-        return false
-      }
+            for (var i = 0; i < maxIterations; ++i) {
+                var denominator = fprime(guess);
+                if (Math.abs(denominator) < epsilon) {
+                    return false;
+                }
    
-      result = guess - (f(guess) / denominator);
+                result = guess - (f(guess) / denominator);
       
-      var resultWithinTolerance = Math.abs(result - guess) < tolerance;
-      if (resultWithinTolerance) { 
-        return result
-      }
+                var resultWithinTolerance = Math.abs(result - guess) < tolerance;
+                if (resultWithinTolerance) { 
+                    return result;
+                }
 
-      guess = result;
-    }
+                guess = result;
+            }
     
-    return false;
-  }
-}));
+            return false;
+        };
+    }));
 
 /***/ }),
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bez_functions__ = __webpack_require__(5);
+    'use strict';
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bez_functions__ = __webpack_require__(5);
 
 
 
@@ -773,60 +773,60 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 *
 * @TODO - this needs a good tidy-up and reworking into ES6 style - but thats for later
 */
-const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
+    const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 {
 	// just changing the notation to what I am using
-    var V = v0;
-    var T = tF;
-    var D = dF;
-    let P0 = [], P1 = [], P2 = [], P3 = [];
-    let func;
-    const threshold = 0.1;
-    let complete = false;
-    let callBack = cb;
+        var V = v0;
+        var T = tF;
+        var D = dF;
+        let P0 = [], P1 = [], P2 = [], P3 = [];
+        let func;
+        const threshold = 0.1;
+        let complete = false;
+        let callBack = cb;
 
-    if( (v0 > 0) && (vF == 0) && ((T*v0) > (D)) )
+        if( (v0 > 0) && (vF == 0) && ((T*v0) > (D)) )
     {
         // this is the one special case where a cubic will not do the job
-        P0 = [0.0,0.0];
-        P2 = [T,D];
-        let p1_x = (D - vF*T)/(v0 - vF);
-        let p1_y = (v0*p1_x);
-        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["a" /* QuadraticBezier */])(P0, [p1_x, p1_y], P2);
-    }
-    else
+            P0 = [0.0,0.0];
+            P2 = [T,D];
+            let p1_x = (D - vF*T)/(v0 - vF);
+            let p1_y = (v0*p1_x);
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__['a' /* QuadraticBezier */])(P0, [p1_x, p1_y], P2);
+        }
+        else
     {
-        P0 = [0.0, 0.0];
-        P1 = [T/3.0, V*T/3.0]
-        P2 = [(2.0/3.0)*T, D - vF*T/3.0]
-        P3 = [T,D];
-        func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__["b" /* CubicBezier */])(P0, P1, P2, P3);
-    }
+            P0 = [0.0, 0.0];
+            P1 = [T/3.0, V*T/3.0];
+            P2 = [(2.0/3.0)*T, D - vF*T/3.0];
+            P3 = [T,D];
+            func = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bez_functions__['b' /* CubicBezier */])(P0, P1, P2, P3);
+        }
 
-    this.tangent_initial = function(t)
+        this.tangent_initial = function(t)
 	{
-        return V*t;
-    }.bind(this);
+            return V*t;
+        }.bind(this);
 
-    this.dotPositions = function()
+        this.dotPositions = function()
     {
-        return [P0, P1, P2, P3]
-    }
+            return [P0, P1, P2, P3];
+        };
 
 	/* 
     * this function draws the trajectory of the final velocity.Used only for debugging and demonstration
     * not part of the final exposed package
     */
-    this.tangent_final = function(t)
+        this.tangent_final = function(t)
 	{
-        let res =  vF*t + (D - vF*T);
-        return res;
-    }.bind(this);
+            let res =  vF*t + (D - vF*T);
+            return res;
+        }.bind(this);
 
-    this.getPositionAfter = function(elapsed_time)
+        this.getPositionAfter = function(elapsed_time)
     {
-        return this.getDistance(elapsed_time)
-    }.bind(this)
+            return this.getDistance(elapsed_time);
+        }.bind(this);
     /*
     * This is the only exposed method of the class that is not simply for debugging.
     *
@@ -834,23 +834,23 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
     *
     * Returns {float} - the distance traveled since the start of the velocity change
     */
-    this.getDistance = function(x_value)
+        this.getDistance = function(x_value)
     {
-        if( this.complete){
-            throw new Error("Accelerator: velocity change is complete. Cannot call this function")
-        }
-        if( (x_value >= T) && (! complete)) {
-            complete = true
-            if( (typeof callBack == "function" ) && (callBack != null) )
-                callBack()
-        }
-        let y_value = func(x_value)
-        return y_value
-    }.bind(this)
+            if( this.complete){
+                throw new Error('Accelerator: velocity change is complete. Cannot call this function');
+            }
+            if( (x_value >= T) && (! complete)) {
+                complete = true;
+                if( (typeof callBack == 'function' ) && (callBack != null) )
+                    callBack();
+            }
+            let y_value = func(x_value);
+            return y_value;
+        }.bind(this);
 	
 
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = BezDecelerator;
+    };
+    /* harmony export (immutable) */ __webpack_exports__['a'] = BezDecelerator;
 
 // module.exports = BezDecelerator;
 
@@ -859,11 +859,11 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 /* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bezier_cubic__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bezier_quadratic__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_newton_raphson__);
+    'use strict';
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bezier_cubic__ = __webpack_require__(6);
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bezier_quadratic__ = __webpack_require__(7);
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson__ = __webpack_require__(3);
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_newton_raphson__);
 
 
 
@@ -883,94 +883,94 @@ const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 * Bezier functions are defined as curves (x(t), y(t)) for a parameter t between 0 .. 1
 * but cannot be rephrased as (x, f(x)). Getting itin this f(x) form takes computational work
 */
-const CubicBezier = function CubicBezier(P0, P1, P2, P3)
+    const CubicBezier = function CubicBezier(P0, P1, P2, P3)
 {
-    let bezObj = new __WEBPACK_IMPORTED_MODULE_0__bezier_cubic__["a" /* BezierCubicClass */](P0, P1, P2, P3)
+        let bezObj = new __WEBPACK_IMPORTED_MODULE_0__bezier_cubic__['a' /* BezierCubicClass */](P0, P1, P2, P3);
 
-    let parametricFunc = function(t)
+        let parametricFunc = function(t)
     {
-        return [bezObj.x_From_t(t), bezObj.y_From_t(t)]
-    }
+            return [bezObj.x_From_t(t), bezObj.y_From_t(t)];
+        };
 
-    let functionOfX = function(x_value)
+        let functionOfX = function(x_value)
     {
         // find the t value that corresponds to the x value
         // get it by newton raphson
 
-        let f = function(t)
+            let f = function(t)
         {
-            return ( bezObj.x_From_t(t) - x_value )  
-        }
-        let fPrime = function(t)
+                return ( bezObj.x_From_t(t) - x_value );  
+            };
+            let fPrime = function(t)
         {
-            return bezObj.x_From_t_derivative(t)
-        }
+                return bezObj.x_From_t_derivative(t);
+            };
 
-        let t_value = __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default()(f, fPrime, 0.5, null)
-        if( t_value === false){
-            throw new Error("cannot find t for x in CubicBezier")
-        }
-        let check_x_value = bezObj.x_From_t(t_value)
+            let t_value = __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default()(f, fPrime, 0.5, null);
+            if( t_value === false){
+                throw new Error('cannot find t for x in CubicBezier');
+            }
+            let check_x_value = bezObj.x_From_t(t_value);
         // console.log(`x_value: ${x_value}  t_value: ${t_value} check_x_value: ${check_x_value}`)
 
         // let x_value = bezObj.x_From_t(t)
-        let y_value = bezObj.y_From_t(t_value);
-        if(y_value == 0){
-            console.log(`CubicBezier: y_value is zero`)
-        }
-        return y_value
-    };
+            let y_value = bezObj.y_From_t(t_value);
+            if(y_value == 0){
+                console.log('CubicBezier: y_value is zero');
+            }
+            return y_value;
+        };
 
-    return functionOfX;
-}
-/* harmony export (immutable) */ __webpack_exports__["b"] = CubicBezier;
+        return functionOfX;
+    };
+    /* harmony export (immutable) */ __webpack_exports__['b'] = CubicBezier;
 
 /*
 * This function returns a function which is a bezier Quadratuc curve as a
 * function of x so that (x, f(x)) is a point on the bezier curve
 */
-const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
+    const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
  {
-    let bezObj = new __WEBPACK_IMPORTED_MODULE_1__bezier_quadratic__["a" /* BezierQuadraticClass */](P0, P1, P2)
+        let bezObj = new __WEBPACK_IMPORTED_MODULE_1__bezier_quadratic__['a' /* BezierQuadraticClass */](P0, P1, P2);
 
     // find the t value that corresponds to the x value
     // get it by newton raphson
 
-    let parametricFunc = function(t)
+        let parametricFunc = function(t)
     {
-        return [bezObj.x_From_t(t), bezObj.y_From_t(t)]
-    }
+            return [bezObj.x_From_t(t), bezObj.y_From_t(t)];
+        };
 
-    let functionOfX = function(x_value)
+        let functionOfX = function(x_value)
     {
-        let f = function(t)
+            let f = function(t)
         {
-            return ( bezObj.x_From_t(t) - x_value )  
-        }
-        let fPrime = function(t)
+                return ( bezObj.x_From_t(t) - x_value );  
+            };
+            let fPrime = function(t)
         {
-            return bezObj.x_From_t_derivative(t)
-        }
+                return bezObj.x_From_t_derivative(t);
+            };
 
-        let t_value = __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default()(f, fPrime, 0.5, null)
-        if( t_value === false){
-            console.log([P0, P1, P2])
-            throw new Error(`cannot find t for x in QuadraticBezier x_value:${x_value}`)
-        }
-        let check_x_value = bezObj.x_From_t(t_value)
+            let t_value = __WEBPACK_IMPORTED_MODULE_2_newton_raphson___default()(f, fPrime, 0.5, null);
+            if( t_value === false){
+                console.log([P0, P1, P2]);
+                throw new Error(`cannot find t for x in QuadraticBezier x_value:${x_value}`);
+            }
+            let check_x_value = bezObj.x_From_t(t_value);
         // console.log(`x_value: ${x_value}  t_value: ${t_value} check_x_value: ${check_x_value}`)
 
         // let x = bezObj.x_From_t(t);
-        let y_value = bezObj.y_From_t(t_value);
-        if(y_value == 0){
-            console.log(`CubicBezier: y_value is zero`)
-        }
-        return y_value
-    };
+            let y_value = bezObj.y_From_t(t_value);
+            if(y_value == 0){
+                console.log('CubicBezier: y_value is zero');
+            }
+            return y_value;
+        };
 
-    return functionOfX;
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = QuadraticBezier;
+        return functionOfX;
+    };
+    /* harmony export (immutable) */ __webpack_exports__['a'] = QuadraticBezier;
 
 
 
@@ -979,67 +979,67 @@ const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
+    'use strict';
 /*
 * This file implements a class which provides a Cubic Bezier curve and its derivative
 */
 
 // this function is the first derivative of the cubic bezier. Needed for x_From_t_derivative
-function Q(p0, p1, p2, t)
+    function Q(p0, p1, p2, t)
 {
-    let res = p0*(1.0-t)*(1.0-t) + 2.0*p1*(1.0-t)*t + p2 * t*t
-    return res 
-}
+        let res = p0*(1.0-t)*(1.0-t) + 2.0*p1*(1.0-t)*t + p2 * t*t;
+        return res; 
+    }
 
-class BezierCubicClass 
+    class BezierCubicClass 
 {
-    constructor(P0, P1, P2, P3){
-        this.P0 = P0
-        this.P1 = P1
-        this.P2 = P2
-        this.P3 = P3
-    }
+        constructor(P0, P1, P2, P3){
+            this.P0 = P0;
+            this.P1 = P1;
+            this.P2 = P2;
+            this.P3 = P3;
+        }
     // private
-    derivative(t, p0, p1, p2, p3)
+        derivative(t, p0, p1, p2, p3)
     {
-        let res = 3.0 * (Q(p1,p2,p3, t) - Q(p0, p1, p2, t))
-        return res;
-    }
+            let res = 3.0 * (Q(p1,p2,p3, t) - Q(p0, p1, p2, t));
+            return res;
+        }
     // private
-    bez_func(t, p0, p1, p2, p3)
+        bez_func(t, p0, p1, p2, p3)
     {
-        var res =   p0*(1-t)*(1-t)*(1-t) 
+            var res =   p0*(1-t)*(1-t)*(1-t) 
                     + 3.0 * p1 * (1-t)*(1-t)*t 
                     + 3.0 * p2 * (1 - t)* t * t 
                     + p3*t*t*t;
-        return res;
-    }
+            return res;
+        }
 
-    x_From_t(t)
+        x_From_t(t)
     {
-        let res = this.bez_func(t, this.P0[0], this.P1[0], this.P2[0], this.P3[0])
-        return res
-    }
+            let res = this.bez_func(t, this.P0[0], this.P1[0], this.P2[0], this.P3[0]);
+            return res;
+        }
 
-    x_From_t_derivative(t)
+        x_From_t_derivative(t)
     {
-        let res = this.derivative(t, this.P0[0], this.P1[0], this.P2[0], this.P3[0])
-        return res
-    }
+            let res = this.derivative(t, this.P0[0], this.P1[0], this.P2[0], this.P3[0]);
+            return res;
+        }
 
-    y_From_t(t)
+        y_From_t(t)
     {
-        let res = this.bez_func(t, this.P0[1], this.P1[1], this.P2[1], this.P3[1])
-        return res
-    }
+            let res = this.bez_func(t, this.P0[1], this.P1[1], this.P2[1], this.P3[1]);
+            return res;
+        }
     // currently not used
-    point_From_t()
+        point_From_t()
     {
-        let res = [this.x_From_t(t), this.y_From_t(t)]
-        return res
-    }
+            let res = [this.x_From_t(t), this.y_From_t(t)];
+            return res;
+        }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = BezierCubicClass;
+    /* harmony export (immutable) */ __webpack_exports__['a'] = BezierCubicClass;
  
 
 
@@ -1049,59 +1049,59 @@ class BezierCubicClass
 /* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
+    'use strict';
 
 // this function is the first derivative of the quadratic bezier. Needed for x_From_t_derivative
-function L(p0, p1, t)
+    function L(p0, p1, t)
 {
-    let res = p0*(1.0 - t) + p1*t
-    return res 
-}
+        let res = p0*(1.0 - t) + p1*t;
+        return res; 
+    }
 
-class BezierQuadraticClass
+    class BezierQuadraticClass
 {
-    constructor(P0, P1, P2){
-        this.P0 = P0
-        this.P1 = P1
-        this.P2 = P2
-    }
-    derivative(t, p0, p1, p2)
+        constructor(P0, P1, P2){
+            this.P0 = P0;
+            this.P1 = P1;
+            this.P2 = P2;
+        }
+        derivative(t, p0, p1, p2)
     {
-        let res = 2.0 * (L(p1,p2, t) - L(p0, p1, t))
-        return res;
-    }
+            let res = 2.0 * (L(p1,p2, t) - L(p0, p1, t));
+            return res;
+        }
 
-    bez_func(t, p0, p1, p2)
+        bez_func(t, p0, p1, p2)
     {
-        var res =   p0*(1-t)*(1-t) + 2.0 * p1 * (1-t)*t + p2 * t * t 
-        return res;
-    }
+            var res =   p0*(1-t)*(1-t) + 2.0 * p1 * (1-t)*t + p2 * t * t; 
+            return res;
+        }
 
-    x_From_t(t)
+        x_From_t(t)
     {
-        let res = this.bez_func(t, this.P0[0], this.P1[0], this.P2[0])
-        return res
-    }
+            let res = this.bez_func(t, this.P0[0], this.P1[0], this.P2[0]);
+            return res;
+        }
 
-    x_From_t_derivative(t)
+        x_From_t_derivative(t)
     {
-        let res = this.derivative(t, this.P0[0], this.P1[0], this.P2[0])
-        return res
-    }
+            let res = this.derivative(t, this.P0[0], this.P1[0], this.P2[0]);
+            return res;
+        }
 
-    y_From_t(t)
+        y_From_t(t)
     {
-        let res = this.bez_func(t, this.P0[1], this.P1[1], this.P2[1])
-        return res
-    }
+            let res = this.bez_func(t, this.P0[1], this.P1[1], this.P2[1]);
+            return res;
+        }
 
-    point_From_t()
+        point_From_t()
     {
-        let res = [this.x_From_t(t), this.y_From_t(t)]
-        return res
-    }
+            let res = [this.x_From_t(t), this.y_From_t(t)];
+            return res;
+        }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = BezierQuadraticClass;
+    /* harmony export (immutable) */ __webpack_exports__['a'] = BezierQuadraticClass;
  
 
 
@@ -1110,14 +1110,14 @@ class BezierQuadraticClass
 /* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__accelerator_js__ = __webpack_require__(4);
+    'use strict';
+    /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__accelerator_js__ = __webpack_require__(4);
 
 
-function logger(s)
+    function logger(s)
 {
     //console.log(s)
-}
+    }
 /*
 * TODO
 *   -   does not correctly support advancing by a time interval that jumps over the end of an acceleration
@@ -1152,20 +1152,20 @@ function logger(s)
 *           dF - is the distance that the object should move while changing velocity
 *       returns a ES6 promise
 */
-class Mover
+    class Mover
 {
 
-    constructor(v0)
+        constructor(v0)
     {
-        this.signature = "Mover"
-        this.time = 0.0;
-        this.elapsedTimeChangingVelocity = 0.0
-        this.timeInterval = 1.0/60.0 // @FIX this is going away
-        this.totalDistance = 0.0
-        this.changingVelocity = false
-        this.decelerator = null
-        this.currentVelocity = v0
-    }
+            this.signature = 'Mover';
+            this.time = 0.0;
+            this.elapsedTimeChangingVelocity = 0.0;
+            this.timeInterval = 1.0/60.0; // @FIX this is going away
+            this.totalDistance = 0.0;
+            this.changingVelocity = false;
+            this.decelerator = null;
+            this.currentVelocity = v0;
+        }
     /*
     * Advance the moving objects time by a time interval
     *
@@ -1174,69 +1174,69 @@ class Mover
     *   returns {float} -   total distance traveled after this time interbal is added to total time
     *                       of travel. Just for convenience as could get this with position()
     */
-    advanceTimeBy(deltaTime)
+        advanceTimeBy(deltaTime)
     {
-        if( ! this.changingVelocity ){
-            this.advanceTimeBy_VelocityNotChanging(deltaTime)
-        }else {
-            this.time += deltaTime
-            this.elapsedTimeChangingVelocity += deltaTime
+            if( ! this.changingVelocity ){
+                this.advanceTimeBy_VelocityNotChanging(deltaTime);
+            }else {
+                this.time += deltaTime;
+                this.elapsedTimeChangingVelocity += deltaTime;
 
-            let tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity)
-            let deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance
+                let tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity);
+                let deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance;
 
-            this.currentVelocity = deltaDistance / (deltaTime)
-            this.totalDistance = this.distanceBeforeVelocityChange + tmp
+                this.currentVelocity = deltaDistance / (deltaTime);
+                this.totalDistance = this.distanceBeforeVelocityChange + tmp;
 
-            logger(
+                logger(
                 `Mover::advanceByTime  elapsedTimeChangingVelocity: ${this.elapsedTimeChangingVelocity}`
                 +` timeForChange: ${this.timeForChange}`
                 +` DVdistance: ${tmp} `
                 +` totalDistance: ${this.totalDistance}`
-                + `velocity: ${this.currentVelocity}`)
+                + `velocity: ${this.currentVelocity}`);
 
-            if( this.elapsedTimeChangingVelocity >= this.timeForChange )
+                if( this.elapsedTimeChangingVelocity >= this.timeForChange )
             {
-                logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`)
-                this.currentVelocity = this.newVelocity
-                this.changingVelocity = false
-                if( typeof this.resolvePromiseFunction == "function")
-                    this.resolvePromiseFunction()
+                    logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`);
+                    this.currentVelocity = this.newVelocity;
+                    this.changingVelocity = false;
+                    if( typeof this.resolvePromiseFunction == 'function')
+                        this.resolvePromiseFunction();
+                }
             }
+            return this.totalDistance;
         }
-        return this.totalDistance
-    }
     /*
     * returns {float} the current position of the moving object
     */
-    position()
+        position()
     {
-        return this.totalDistance
-    }
+            return this.totalDistance;
+        }
     /*
     * returns {float} the current velocity of the moving object
     */
-    velocity()
+        velocity()
     {
-        return this.currentVelocity
-    }
+            return this.currentVelocity;
+        }
     /*
     * Convenience function wth more meaningful name
     * accelerat to a target final velocity
     */
-    acceleratTo(vF, tF, dF)
+        acceleratTo(vF, tF, dF)
     {
-        return accelerat(vF, tF, dF)
-    }
+            return accelerat(vF, tF, dF);
+        }
     /*
     * Convenience function wth more meaningful name
     * accelerat  -  change current velocity by a givn deltaVee
     */
-    accelerateBy(deltaVee, tF, dF)
+        accelerateBy(deltaVee, tF, dF)
     {
-        let vF = this.currentVelocity + deltaVee
-        return accelerat(vF, tF, dF)
-    }
+            let vF = this.currentVelocity + deltaVee;
+            return accelerat(vF, tF, dF);
+        }
     /*
     *   accelerate(vF, tF, dF, cb) - instructs the object to start a velocity change
     *           vF - is the velocity the object is to change to
@@ -1245,79 +1245,79 @@ class Mover
     *
     *   returns a ES6 Promise which will be resolved when the acceleration has completed
     */
-    accelerate(vF, tF, dF)
+        accelerate(vF, tF, dF)
     {
-        logger(`Mover::accelerate ${vF} ${tF} ${dF}`)
-        if( this.changingVelocity ){
-            throw new Error("cannot have two accelerations underway at the same time")
+            logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
+            if( this.changingVelocity ){
+                throw new Error('cannot have two accelerations underway at the same time');
+            }
+            let v0 = this.currentVelocity;
+            let p = new Promise(function(resolve){
+                this.resolvePromiseFunction = resolve;
+            }.bind(this));
+            this.distanceBeforeVelocityChange = this.totalDistance;
+            this.changingVelocity = true;
+            this.elapsedTimeChangingVelocity = 0.0;
+            this.timeForChange = tF;
+            this.newVelocity = vF;
+            this.distanceForChange = dF;
+            this.decelerator = new __WEBPACK_IMPORTED_MODULE_0__accelerator_js__['a' /* BezDecelerator */](v0, vF, tF, dF);
+            return p;
         }
-        let v0 = this.currentVelocity
-        let p = new Promise(function(resolve){
-            this.resolvePromiseFunction = resolve
-        }.bind(this))
-        this.distanceBeforeVelocityChange = this.totalDistance
-        this.changingVelocity = true
-        this.elapsedTimeChangingVelocity = 0.0
-        this.timeForChange = tF
-        this.newVelocity = vF
-        this.distanceForChange = dF
-        this.decelerator = new __WEBPACK_IMPORTED_MODULE_0__accelerator_js__["a" /* BezDecelerator */](v0, vF, tF, dF)
-        return p
-    }
 
     /*
     * Internal only - advances time when no acceleration is active
     */
-    advanceTimeBy_VelocityNotChanging(deltaTime)
+        advanceTimeBy_VelocityNotChanging(deltaTime)
     {
-        this.time += deltaTime
-        this.totalDistance += this.currentVelocity * deltaTime
-        logger(`Mover::advanceTimeBy_VelocityNotChanging velocity:`
-            +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`)
-    }
-
-    setVelocity(v)
-    {
-        if( this.changingVelocity ){
-            throw new Error("cannot setVelocity during an acceleration")
+            this.time += deltaTime;
+            this.totalDistance += this.currentVelocity * deltaTime;
+            logger('Mover::advanceTimeBy_VelocityNotChanging velocity:'
+            +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`);
         }
-        this.currentVelocity = v
 
-    }
+        setVelocity(v)
+    {
+            if( this.changingVelocity ){
+                throw new Error('cannot setVelocity during an acceleration');
+            }
+            this.currentVelocity = v;
+
+        }
 /////////////// below here will disappear
 
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
-    advanceTimeByFrames(numberOfFrames)
+        advanceTimeByFrames(numberOfFrames)
     {
-        logger(`Mover::advanceTimeByFrames:numberOfFrames: ${numberOfFrames} time:${this.time}`)
-        let deltaTime = numberOfFrames * this.timeInterval
-        this.advanceTimeBy(deltaTime)
-    }
+            logger(`Mover::advanceTimeByFrames:numberOfFrames: ${numberOfFrames} time:${this.time}`);
+            let deltaTime = numberOfFrames * this.timeInterval;
+            this.advanceTimeBy(deltaTime);
+        }
 
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
     /*
     * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
     * frames and display issues.
     */
-    getDistance(numberOfFrames)
+        getDistance(numberOfFrames)
     {
-        this.advanceTimeByFrames(numberOfFrames)
-        return this.totalDistance
-    }
+            this.advanceTimeByFrames(numberOfFrames);
+            return this.totalDistance;
+        }
 
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
     /*
     * @TODO - change parameter to deltaTime in seconds - this thing should know nothing about
     * frames and display issues.
     */
-    getDistanceVelocityNotChanging(numberOfFrames)
+        getDistanceVelocityNotChanging(numberOfFrames)
     {
-        this.time += this.timeInterval*numberOfFrames
-        this.totalDistance += this.currentVelocity*this.timeInterval*numberOfFrames
-        return this.totalDistance
-    }
+            this.time += this.timeInterval*numberOfFrames;
+            this.totalDistance += this.currentVelocity*this.timeInterval*numberOfFrames;
+            return this.totalDistance;
+        }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Mover;
+    /* harmony export (immutable) */ __webpack_exports__['a'] = Mover;
 
 
 

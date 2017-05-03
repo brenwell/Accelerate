@@ -1,8 +1,8 @@
-import {BezDecelerator} from "./accelerator.js"
+import { BezDecelerator } from './accelerator.js';
 
-function logger(s)
+function logger(s) // eslint-disable-line
 {
-    //console.log(s)
+    // console.log(s)
 }
 /*
 * TODO
@@ -40,17 +40,21 @@ function logger(s)
 */
 export default class Mover
 {
-
+    /**
+     * Constructs the object.
+     *
+     * @param  {Number}  v0  The initial Velocity
+     */
     constructor(v0)
     {
-        this.signature = "Mover"
+        this.signature = 'Mover';
         this.time = 0.0;
-        this.elapsedTimeChangingVelocity = 0.0
-        this.timeInterval = 1.0/60.0 // @FIX this is going away
-        this.totalDistance = 0.0
-        this.changingVelocity = false
-        this.decelerator = null
-        this.currentVelocity = v0
+        this.elapsedTimeChangingVelocity = 0.0;
+        this.timeInterval = 1.0 / 60.0; // @FIX this is going away
+        this.totalDistance = 0.0;
+        this.changingVelocity = false;
+        this.decelerator = null;
+        this.currentVelocity = v0;
     }
     /*
     * Advance the moving objects time by a time interval
@@ -62,67 +66,55 @@ export default class Mover
     */
     advanceTimeBy(deltaTime)
     {
-        if( ! this.changingVelocity ){
-            this.advanceTimeBy_VelocityNotChanging(deltaTime)
-        }else {
-            this.time += deltaTime
-            this.elapsedTimeChangingVelocity += deltaTime
+        if (!this.changingVelocity)
+{
+            this.advanceTimeBy_VelocityNotChanging(deltaTime);
+        }
+        else
+{
+            this.time += deltaTime;
+            this.elapsedTimeChangingVelocity += deltaTime;
 
-            let tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity)
-            let deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance
+            const tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity);
+            const deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance;
 
-            this.currentVelocity = deltaDistance / (deltaTime)
-            this.totalDistance = this.distanceBeforeVelocityChange + tmp
+            this.currentVelocity = deltaDistance / (deltaTime);
+            this.totalDistance = this.distanceBeforeVelocityChange + tmp;
 
             logger(
                 `Mover::advanceByTime  elapsedTimeChangingVelocity: ${this.elapsedTimeChangingVelocity}`
-                +` timeForChange: ${this.timeForChange}`
-                +` DVdistance: ${tmp} `
-                +` totalDistance: ${this.totalDistance}`
-                + `velocity: ${this.currentVelocity}`)
+                + ` timeForChange: ${this.timeForChange}`
+                + ` DVdistance: ${tmp} `
+                + ` totalDistance: ${this.totalDistance}`
+                + `velocity: ${this.currentVelocity}`);
 
-            if( this.elapsedTimeChangingVelocity >= this.timeForChange )
+            if (this.elapsedTimeChangingVelocity >= this.timeForChange)
             {
-                logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`)
-                this.currentVelocity = this.newVelocity
-                this.changingVelocity = false
-                if( typeof this.resolvePromiseFunction == "function")
-                    this.resolvePromiseFunction()
+                logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`);
+                this.currentVelocity = this.newVelocity;
+                this.changingVelocity = false;
+                if (typeof this.resolvePromiseFunction === 'function')
+                    { this.resolvePromiseFunction(); }
             }
         }
-        return this.totalDistance
+
+        return this.totalDistance;
     }
     /*
     * returns {float} the current position of the moving object
     */
     position()
     {
-        return this.totalDistance
+        return this.totalDistance;
     }
     /*
     * returns {float} the current velocity of the moving object
     */
     velocity()
     {
-        return this.currentVelocity
+        return this.currentVelocity;
     }
-    /*
-    * Convenience function wth more meaningful name
-    * accelerat to a target final velocity
-    */
-    acceleratTo(vF, tF, dF)
-    {
-        return accelerat(vF, tF, dF)
-    }
-    /*
-    * Convenience function wth more meaningful name
-    * accelerat  -  change current velocity by a givn deltaVee
-    */
-    accelerateBy(deltaVee, tF, dF)
-    {
-        let vF = this.currentVelocity + deltaVee
-        return accelerat(vF, tF, dF)
-    }
+
     /*
     *   accelerate(vF, tF, dF, cb) - instructs the object to start a velocity change
     *           vF - is the velocity the object is to change to
@@ -133,22 +125,26 @@ export default class Mover
     */
     accelerate(vF, tF, dF)
     {
-        logger(`Mover::accelerate ${vF} ${tF} ${dF}`)
-        if( this.changingVelocity ){
-            throw new Error("cannot have two accelerations underway at the same time")
+        logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
+        if (this.changingVelocity)
+{
+            throw new Error('cannot have two accelerations underway at the same time');
         }
-        let v0 = this.currentVelocity
-        let p = new Promise(function(resolve){
-            this.resolvePromiseFunction = resolve
-        }.bind(this))
-        this.distanceBeforeVelocityChange = this.totalDistance
-        this.changingVelocity = true
-        this.elapsedTimeChangingVelocity = 0.0
-        this.timeForChange = tF
-        this.newVelocity = vF
-        this.distanceForChange = dF
-        this.decelerator = new BezDecelerator(v0, vF, tF, dF)
-        return p
+        const v0 = this.currentVelocity;
+        const p = new Promise(function (resolve)
+{
+            this.resolvePromiseFunction = resolve;
+        }.bind(this));
+
+        this.distanceBeforeVelocityChange = this.totalDistance;
+        this.changingVelocity = true;
+        this.elapsedTimeChangingVelocity = 0.0;
+        this.timeForChange = tF;
+        this.newVelocity = vF;
+        this.distanceForChange = dF;
+        this.decelerator = new BezDecelerator(v0, vF, tF, dF);
+
+        return p;
     }
 
     /*
@@ -156,28 +152,29 @@ export default class Mover
     */
     advanceTimeBy_VelocityNotChanging(deltaTime)
     {
-        this.time += deltaTime
-        this.totalDistance += this.currentVelocity * deltaTime
-        logger(`Mover::advanceTimeBy_VelocityNotChanging velocity:`
-            +` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`)
+        this.time += deltaTime;
+        this.totalDistance += this.currentVelocity * deltaTime;
+        logger('Mover::advanceTimeBy_VelocityNotChanging velocity:'
+            + ` ${this.currentVelocity} distance:${this.totalDistance} time: ${this.time}`);
     }
 
     setVelocity(v)
     {
-        if( this.changingVelocity ){
-            throw new Error("cannot setVelocity during an acceleration")
+        if (this.changingVelocity)
+{
+            throw new Error('cannot setVelocity during an acceleration');
         }
-        this.currentVelocity = v
-
+        this.currentVelocity = v;
     }
-/////////////// below here will disappear
+// ///////////// below here will disappear
 
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
     advanceTimeByFrames(numberOfFrames)
     {
-        logger(`Mover::advanceTimeByFrames:numberOfFrames: ${numberOfFrames} time:${this.time}`)
-        let deltaTime = numberOfFrames * this.timeInterval
-        this.advanceTimeBy(deltaTime)
+        logger(`Mover::advanceTimeByFrames:numberOfFrames: ${numberOfFrames} time:${this.time}`);
+        const deltaTime = numberOfFrames * this.timeInterval;
+
+        this.advanceTimeBy(deltaTime);
     }
 
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
@@ -187,8 +184,9 @@ export default class Mover
     */
     getDistance(numberOfFrames)
     {
-        this.advanceTimeByFrames(numberOfFrames)
-        return this.totalDistance
+        this.advanceTimeByFrames(numberOfFrames);
+
+        return this.totalDistance;
     }
 
     // ONLY    HERE DURING TRANSITION TO DELTA TIME
@@ -198,11 +196,11 @@ export default class Mover
     */
     getDistanceVelocityNotChanging(numberOfFrames)
     {
-        this.time += this.timeInterval*numberOfFrames
-        this.totalDistance += this.currentVelocity*this.timeInterval*numberOfFrames
-        return this.totalDistance
+        this.time += this.timeInterval * numberOfFrames;
+        this.totalDistance += this.currentVelocity * this.timeInterval * numberOfFrames;
+
+        return this.totalDistance;
     }
 }
 
-
-// window.ACCELERATE = exports;
+window.ACCELERATE = exports;

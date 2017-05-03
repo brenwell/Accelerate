@@ -1,5 +1,4 @@
-
-import {QuadraticBezier, CubicBezier} from "./bez_functions"
+import { QuadraticBezier, CubicBezier } from './bez_functions';
 
 /*
 *   @TODO
@@ -31,78 +30,83 @@ import {QuadraticBezier, CubicBezier} from "./bez_functions"
 export const BezDecelerator = function Decelerator(v0, vF, tF, dF, cb)
 {
 	// just changing the notation to what I am using
-    var V = v0;
-    var T = tF;
-    var D = dF;
-    let P0 = [], P1 = [], P2 = [], P3 = [];
+    const V = v0;
+    const T = tF;
+    const D = dF;
+    let P0 = [],
+        P1 = [],
+        P2 = [],
+        P3 = [];
     let func;
-    const threshold = 0.1;
     let complete = false;
-    let callBack = cb;
+    const callBack = cb;
 
-    if( (v0 > 0) && (vF == 0) && ((T*v0) > (D)) )
+    if ((v0 > 0) && (vF == 0) && ((T * v0) > (D)))
     {
         // this is the one special case where a cubic will not do the job
-        P0 = [0.0,0.0];
-        P2 = [T,D];
-        let p1_x = (D - vF*T)/(v0 - vF);
-        let p1_y = (v0*p1_x);
+        P0 = [0.0, 0.0];
+        P2 = [T, D];
+        const p1_x = (D - vF * T) / (v0 - vF);
+        const p1_y = (v0 * p1_x);
+
         func = QuadraticBezier(P0, [p1_x, p1_y], P2);
     }
     else
     {
         P0 = [0.0, 0.0];
-        P1 = [T/3.0, V*T/3.0]
-        P2 = [(2.0/3.0)*T, D - vF*T/3.0]
-        P3 = [T,D];
+        P1 = [T / 3.0, V * T / 3.0];
+        P2 = [(2.0 / 3.0) * T, D - vF * T / 3.0];
+        P3 = [T, D];
         func = CubicBezier(P0, P1, P2, P3);
     }
 
-    this.tangent_initial = function(t)
+    this.tangent_initial = function (t)
 	{
-        return V*t;
-    }.bind(this);
+        return V * t;
+    };
 
-    this.dotPositions = function()
+    this.dotPositions = function ()
     {
-        return [P0, P1, P2, P3]
-    }
+        return [P0, P1, P2, P3];
+    };
 
-	/* 
+	/*
     * this function draws the trajectory of the final velocity.Used only for debugging and demonstration
     * not part of the final exposed package
     */
-    this.tangent_final = function(t)
+    this.tangent_final = function (t)
 	{
-        let res =  vF*t + (D - vF*T);
-        return res;
-    }.bind(this);
+        const res =  vF * t + (D - vF * T);
 
-    this.getPositionAfter = function(elapsed_time)
+        return res;
+    };
+
+    this.getPositionAfter = function (elapsed_time)
     {
-        return this.getDistance(elapsed_time)
-    }.bind(this)
+        return this.getDistance(elapsed_time);
+    }.bind(this);
     /*
     * This is the only exposed method of the class that is not simply for debugging.
     *
-    * x_value {float} - a number in the range  0..tF the elapsed time of the velocity change 
+    * x_value {float} - a number in the range  0..tF the elapsed time of the velocity change
     *
     * Returns {float} - the distance traveled since the start of the velocity change
     */
-    this.getDistance = function(x_value)
+    this.getDistance = function (x_value)
     {
-        if( this.complete){
-            throw new Error("Accelerator: velocity change is complete. Cannot call this function")
+        if (this.complete)
+{
+            throw new Error('Accelerator: velocity change is complete. Cannot call this function');
         }
-        if( (x_value >= T) && (! complete)) {
-            complete = true
-            if( (typeof callBack == "function" ) && (callBack != null) )
-                callBack()
+        if ((x_value >= T) && (!complete))
+{
+            complete = true;
+            if ((typeof callBack === 'function') && (callBack != null))
+                { callBack(); }
         }
-        let y_value = func(x_value)
-        return y_value
-    }.bind(this)
-	
+        const y_value = func(x_value);
 
+        return y_value;
+    }.bind(this);
 };
 // module.exports = BezDecelerator;

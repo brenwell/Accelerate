@@ -1,6 +1,6 @@
-import {BezierCubicClass} from "./bezier_cubic"
-import {BezierQuadraticClass} from "./bezier_quadratic"
-import newtonRaphson from "newton-raphson"
+import { BezierCubicClass } from './bezier_cubic';
+import { BezierQuadraticClass } from './bezier_quadratic';
+import newtonRaphson from 'newton-raphson';
 
 /*
 * @TODO
@@ -11,7 +11,7 @@ import newtonRaphson from "newton-raphson"
 * into a function of x
 */
 
-/* 
+/*
 * This function returns a function which is a bezier Cubic curve as a
 * function of x so that (x, f(x)) is a point on the bezier curve.
 * Bezier functions are defined as curves (x(t), y(t)) for a parameter t between 0 .. 1
@@ -19,87 +19,97 @@ import newtonRaphson from "newton-raphson"
 */
 export const CubicBezier = function CubicBezier(P0, P1, P2, P3)
 {
-    let bezObj = new BezierCubicClass(P0, P1, P2, P3)
+    const bezObj = new BezierCubicClass(P0, P1, P2, P3);
 
-    let parametricFunc = function(t)
+    const parametricFunc = function (t)
     {
-        return [bezObj.x_From_t(t), bezObj.y_From_t(t)]
-    }
+        return [bezObj.x_From_t(t), bezObj.y_From_t(t)];
+    };
 
-    let functionOfX = function(x_value)
+    const functionOfX = function (x_value)
     {
         // find the t value that corresponds to the x value
         // get it by newton raphson
 
-        let f = function(t)
+        const f = function (t)
         {
-            return ( bezObj.x_From_t(t) - x_value )  
-        }
-        let fPrime = function(t)
+            return (bezObj.x_From_t(t) - x_value);
+        };
+        const fPrime = function (t)
         {
-            return bezObj.x_From_t_derivative(t)
-        }
+            return bezObj.x_From_t_derivative(t);
+        };
 
-        let t_value = newtonRaphson(f, fPrime, 0.5, null)
-        if( t_value === false){
-            throw new Error("cannot find t for x in CubicBezier")
+        const t_value = newtonRaphson(f, fPrime, 0.5, null);
+
+        if (t_value === false)
+{
+            throw new Error('cannot find t for x in CubicBezier');
         }
-        let check_x_value = bezObj.x_From_t(t_value)
+        const check_x_value = bezObj.x_From_t(t_value);
         // console.log(`x_value: ${x_value}  t_value: ${t_value} check_x_value: ${check_x_value}`)
 
         // let x_value = bezObj.x_From_t(t)
-        let y_value = bezObj.y_From_t(t_value);
-        if(y_value == 0){
-            console.log(`CubicBezier: y_value is zero`)
+        const y_value = bezObj.y_From_t(t_value);
+
+        if (y_value == 0)
+{
+            console.log('CubicBezier: y_value is zero');
         }
-        return y_value
+
+        return y_value;
     };
 
     return functionOfX;
-}
+};
 /*
 * This function returns a function which is a bezier Quadratuc curve as a
 * function of x so that (x, f(x)) is a point on the bezier curve
 */
 export const QuadraticBezier = function QuadraticBezier(P0, P1, P2)
  {
-    let bezObj = new BezierQuadraticClass(P0, P1, P2)
+    const bezObj = new BezierQuadraticClass(P0, P1, P2);
 
     // find the t value that corresponds to the x value
     // get it by newton raphson
 
-    let parametricFunc = function(t)
+    const parametricFunc = function (t)
     {
-        return [bezObj.x_From_t(t), bezObj.y_From_t(t)]
-    }
+        return [bezObj.x_From_t(t), bezObj.y_From_t(t)];
+    };
 
-    let functionOfX = function(x_value)
+    const functionOfX = function (x_value)
     {
-        let f = function(t)
+        const f = function (t)
         {
-            return ( bezObj.x_From_t(t) - x_value )  
-        }
-        let fPrime = function(t)
+            return (bezObj.x_From_t(t) - x_value);
+        };
+        const fPrime = function (t)
         {
-            return bezObj.x_From_t_derivative(t)
-        }
+            return bezObj.x_From_t_derivative(t);
+        };
 
-        let t_value = newtonRaphson(f, fPrime, 0.5, null)
-        if( t_value === false){
-            console.log([P0, P1, P2])
-            throw new Error(`cannot find t for x in QuadraticBezier x_value:${x_value}`)
+        const t_value = newtonRaphson(f, fPrime, 0.5, null);
+
+        if (t_value === false)
+{
+            console.log([P0, P1, P2]);
+            throw new Error(`cannot find t for x in QuadraticBezier x_value:${x_value}`);
         }
-        let check_x_value = bezObj.x_From_t(t_value)
+        const check_x_value = bezObj.x_From_t(t_value);
         // console.log(`x_value: ${x_value}  t_value: ${t_value} check_x_value: ${check_x_value}`)
 
         // let x = bezObj.x_From_t(t);
-        let y_value = bezObj.y_From_t(t_value);
-        if(y_value == 0){
-            console.log(`CubicBezier: y_value is zero`)
+        const y_value = bezObj.y_From_t(t_value);
+
+        if (y_value == 0)
+{
+            console.log('CubicBezier: y_value is zero');
         }
-        return y_value
+
+        return y_value;
     };
 
     return functionOfX;
-}
+};
 
