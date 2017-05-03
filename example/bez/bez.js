@@ -129,9 +129,9 @@ function main(bezDecelerationObj)
     let tf = decel.tangentFinal.bind(decel)
 
 
-    graphFunction(ctx, axes, decel.getDistance, 'rgb(66,44,255)', 2);
-    graphFunction(ctx, axes, decel.tangent_initial, 'rgb(255,44,255)', 2);
-    graphFunction(ctx, axes, decel.tangent_final, 'rgb(255,44,255)', 2);
+    graphFunction(ctx, axes, gd, 'rgb(66,44,255)', 2);
+    graphFunction(ctx, axes, ti, 'rgb(255,44,255)', 2);
+    graphFunction(ctx, axes, tf, 'rgb(255,44,255)', 2);
     // drawDot(ctx, axes, points[0][0], points[0][1] );
     // drawDot(ctx, axes, points[1][0], points[1][1] );
     // drawDot(ctx, axes, points[2][0], points[2][1] );

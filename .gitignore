@@ -7,3 +7,4 @@
 /build
 /*.sublime-workspace
 /node_modules
+*bundle*
