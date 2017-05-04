@@ -218,9 +218,9 @@ function tickerFunc(delta)     // currently ignores the delta value
 {
     const timeInterval = delta * (1.0 / 60.0);
 
-    outerWheelController.advanceTimeBy(timeInterval);
-    middleWheelController.advanceTimeBy(timeInterval);
-    innerWheelController.advanceTimeBy(timeInterval);
+    outerWheelController.advanceByTimeInterval(timeInterval);
+    middleWheelController.advanceByTimeInterval(timeInterval);
+    innerWheelController.advanceByTimeInterval(timeInterval);
 
     return;
 }

@@ -114,6 +114,7 @@ function public:ex_clean {
   ./taskfile motion_clean
   ./taskfile table_clean
   ./taskfile square_clean
+  ./taskfile wheel_clean
 }
 
 function public:ex_lint {
@@ -121,6 +122,7 @@ function public:ex_lint {
   ./taskfile motion_lint
   ./taskfile table_lint
   ./taskfile square_lint
+  ./taskfile wheel_lint
 }
 
 
@@ -129,6 +131,7 @@ function public:ex_build {
   ./taskfile motion_build
   ./taskfile table_build
   ./taskfile square_build
+  ./taskfile wheel_build
 }
 ## tasks related to example ###############################
 

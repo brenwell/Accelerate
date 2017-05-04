@@ -143,6 +143,10 @@ Run the linter & watch
 npm run lint:watch
 ```
 
+## Things done
+
+-   advance. Added a method of this name and renamed existing advanceBy to advanceByTimeInterval. Need it for some of my examples
+-   getPosition, getVelocity, wait all done
 
 ## Desired changes
 
@@ -168,7 +172,7 @@ npm run lint:watch
 
     // to
 
-    getPosition()
+    getPosition() 
 
     /**
      * Gets the current velocity of the moving object

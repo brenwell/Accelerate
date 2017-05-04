@@ -112,7 +112,7 @@ export default function (cb, schedule)
             });
         }
         const t = deltaT * i;
-        const pos = mover.advanceTimeBy(deltaT);
+        const pos = mover.advanceByTimeInterval(deltaT);
 
         table.push([t, pos]);
         i++;

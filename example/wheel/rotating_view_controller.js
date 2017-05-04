@@ -80,10 +80,10 @@ export class SingleWheelController
      * @param {float} timeInterval - in seconds
      *
      */
-    advanceTimeBy(timeInterval)
+    advanceByTimeInterval(timeInterval)
     {
         // d and lastRadians are not modulo2PI
-        const d = this.accelerator.advanceTimeBy(timeInterval);
+        const d = this.accelerator.advanceByTimeInterval(timeInterval);
         const lastPrev = this.lastRadians;
 
         if (d < this.lastRadians)
@@ -94,7 +94,7 @@ export class SingleWheelController
 
         this.lastRadians = d;
 
-        // console.log(`advanceTimeBy: `
+        // console.log(`advance: `
         //     +` \t\ntimeInterval: ${timeInterval}`
         //     +` \t\nd:${d} `
         //     +` \t\nprev_last:${last_prev}`
