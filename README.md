@@ -99,6 +99,14 @@ myAccelerator.kill()
 
 ## Commands
 
+### Help
+
+Show all commands
+
+```bash
+npm run help
+```
+
 ### Build
 
 Build, watch & lint
@@ -107,19 +115,13 @@ Build, watch & lint
 npm start
 ```
 
-Build transpiled, and transpired & minified
+Build transpiled, and transpiled & minified
 
 ```bash
 npm run build
 ```
 
 ### Test
-
-Show all commands
-
-```bash
-npm run help
-```
 
 Run tests
 
