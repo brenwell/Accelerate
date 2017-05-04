@@ -3,8 +3,6 @@ PWD=`pwd`
 PROJ=`realpath ..` 
 PATH=${PROJ}/node_modules/.bin:$PATH
 
-echo `which webpack`
-
 EXAMPLE=${PROJ}/example
 EXAMPLE_DIST=${PROJ}/example/dist
 
@@ -20,8 +18,23 @@ INDEXJS=${PROJ}/src/index.js
 BUNDLE=${PROJ}/dist/accelerate.js
 BUNDLE_MIN=${PROJ}/dist/accelerate.min.js
 
+function public:lint {
+    public:clean ${1}
+    esw $1 -c ../.eslintrc.json
+    # esw $1 --fix -c ../.eslintrc.json
+}
 
+function public:build {
+  webpack  --devtool source-map ${1}/main.js ${1}/${1}_bundle.js  
+}
 
+function public:watch {
+  webpack -w  --devtool source-map ${1}/main.js ${1}/${1}_bundle.js 
+}
+
+function public:clean {
+  rm -fv ${1}/*bundle*
+}
 ## tasks related to example ###############################
 
 #### bez
@@ -34,6 +47,9 @@ function public:bez_build {
 function public:bez_watch {
   webpack -w  --devtool source-map ${BEZ}/bez.js ${BEZ}//bez_bundle.js 
 }
+function public:bez_lint {
+  public:lint bez
+}
 
 #### square
 function public:square_clean {
@@ -45,19 +61,22 @@ function public:square_build {
 function public:square_watch {
   webpack -w  --devtool source-map ${SQUARE}/square.js ${SQUARE}/square_bundle.js 
 }
+function public:square_lint {
+  public:lint square
+}
 
 #### motion
 function public:motion_clean {
   rm -fv ${MOTION}/*bundle*
 }
 function public:motion_build {
-  echo "Building motion bundle"
-  echo ${MOTION}/mover.js
-
   webpack  --devtool source-map ${MOTION}/main.js ${MOTION}/motion_bundle.js
 }
 function public:motion_watch {
   webpack -w  --devtool source-map ${MOTION}/main.js ${MOTION}/motion_bundle.js 
+}
+function public:motion_lint {
+  public:lint motion
 }
 
 #### wheels
@@ -70,16 +89,22 @@ function public:wheel_build {
 function public:wheel_watch {
   webpack -w  --devtool source-map ${WHEEL}/main.js ${WHEEL}/wheel_bundle.js 
 }
+function public:wheel_lint {
+  public:lint wheel
+}
 
 #### table
 function public:table_clean {
   rm -fv ${TABLE}/*bundle*
 }
 function public:table_build {
-  webpack  --devtool source-map ${TABLE}/table.js ${TABLE}/table_bundle.js
+  webpack  --devtool source-map ${TABLE}/main.js ${TABLE}/table_bundle.js
 }
 function public:table_watch {
-  webpack -w  --devtool source-map ${TABLE}/table.js ${TABLE}/table_bundle.js 
+  webpack -w  --devtool source-map ${TABLE}/main.js ${TABLE}/table_bundle.js 
+}
+function public:table_lint {
+  public:lint table
 }
 
 
@@ -90,6 +115,14 @@ function public:ex_clean {
   ./taskfile table_clean
   ./taskfile square_clean
 }
+
+function public:ex_lint {
+  ./taskfile bez_lint
+  ./taskfile motion_lint
+  ./taskfile table_lint
+  ./taskfile square_lint
+}
+
 
 function public:ex_build {
   ./taskfile bez_build
@@ -113,4 +146,9 @@ function public:help {
 # ---------- Do NOT edit below --------------
 
 TIMEFORMAT="Task completed in %3lR"
-time "public:${@:-help}" # make help default
+SUBCMD=$1
+shift 1
+TIME=time
+public:${SUBCMD} ${@}
+
+# time "public:${SUBCMD} ${@}"  # make help default

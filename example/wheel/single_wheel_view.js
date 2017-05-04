@@ -1,127 +1,155 @@
-import Accelerator from "../../src/index.js"
-import * as Radians from "./radian_helpers.js" 
-/*
-* This class represents visualization of one wheel in a multi wheel game. 
+import * as Radians from './radian_helpers.js';
+
+function logError(s)
+{
+    /* eslint-disable no-console */
+    console.error(s);
+    /* eslint-enable no-console */
+}
+/**
+* This class represents visualization of one wheel in a multi wheel game.
 * It should conform to the interface for a rotating_view as defined
 * in the source for rotating_view_controller
 *
 */
-export class SingleWheelView {
-    /*
-    * app       {PIXI.application}      - the pixie app for the wheel
-    * radius    {float}                 - radius of the circle
-    * bg        {hex color code}        - the background color behind the wheel
-    * colors    {array of color codes}  - specifies both the number and color of the segments
-    * startDeg  {float}                 - an initial rotation to get the starting image correct. With the
-    *                                       first segment positioned at the pointer
+export class SingleWheelView
+{
+    /**
+    * @param {PIXI.application}     app     - the pixie app for the wheel
+    * @param {float}                radius  - radius of the circle
+    * @param {string}               bg      - the hex code string for background color behind the wheel
+    * @param {array}                colors  - specifies both the number and color of the segments, color in hex string code
+    * @param {float}                startDeg - an initial rotation to get the starting image correct. With the
+    *                                         first segment positioned at the pointer
     */
     constructor(app, radius, bg, colors, startDeg)
     {
-        this.velocity = 0.0
-        this.app = app
-        this.colors = colors
-        this.numberOfSegments = colors.length
-        this.startDegrees = startDeg
-        this.lastRadians = 0
+        this.velocity = 0.0;
+        this.app = app;
+        this.colors = colors;
+        this.numberOfSegments = colors.length;
+        this.startDegrees = startDeg;
+        this.lastRadians = 0;
 
-        const container = new PIXI.Container()
-        container.pivot.x = 0
-        container.pivot.y = 0
-        container.x = 300
-        container.y = 300
-        
+        const container = new PIXI.Container();
+
+        container.pivot.x = 0;
+        container.pivot.y = 0;
+        container.x = 300;
+        container.y = 300;
+
         // draw outter background circle with given background
-        const circle = new PIXI.Graphics()
-        circle.beginFill(bg)
+        const circle = new PIXI.Graphics();
+
+        circle.beginFill(bg);
         circle.lineStyle(10, bg);
-        circle.drawCircle(0,0,radius)
-        circle.endFill()
-        container.addChild(circle)
+        circle.drawCircle(0, 0, radius);
+        circle.endFill();
+        container.addChild(circle);
 
         // draw inner background circle with white background
-        const mask = new PIXI.Graphics()
-        mask.beginFill(0xFFFFFF)
-        mask.drawCircle(0,0,radius)
-        mask.endFill()
-        container.addChild(mask)
+        const mask = new PIXI.Graphics();
+
+        mask.beginFill(0xFFFFFF);
+        mask.drawCircle(0, 0, radius);
+        mask.endFill();
+        container.addChild(mask);
 
         // get the (x,y) coordinates of the point that bound the sectors
-        const coords = plotCirclePoints(colors.length, radius+50, -90)
-        const size = radius 
+        const coords = plotCirclePoints(colors.length, radius + 50, -90);
+        const size = radius;
 
-        coords.forEach(function(coord, i){   
-            const index = (i == coords.length-1) ? 0 : i+1
-            const nextCoord = coords[index]
+        coords.forEach((coord, i) =>
+        {
+            const index = (i === coords.length - 1) ? 0 : i + 1;
+            const nextCoord = coords[index];
 
             // draw the triangular sector of the correct color - note we are working within container
-            const tri = new PIXI.Graphics()
-            tri.beginFill( colors[i], 0.8);
+            const tri = new PIXI.Graphics();
+
+            tri.beginFill(colors[i], 0.8);
             tri.moveTo(0, 0);
             tri.lineTo(coord.x, coord.y);
             tri.lineTo(nextCoord.x, nextCoord.y);
             tri.lineTo(0, 0);
             tri.endFill();
-            tri.mask = mask
+            tri.mask = mask;
             container.addChild(tri);
-        })
-        container.rotation = Radians.degToRad(startDeg)
-        this.container = container
+        });
+        container.rotation = Radians.degToRad(startDeg);
+        this.container = container;
     }
+    /**
+     * Gets the current rotation.
+     *
+     * @return     {float}  The current rotation in radians.
+     */
     getCurrentRotation()
     {
-        return this.container.rotation
+        return this.container.rotation;
     }
+
+    /**
+     * Gets the maximum position index.
+     *
+     * @return     {int}  The maximum position index.
+     */
     getMaxPositionIndex()
     {
-        return this.colors.length - 1
+        return this.colors.length - 1;
     }
-    /*
+    /**
     * Increase the rotation of the wheel by rads. Ensures that
     * the containers position value is always in the range -2*PI .. 2*PI
     *
-    * rads {float} - radians in the range -2*PI .. 2*PI
+    * @param {float} rads - radians in the range -2*PI .. 2*PI
     */
     rotateByRadians(rads)
     {
-        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
+        if ((rads > 2 * Math.PI) || (rads < -2.0 * Math.PI))
+{
             // throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
-            console.log("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
+            logError('rotateByRadians - rads should not be greater than 2*PI or less than -2*PI');
         }
-        let rot = this.container.rotation 
-        let newr = Radians.add(rot, rads)
-        this.container.rotation = newr
+        const rot = this.container.rotation;
+        const newr = Radians.add(rot, rads);
+
+        this.container.rotation = newr;
     }
-    /*
+    /**
     * Position the wheel so that its rotation is a given value of radians
-    * radians {float} - in range -2*PI .. 2*PI
+    * @param {float} radians  - in range -2*PI .. 2*PI
     */
     setRotationToRadians(radians)
     {
-        if( (rads > 2*Math.PI) || (rads < -2.0 * Math.PI) ){
-            throw new Error("positionToRadians - radians should not be greater than 2*PI or less than -2*PI")
+        if ((radians > 2 * Math.PI) || (radians < -2.0 * Math.PI))
+{
+            throw new Error('positionToRadians - radians should not be greater than 2*PI or less than -2*PI');
         }
-        this.container.rotation = radians        
+        this.container.rotation = radians;
     }
 
-    /*
+    /**
     * convert a position index into a rotation expressedin radians
     *
-    * positionIndex {int} - the index of one of the wheels segments
+    * @param {int} positionIndex  - the index of one of the wheels segments
     *
-    * returns {float} - tha number of radians to set the wheels rotation value to
+    * @return {float} - tha number of radians to set the wheels rotation value to
     *                   in order that the segment with this positionIndex is under the marker
     */
     convertPositionToRadians(positionIndex)
     {
-        let t = (2 * Math.PI * positionIndex / this.numberOfSegments)
-        if( t != 0){
-            t = 2*Math.PI - t
+        let t = (2 * Math.PI * positionIndex / this.numberOfSegments);
+
+        if (t !== 0)
+{
+            t = (2 * Math.PI) - t;
         }
-        let res = t + Radians.degToRad(this.startDegrees)
-        return res
+        const res = t + Radians.degToRad(this.startDegrees);
+
+        return res;
     }
 }
-
 
 // Helper functions
 /*
@@ -135,7 +163,7 @@ export class SingleWheelView {
 * items equal sized sectors.
 *
 * Normally the first sector boundary would be the point (0, radius) (12 oclock)
-* but offset the boundary points by "rotation" degrees to the right 
+* but offset the boundary points by "rotation" degrees to the right
 */
 function plotCirclePoints(items, radius, rotation)
 {

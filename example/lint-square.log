@@ -1,0 +1,22 @@
+/Users/rob/Sites/rblackwell/Accelerate/example/square/square.js (0/17)
+  ⚠   3:1   '$' is not defined                              no-undef
+  ⚠   3:19  Unexpected unnamed function                     func-names
+  ⚠  12:5   Unexpected console statement                    no-console
+  ⚠  35:9   'totalTime' is assigned a value but never used  no-unused-vars
+  ⚠  37:20  Unexpected unnamed function                     func-names
+  ⚠  48:11  'timer' is assigned a value but never used      no-unused-vars
+  ⚠  50:9   Unexpected console statement                    no-console
+  ⚠  52:15  Unexpected unnamed function                     func-names
+  ⚠  54:13  Unexpected console statement                    no-console
+  ⚠  56:19  Unexpected unnamed function                     func-names
+  ⚠  58:17  Unexpected console statement                    no-console
+  ⚠  60:23  Expected a function declaration                 func-style
+  ⚠  60:32  Unexpected unnamed function                     func-names
+  ⚠  60:42  'delta' is defined but never used               no-unused-vars
+  ⚠  64:25  Unexpected console statement                    no-console
+  ⚠  66:31  Unexpected unnamed function                     func-names
+  ⚠  68:29  Unexpected console statement                    no-console
+
+⚠ 17 warnings (9:10:23 PM)
+
+
