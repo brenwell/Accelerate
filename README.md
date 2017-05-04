@@ -44,7 +44,7 @@ carAccelerator.accelerate(newV, overTime, overDistance)
 
 ```js
 const initialVelocity = 0;
-Const options = {
+const options = {
 	timeInterval: 1/60, //default
 	allowOverwrite: true //default
 }
@@ -78,21 +78,21 @@ myAccelerator.setVelocity(v)
 
 ### Accelerate
 Instructs the object to start a velocity change
-     
+
 ```js
 myAccelerator.accelerate(vF, tF, dF, delay = false)
 ```
 
 ### Wait
 Lets a timeinterval pass during which the accelerator moves along at a constant velocity.
-     
+
 ```js
 myAccelerator.waitFor(delay)
 ```
 
 ### Kill
 Stops any current acceleration & resolves the acceleration promise
-     
+
 ```js
 myAccelerator.kill()
 ```
@@ -104,13 +104,13 @@ myAccelerator.kill()
 Build, watch & lint
 
 ```bash
-Npm start
+npm start
 ```
 
 Build transpiled, and transpired & minified
 
 ```bash
-Npm run build
+npm run build
 ```
 
 ### Test
