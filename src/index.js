@@ -67,7 +67,8 @@ export default class Accelerator
      * Advance the moving objects time by a time interval
      *
      * @param  {Float}  deltaTime  Interval since the last call to this method
-     * @return {Float}  Total distance traveled after this time interbal is added to total time of travel. Just for convenience as could get this with position()
+     * @return {Float}  Total distance traveled after this time interval is added to
+     *                  total time of travel. Just for convenience as could get this with position()
      */
     advanceTimeBy(deltaTime)
     {
@@ -161,11 +162,11 @@ export default class Accelerator
     /**
      * Instructs the object to start a velocity change
      *
-     * @param  {Float}    vF     - is the velocity the object is to change to
-     * @param  {Float}    tF     - is the time interval over which the change is to take place
-     * @param  {Float}    dF     - is the distance that the object should move while changing velocity
-     * @param  {boolean}  delay  - The delay
-     * @param  {Float}  [delay=false]  - a timeInterval to delay the acceleration by or false = no delay. Defaults to false
+     * @param  {float}    vF     - is the velocity the object is to change to
+     * @param  {float}    tF     - is the time interval over which the change is to take place
+     * @param  {float}    dF     - is the distance that the object should move while changing velocity
+     * @param  {mixed}    delay  - when {float} a timeInterval to delay the acceleration by
+     *                              or false = no delay. Defaults to false
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
      */
@@ -177,9 +178,7 @@ export default class Accelerator
         }
 
         return this.waitFor(delay).then(() =>
-        {
-            return this._accelerateNoDelay(vF, tF, dF);
-        });
+        this._accelerateNoDelay(vF, tF, dF));
     }
 
     /**
@@ -195,18 +194,21 @@ export default class Accelerator
             if (!delay || delay <= 0)
             {
                 resolve();
+
                 return;
             }
 
             if (this.changingVelocity)
             {
                 reject('Accelerator: cannot wait while acceleration is underway');
+
                 return;
             }
 
             if (this.isWaiting)
             {
                 reject('cannot have commence acceleration while wait is underway');
+
                 return;
             }
 
@@ -232,7 +234,7 @@ export default class Accelerator
         }
         else
         {
-            console.log(`WARNING: Accelerator - kill not necessary when no acceleration active`);
+            // console.log(`WARNING: Accelerator - kill not necessary when no acceleration active`);
         }
     }
 
@@ -248,7 +250,7 @@ export default class Accelerator
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
      */
-    _accelerateNoDelay(vF, tF, dF, promise)
+    _accelerateNoDelay(vF, tF, dF)
     {
         logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
         if (!this.allowOverwrite)

@@ -6,10 +6,10 @@ export class BezierCubic
     /**
      * Constructs the object.
      *
-     * @param  {<type>}  P0  Inital Point
-     * @param  {<type>}  P1  First attraction point
-     * @param  {<type>}  P2  Second attraction point
-     * @param  {<type>}  P3  End point
+     * @param  {array}  P0  Inital Point
+     * @param  {array}  P1  First attraction point
+     * @param  {array}  P2  Second attraction point
+     * @param  {array}  P3  End point
      */
     constructor(P0, P1, P2, P3)
     {
@@ -20,15 +20,15 @@ export class BezierCubic
     }
 
     /**
-     * { function_description }
+     * The derivative of a bezier function - calcs the derivative on a single coordinate
      *
      * @private
      *
-     * @param  {number}  t   { parameter_description }
-     * @param  {number}  p0  The p 0
-     * @param  {number}  p1  The p 1
-     * @param  {number}  p2  The p 2
-     * @param  {<type>}  p3  The p 3
+     * @param  {number}  t   parameter value at which to calc the bezier coordinate
+     * @param  {number}  p0  coordinate value from P0
+     * @param  {number}  p1  coordinate value from P1
+     * @param  {number}  p2  coordinate value from P2
+     * @param  {number}  p3  coordinate value from P3
      * @return {number}  { description_of_the_return_value }
      */
     derivative(t, p0, p1, p2, p3)
@@ -44,16 +44,16 @@ export class BezierCubic
         return res;
     }
     /**
-     * { function_description }
+     * Calculates the x or y coordinate of a bezier curve given a value of the parameterization
      *
      * @private
      *
-     * @param  {number}  t   { parameter_description }
+     * @param  {number}  t   parameter value
      * @param  {number}  p0  The p 0
      * @param  {number}  p1  The p 1
      * @param  {number}  p2  The p 2
      * @param  {number}  p3  The p 3
-     * @return {<type>}  { description_of_the_return_value }
+     * @return {number}  { description_of_the_return_value }
      */
     bezFunc(t, p0, p1, p2, p3)
     {
@@ -66,10 +66,10 @@ export class BezierCubic
     }
 
     /**
-     * { function_description }
+     * Calculates an x value from a value t of the curves parameterization
      *
-     * @param  {<type>}  t  { parameter_description }
-     * @return {<type>}  { description_of_the_return_value }
+     * @param  {number}  t  parameter value
+     * @return {number}  corresponding x value
      */
     xFromT(t)
     {
@@ -79,10 +79,10 @@ export class BezierCubic
     }
 
     /**
-     * { function_description }
+     * Calculates the derivative of xFromT
      *
-     * @param  {<type>}  t  { parameter_description }
-     * @return {<type>}  { description_of_the_return_value }
+     * @param  {number}  t value of parameter
+     * @return {number}  slope of the xFromT curve at the value of t
      */
     xFromTDerivative(t)
     {
@@ -92,10 +92,11 @@ export class BezierCubic
     }
 
     /**
-     * { function_description }
+     * Calculates the y value of the point on the bezier curve corresponding to the
+     * parameter value t
      *
-     * @param  {<type>}  t  { parameter_description }
-     * @return {<type>}  { description_of_the_return_value }
+     * @param  {number}  t  parameter value
+     * @return {number}  y value corresponding to the value of t{ description_of_the_return_value }
      */
     yFromT(t)
     {

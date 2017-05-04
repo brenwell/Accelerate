@@ -1,17 +1,9 @@
 import { QuadraticBezier, CubicBezier } from './bezier-functions';
 
-/*
-*   @TODO
-*   -   there is a lot of duplicate code in here in the handling of the different cases.
-*       can wind a lot of it into one piece
-*   -   need a general tidyup of names and code nolonger used
-*   - this needs a good tidy-up and reworking into ES6 style - but thats for later
-*/
-
 /**
  * This class performs velocity changes on objects in 1-dimensional motion
  *
- * provides a single method getDistance(t) - will change name to
+ * Provides a single method getDistance(t) - will change name to
  * positionAfter(t) at some point that returns the total distance traveled since
  * after t seconds of the velocity change
  *
@@ -23,12 +15,6 @@ import { QuadraticBezier, CubicBezier } from './bezier-functions';
  * You can only use one of these objects once. Once the velocity change is
  * complete any call to getPositionAfter will result in an error
  *
- * @class  BezDecelerator (name)
- * @param  {number}     v0  Initial velocity
- * @param  {number}     vF  Final velocity
- * @param  {number}     tF  Final time
- * @param  {number}     dF  Final distance
- * @param  {Function=}  cb  Completion handler
  */
 export default class BezierAccelerator
 {
@@ -87,10 +73,10 @@ export default class BezierAccelerator
     }
 
     /**
-     * { function_description }
+     * Function that is the tangent line at P0
      *
-     * @param  {number}  t  { parameter_description }
-     * @return {<type>}  { description_of_the_return_value }
+     * @param  {number}  t  independent variable
+     * @return {number}  return value
      */
     tangentInitial(t)
 	{
@@ -98,7 +84,7 @@ export default class BezierAccelerator
     }
 
     /**
-     * { function_description }
+     * Function that is the tangent line at P3
      *
      * @return {Array}  { description_of_the_return_value }
      */
@@ -111,8 +97,8 @@ export default class BezierAccelerator
      * This function draws the trajectory of the final velocity.Used only for debugging and demonstration
      * not part of the final exposed package
      *
-     * @param  {<type>}  t  { parameter_description }
-     * @return {<type>}  { description_of_the_return_value }
+     * @param  {float}  t  the independent
+     * @return {float}  the function return value
      */
     tangentFinal(t)
 	{
@@ -122,10 +108,10 @@ export default class BezierAccelerator
     }
 
     /**
-     * Gets the position after.
+     * Gets the position after an elapsed time.
      *
-     * @param  {<type>}  elapsedTime  The elapsed time
-     * @return {<type>}  The position after.
+     * @param  {number}  elapsedTime  The elapsed time
+     * @return {number}  The position after.
      */
     getPositionAfter(elapsedTime)
     {

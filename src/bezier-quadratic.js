@@ -16,7 +16,16 @@ export class BezierQuadratic
         this.P1 = P1;
         this.P2 = P2;
     }
-
+    /**
+    * The derivative of the bezier curve
+    *
+    * @param {number} t the curve parameter
+    * @param {number} p0 a coordinate of the point P0
+    * @param {number} p1 a coordinate of the point P1
+    * @param {number} p2 a coordinate of the point P2
+    *
+    * @return {number} derivative at t
+    */
     derivative(t, p0, p1, p2)
     {
         function linear(p0, p1, t)
@@ -31,6 +40,17 @@ export class BezierQuadratic
         return res;
     }
 
+    /**
+    * The coordinate (x or y) of a point on the bezier curve as a function of the
+    * variable that parameterizes the curve
+    *
+    * @param {number} t the curve parameter
+    * @param {number} p0 a coordinate of the point P0
+    * @param {number} p1 a coordinate of the point P1
+    * @param {number} p2 a coordinate of the point P2
+    *
+    * @return {number} coordinate value at t
+    */
     bezFunc(t, p0, p1, p2)
     {
         const res =   (p0 * (1 - t) * (1 - t)) + (2.0 * p1 * (1 - t) * t) + (p2 * t * t);
@@ -38,6 +58,14 @@ export class BezierQuadratic
         return res;
     }
 
+    /**
+    * The value of the x coordinate of a point on the bezier curve as a function of the
+    * variable that parameterizes the curve
+    *
+    * @param {number} t the curve parameter
+    *
+    * @return {number} coordinate value at t
+    */
     xFromT(t)
     {
         const res = this.bezFunc(t, this.P0[0], this.P1[0], this.P2[0]);
@@ -45,6 +73,14 @@ export class BezierQuadratic
         return res;
     }
 
+    /**
+    * The value of the derivative of xFromT as a function of the
+    * variable that parameterizes the curve
+    *
+    * @param {number} t the curve parameter
+    *
+    * @return {number} derivative of XFromT at t
+    */
     xFromTDerivative(t)
     {
         const res = this.derivative(t, this.P0[0], this.P1[0], this.P2[0]);
@@ -52,6 +88,14 @@ export class BezierQuadratic
         return res;
     }
 
+    /**
+    * The value of the y coordinate of a point on the bezier curve as a function of the
+    * variable that parameterizes the curve
+    *
+    * @param {number} t the curve parameter
+    *
+    * @return {number} coordinate value at t
+    */
     yFromT(t)
     {
         const res = this.bezFunc(t, this.P0[1], this.P1[1], this.P2[1]);
