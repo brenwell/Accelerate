@@ -39,7 +39,7 @@ function main()
         // this is because the accelerator does no know about pixi's delta value
         totalTime += delta * (1.0 / 60.0);
 
-        const r = accelerator.advanceTimeBy(delta * (1.0 / 60.0));
+        const r = accelerator.advanceByTimeInterval(delta * (1.0 / 60.0));
         // console.log(`ticker delta:${delta} deltaT:${delta*(1.0/60.0)} totalTime:${totalTime} r:${r}`)
 
         bunny.rotation = r;

@@ -46,13 +46,13 @@ export default class Accelerator
         }
 
         const defaults = {
-            timeInterval: 1 / 60, // @FIX this is going away
+            tickInterval: 1 / 60, // @FIX this is going away
             allowOverwrite: true,
         };
 
         const actual = Object.assign({}, defaults, options);
 
-        this.timeInterval = actual.timeInterval;
+        this.tickInterval = actual.tickInterval;
         this.allowOverwrite = actual.allowOverwrite;
 
         this.time = 0.0;
@@ -62,6 +62,18 @@ export default class Accelerator
         this.bezAccelerator = null;
         this.currentVelocity = v0;
     }
+    /**
+     * Advance objects time by the equivalent of delta * PIXI tick value
+     * 
+     * @param  {float}  delta   The delta
+     * @return {Float}  Total distance traveled after this time interval is added to
+     *                  total time of travel. Just for convenience as could get this with position()
+     */
+    advance(delta)
+    {
+        let deltaTime = delta * this.tickInterval
+        return advanceByTimeInterval(deltaTime)
+    }
 
     /**
      * Advance the moving objects time by a time interval
@@ -70,7 +82,7 @@ export default class Accelerator
      * @return {Float}  Total distance traveled after this time interval is added to
      *                  total time of travel. Just for convenience as could get this with position()
      */
-    advanceTimeBy(deltaTime)
+    advanceByTimeInterval(deltaTime)
     {
         if (!this.changingVelocity && !this.isWaiting)
         {
@@ -130,7 +142,7 @@ export default class Accelerator
      *
      * @return {Float}  returns the current position of the moving object
      */
-    position()
+    getPosition()
     {
         return this.totalDistance;
     }
@@ -140,7 +152,7 @@ export default class Accelerator
      *
      * @return {Float}  returns the current velocity of the moving object
      */
-    velocity()
+    getVelocity()
     {
         return this.currentVelocity;
     }
@@ -187,7 +199,7 @@ export default class Accelerator
      * @param  {Float}   delay  The time interval
      * @return {Promise}  { description_of_the_return_value }
      */
-    waitFor(delay)
+    wait(delay)
     {
         return new Promise((resolve, reject) =>
         {

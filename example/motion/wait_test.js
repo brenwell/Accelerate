@@ -8,7 +8,7 @@ export default function testWait()
     let count = 1000;
     const t = setInterval(function cb()
     {
-        const d = accel.advanceTimeBy((10.0 / 1000.0));
+        const d = accel.advanceByTimeInterval((10.0 / 1000.0));
 
         console.log(` d:${d} `);
         if (count++ === 10)
@@ -18,7 +18,7 @@ export default function testWait()
         }
     }, 10);
 
-    const q1 = accel.waitFor(1)
+    const q1 = accel.wait(1)
     .then(function th1()
     {
         console.log('wait for completed');
