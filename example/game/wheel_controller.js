@@ -1,94 +1,27 @@
+import { SingleWheelView } from './single_wheel_view.js';
+import * as View from "./view.js"
 import Accelerator from '../../src/index.js';
 import * as Radians from './radian_helpers.js';
-
-function alertProblem(s)
-{
-    /* eslint-disable no-alert */
-    alert(`THERE IS A PROBLEM\n  ${s}`);
-    /* eslint-enable no-alert */
-}
-
+/**
+ * private logger function
+ * @param {string} s - the string to log
+ */
 function logger(s)
 {
     /* eslint-disable no-console */
     console.log(s);
     /* eslint-enable no-console */
 }
-function logError(s)
+
+export class WheelController
 {
-    /* eslint-disable no-console */
-    console.error(s);
-    /* eslint-enable no-console */
-}
-/**
- * This class is a controller for a rotating view.
- *
- * If js had the concept of an interface I could define a rotating view,
- * but surfice it to say it is a class with the following methods:
- *
- *   -   getCurrentRotation()                    - returns an angle in radians
- *   -   rotateByRadians(rads)                   - adds rads to the currentRotation given by rads
- *   -   setRotationToRadians(radians)           - sets currentRotation to radians
- *   -   convertPositionToRadians(positionIndex) - converts a positionIndex {int} to radians
- *   -   setPositionTo(positonIndex)
- *   -   getMaxPositionIndex()                   -  returns the lasrgest legal value of a position index
- *
- * Such a class attempts to generalize an object that has a number of positions
- *   -   that can be indexed by integers (like a square or circle with segments),
- *   -   can be rotated to one of those positions
- *   -   can be rotated by an arbitary angle (in radians)
- *
- * This controller manages the starting, speed and deceleration to a specified stopping
- * position index of such a rotating view
- */
-export class SingleWheelController
-{
-    /**
-     * Constructor
-     * @param {object} view - rotating view
-     */
     constructor(view)
     {
-        this.velocity = 0.0;
-        this.view = view;
-        this.lastRadians = 0;
         this.accelerator = new Accelerator(0);
+        this.pixiApp = View.app
+        this.view = view
+        this.lastRadians = view.container.rotation
     }
-
-    onePlay()
-    {
-        let ac = this.accelerator
-        ac.accelerate(speed, rampUpInterval, rampUpDistance)
-        .then(() =>{
-            return ac.wait(spinInterval)
-        })
-        .then(()=>{
-            // calculate stopping position from desired stopping position
-            return ac.accelerate(0.0, stopingTimeInterval, stoppingPosition)
-        })
-    }
-
-    accelerateToSpeed(speed, timeInterval, distance)
-    {
-        return this.accelerator.accelerate(speed, timeInterval, distance)
-    }
-
-    /**
-     * Accelerate to zero
-     * @param {int}     position     - the index of the segment that is to be under the pointer
-     *                                  when the velocity reaches zero
-     * @param {float}   timeInterval - the timeInterval in seconds over which the deleration is to take place
-     * @return {object}              - returns a Promise that is resolved when acceleration is complete
-     */
-    accelerateToZero(position, timeInterval)
-    {
-        this.validatePosition(position);
-        const dF = this.calculateStoppingDistance(position, timeInterval);
-
-        // important - cannot put a delay here, already calculated  stopping distance
-        return this.accelerator.accelerate(0.0, timeInterval, dF, false);
-    }
-
     /**
      * Advances the wheel's time by a timeInterval and redraws the wheel in the new position.
      * Takes account of the circular nature of the wheel and keeps the new rotation value to less than 2*PI.
@@ -121,12 +54,23 @@ export class SingleWheelController
 
         this.view.rotateByRadians(deltaRads);
     }
-
-    wait(timeInterval)
+    setSpeed(v)
+    {
+        this.accelerator.setVelocity(v)
+    }
+    rampUp(speed, timeInterval, distance)
+    {
+        return this.accelerator.accelerate(speed, timeInterval, distance)
+    }
+    spin(timeInterval)
     {
         return this.accelerator.wait(timeInterval)
     }
-
+    comeToStop(position, timeInterval, options)
+    {
+        let d = this.calculateStoppingDistance(position, timeInterval, options)
+        return this.accelerator.accelerate(0.0, timeInterval, d)
+    }
     /**
      * VERY IMPORTANT METHOD - will probably need tuning to get a good visual result
      *
@@ -159,9 +103,9 @@ export class SingleWheelController
         this.validatePosition(position);
         logger(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
         const positionInRadians = this.view.convertPositionToRadians(position);
-        const v0 = this.velocity;
+        const v0 = this.accelerator.getVelocity()
 
-        if (v0 < (2 * Math.PI / timeInterval))
+        if ( (v0 !== 0) && (v0 < (2 * Math.PI / timeInterval)))
         {
             alertProblem('velocity maybe too low');
         }
@@ -171,10 +115,11 @@ export class SingleWheelController
                                 ? (positionInRadians - currentRadians)
                                 : ((2 * Math.PI) + positionInRadians - currentRadians);
 
+
         const dMax = v0 * timeInterval;
         const iDeltaR = deltaRadians;
-        const vers = 2;
 
+        const vers = 3;
         if (vers === 2)
         {
             // enhanced algorithm
@@ -186,6 +131,12 @@ export class SingleWheelController
                 tmp += (2 * Math.PI);
             }
         }
+        else if( vers === 3)
+        {
+            // once we work out the adjustment of less than 2PI to get the right position simply add 3 revolutions
+            const _dRequired = Radians.modulo2PI(deltaRadians) + (6 * Math.PI)
+            return _dRequired
+        } 
         const dRequired = deltaRadians;
 
         if (dMax <= dRequired)
@@ -213,32 +164,6 @@ export class SingleWheelController
 
         return dRequired;
     }
-
-    /**
-     * Sets the views rotational velocity in radians per second
-     * @NOTE - we have duplicate data here BEWARE
-     * @param {float} v - radians per sec
-     */
-    setVelocity(v)
-    {
-        this.velocity = v;
-        this.accelerator.setVelocity(v);
-    }
-
-    /**
-    * Moves the view to a position index
-    *
-    * Position index values have meaning only for the view. To this controller
-    * they are just non negative integers
-    *
-    * @param    {int} position - a position index
-    */
-    setPosition(position)
-    {
-        const rads = this.convertPositionToRadians(position);
-
-        this.view.positionToRadians(rads);
-    }
     /**
      * Validates a position index - throws an error is not valid
      *
@@ -249,4 +174,8 @@ export class SingleWheelController
         if ((position < 0) || (position > this.view.getMaxPositionIndex()))
             { throw new Error(`position value ${position} is outside range [0..${this.view.getMaxPositionIndex()}`); }
     }
+
 }
+
+
+

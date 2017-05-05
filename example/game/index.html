@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+
+<head>
+
+<script src="../libs/jquery.js"></script>
+<script src="../libs/pixi.js"></script>
+<script src="../libs/greensock.js"></script>
+<script src="game_bundle.js"></script>
+<link rel="stylesheet" type="text/css" href="wheel.css">
+</head>
+<body>
+<div id="wheels" style="background-color:pink"></div>
+<div id="controls">
+	<div id='params-div'>
+		<div><span class='input-label'>Inner Ramp up time (sec)</span><input id="ramp-up-time-inner" value="2"></div>
+		<div><span class='input-label'>Middle Ramp up time (secs)</span><input id="ramp-up-time-middle" value="2"></div>
+		<div><span class='input-label'>Outer Ramp up time (secs)</span><input id="ramp-up-time-outer" value="2"></div>
+
+		<div><span class='input-label'>Rotating speed inner(rads/sec)</span><input id="rotation-speed-inner" value="20"></div>
+		<div><span class='input-label'>Rotating speed middle(rads/sec)</span><input id="rotation-speed-middle" value="20"></div>
+		<div><span class='input-label'>Rotating speed outer(rads/sec)</span><input id="rotation-speed-outer" value="20"></div>
+
+		<div><span class='input-label'>Rampup distance inner</span><input id="ramp-up-distance-inner" value="25"></div>
+		<div><span class='input-label'>Rampup distance middle</span><input id="ramp-up-distance-middle" value="25"></div>
+		<div><span class='input-label'>Rampup distance outer</span><input id="ramp-up-distance-outer" value="25"></div>
+
+		<div><span class='input-label'>Time period rotating before deceleration</span><input id="wait-time-interval" value=4></div>
+
+		<div><span class='input-label'>Input time interval to stop first</span><input id="stop-time-interval-1" value='2'></div>
+		<div><span class='input-label'>Input time interval to stop last</span><input id="stop-time-interval-2" value='4'></div>
+	</div>
+	<div  id='play-div' style = "float:left; width:300px;">
+		<div id='win-div'>
+			<h3>Select the winning color</h3>
+			<select class='color-select' id='win-select'>
+			  <option value="7">Violet</option>
+			  <option value="6">Indigo</option>
+			  <option value="5">Blue</option>
+			  <option value="4">Green</option>
+			  <option value="3">Yellow</option>
+			  <option value="2">Orange</option>
+			  <option value="1">Red</option>
+			</select>
+			<span>Then click to play</span>
+			<button class='button-class' id='btn-selected-win'>Play</button>
+		</div>
+		<div id='near-win-div'">
+			<h3>Select a near win</h3>
+			<div>
+				<span>Middle and Inner</span>
+				<select class='color-select' id='near-win-select-1' value='5'>
+				  <option value="7">Violet</option>
+				  <option selected value="6">Indigo</option>
+				  <option value="5">Blue</option>
+				  <option value="4">Green</option>
+				  <option value="3">Yellow</option>
+				  <option value="2">Orange</option>
+				  <option value="1">Red</option>
+				</select>
+			</div>
+			<div>	
+				<span>Outer and last</span>
+				<select class='color-select' id='near-win-select-2'>
+				  <option value="7">Violet</option>
+				  <option value="6">Indigo</option>
+				  <option value="5">Blue</option>
+				  <option value="4">Green</option>
+				  <option value="3">Yellow</option>
+				  <option value="2">Orange</option>
+				  <option value="1">Red</option>
+				</select>
+			</div>
+			<span>Then click to play</span>
+			<button class='button-class' id='btn-selected-nearwin'>Play</button>
+		</div>	
+		<div id='loss-div'>
+			<h3>Select a loss</h3>
+			<div>
+				<span>Outer</span>
+				<select class='color-select' id='loss-select-1'>
+				  <option value="7">Violet</option>
+				  <option selected value="6">Indigo</option>
+				  <option value="5">Blue</option>
+				  <option value="4">Green</option>
+				  <option value="3">Yellow</option>
+				  <option value="2">Orange</option>
+				  <option value="1">Red</option>
+				</select>
+			<div>
+			</div>
+				<span>Middle</span>
+				<select class='color-select' id='loss-select-2'>
+				  <option value="7">Violet</option>
+				  <option value="6">Indigo</option>
+				  <option selected value="5">Blue</option>
+				  <option value="4">Green</option>
+				  <option value="3">Yellow</option>
+				  <option value="2">Orange</option>
+				  <option value="1">Red</option>
+				</select>
+			<div>
+			</div>
+				<span>Inner</span>
+				<select class='color-select' id='loss-select-3'>
+				  <option value="7">Violet</option>
+				  <option value="6">Indigo</option>
+				  <option value="5">Blue</option>
+				  <option selected value="4">Green</option>
+				  <option value="3">Yellow</option>
+				  <option value="2">Orange</option>
+				  <option value="1">Red</option>
+				</select>			
+			</div>
+			<span>Then click to play</span>
+			<button class='button-class' id='btn-selected-loss'>Play</button>
+		</div>
+	</div>
+</div>
+</body>
+</html>

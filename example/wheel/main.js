@@ -86,7 +86,7 @@ function selectedWinBtn()
     setParameters();
     startSpinning(speedOuter, speedMiddle, speedInner);
     setTimeout(() =>
-{
+    {
         stopWheelsWithWin(p, stopTimeInterval1, stopTimeInterval2);
     }, waitTime);
 }
@@ -103,7 +103,7 @@ function selectedNearWinBtn()
     setParameters();
     startSpinning(speedOuter, speedMiddle, speedInner);
     setTimeout(() =>
-{
+    {
         stopWheelsWithNearWin(p1, p2, stopTimeInterval1, stopTimeInterval2);
     }, waitTime);
 }
@@ -122,7 +122,7 @@ function selectedLossBtn()
     setParameters();
     startSpinning(speedOuter, speedMiddle, speedInner);
     setTimeout(() =>
-{
+    {
         stopWheelsWithLoss(p1, p2, p3, stopTimeInterval1, stopTimeInterval2);
     }, waitTime);
 }

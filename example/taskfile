@@ -92,6 +92,20 @@ function public:wheel_watch {
 function public:wheel_lint {
   public:lint wheel
 }
+#### game
+function public:game_clean {
+  rm -fv ${GAME}/*bundle*
+}
+function public:game_build {
+  webpack  --devtool source-map ${GAME}/main.js ${GAME}/game_bundle.js
+}
+function public:game_watch {
+  webpack -w  --devtool source-map ${GAME}/main.js ${GAME}/game_bundle.js 
+}
+function public:game_lint {
+  public:lint game
+}
+
 
 #### table
 function public:table_clean {
