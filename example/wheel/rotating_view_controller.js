@@ -1,25 +1,7 @@
 import Accelerator from '../../src/index.js';
 import * as Radians from './radian_helpers.js';
+import * as Logger from '../libs/logger.js';
 
-function alertProblem(s)
-{
-    /* eslint-disable no-alert */
-    alert(`THERE IS A PROBLEM\n  ${s}`);
-    /* eslint-enable no-alert */
-}
-
-function logger(s)
-{
-    /* eslint-disable no-console */
-    console.log(s);
-    /* eslint-enable no-console */
-}
-function logError(s)
-{
-    /* eslint-disable no-console */
-    console.error(s);
-    /* eslint-enable no-console */
-}
 /**
  * This class is a controller for a rotating view.
  *
@@ -54,23 +36,17 @@ export class SingleWheelController
         this.lastRadians = 0;
         this.accelerator = new Accelerator(0);
     }
-
-    onePlay()
-    {
-        let ac = this.accelerator
-        ac.accelerate(speed, rampUpInterval, rampUpDistance)
-        .then(() =>{
-            return ac.wait(spinInterval)
-        })
-        .then(()=>{
-            // calculate stopping position from desired stopping position
-            return ac.accelerate(0.0, stopingTimeInterval, stoppingPosition)
-        })
-    }
-
+    /**
+     * Accelerate
+     *
+     * @param      {float}  speed         The speed
+     * @param      {float}  timeInterval  The time interval
+     * @param      {float}  distance      The distance
+     * @return     {Promise}  resolved when acceleration is done
+     */
     accelerateToSpeed(speed, timeInterval, distance)
     {
-        return this.accelerator.accelerate(speed, timeInterval, distance)
+        return this.accelerator.accelerate(speed, timeInterval, distance);
     }
 
     /**
@@ -106,7 +82,7 @@ export class SingleWheelController
 
         if (d < this.lastRadians)
         {
-            logError('something is wrong');
+            Logger.error('something is wrong');
         }
         const deltaRads = Radians.subtract(Radians.modulo2PI(d), this.lastRadians);
 
@@ -121,10 +97,15 @@ export class SingleWheelController
 
         this.view.rotateByRadians(deltaRads);
     }
-
+    /**
+     * Wait - lets time pass in the game
+     *
+     * @param      {float}      timeInterval The length of the wait in time units
+     * @return     {Promise}    Promise that is resolved when wait is done
+     */
     wait(timeInterval)
     {
-        return this.accelerator.wait(timeInterval)
+        return this.accelerator.wait(timeInterval);
     }
 
     /**
@@ -157,13 +138,13 @@ export class SingleWheelController
     calculateStoppingDistance(position, timeInterval)
     {
         this.validatePosition(position);
-        logger(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
+        Logger.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
         const positionInRadians = this.view.convertPositionToRadians(position);
         const v0 = this.velocity;
 
         if (v0 < (2 * Math.PI / timeInterval))
         {
-            alertProblem('velocity maybe too low');
+            Logger.alertProblem('velocity maybe too low');
         }
         const currentRadians = this.view.getCurrentRotation();
 
@@ -190,7 +171,7 @@ export class SingleWheelController
 
         if (dMax <= dRequired)
         {
-            alertProblem(
+            Logger.alertProblem(
                 `dRequired too big  or velocity too low\n dMax: ${dMax} dRequired:${dRequired}`
                 + ` \nmay be suboptimal deceleration shape`
                 );
@@ -204,7 +185,7 @@ export class SingleWheelController
         // if( (cycles * 2 * Math.PI + deltaRadians) > dMax ){
         //     throw new Error(`calculateStoppingDistance dRequired:${dRequired} too big`)
         // }
-        logger(`calculateStoppingDistance `
+        Logger.log(`calculateStoppingDistance `
         + ` v0 : ${v0} `
         + ` dMax:${dMax}`
         + ` timeInterval: ${timeInterval} `

@@ -1,6 +1,27 @@
 import { BezierCubic } from './bezier-cubic';
 import { BezierQuadratic } from './bezier-quadratic';
 import newtonRaphson from 'newton-raphson';
+/*
+ * One of the challenges with bezier curves is that the equations that describe these curves are parametric.
+ * This means that each point on the curve, say (x,y), is is a function of some "parameter" which is unfortunately
+ * for this application usually called 't'.
+ *
+ * To avoid the mistake tha allows us to think of 't' as time, I will hence forth call it 's'
+ *
+ * Parametric means that both x and y are functions of 's'. So that points on the curve are of the form [x(s), y(s)].
+ *
+ * However to be useful in this application we need to find a way of expressing the curve as a set of points
+ * where the y coordinate is a function of the x cordinate, that is, points on the curve are of the form
+ *
+ *      [x, someFunction(x)]
+ *
+ * Thats what this module does. The two exported functions take the options that define a bezier curve and create
+ * and return a function so that [x, returnedFunction(x)] are on the bezier curve.
+ *
+ * This process unfortunately requires solving non-linear equations. Thats where newton-Raphson comes in.
+ *
+ * That returned function is what needs to be used to bild accelerators
+ */
 
 /**
  * This function returns a function which is a bezier Cubic curve as a

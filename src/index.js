@@ -15,19 +15,26 @@ function logger(s) // eslint-disable-line
  * multiple velocity changes.
  *
  * The two relevant properties of this object are position and velocity which can be obtained
- * at any time with methods position() and velocity()
+ * at any time with methods getPosition() and getVelocity()
  *
  * A starting velocity is set via the constructor.
  *
- * Time is advanced, and the position and velocity updated, by calling the method advanceTimeBy(timeInterval)
+ * Time is advanced, and the position and velocity updated, by calling the method
+ *
+ *  advanceByTimeInterval(timeInterval)
+ *
  * with a timeInterval or deltaTime which is a time interval since the last update and is in SECONDS not FRAMES
  *
+ *  An alternative advance() method is provided that works in 'ticks' where the tick value in seconds is
+ *  defined via the constructor()
+ *
  * An acceleration (either positive or negative) can be scheduled by calling the method accelerate(vF, tF, dF)
- * this call will have no effect on the position or velocity until the next call to advanceTimeBy
+ * this call will have no effect on the position or velocity until the next call to advance() or advanceByTimeINterval()
+ *
  * That method will apply the acceleration on successive calls until the ending condition is encountered
  * tF seconds of acceleration have elapsed AND the body has traveled dF distance during the acceleration
  *
- * On finishing the acceleration the advanceTimeBy() method will call the resolve() function
+ * On finishing the acceleration the advance() or advanceByTimeInterval() method will call the resolve() function
  * of the promise returned by call to accelerate() that setup the acceleration
  */
 export default class Accelerator
@@ -36,7 +43,7 @@ export default class Accelerator
      * Constructs the object.
      *
      * @param  {Float}  v0       The initial Velocity
-     * @param  {Object}  options  The options
+     * @param  {Object} options  The options
      */
     constructor(v0, options = {})
     {
@@ -46,8 +53,8 @@ export default class Accelerator
         }
 
         const defaults = {
-            tickInterval: 1 / 60, // @FIX this is going away
-            allowOverwrite: true,
+            tickInterval : 1 / 60, // @FIX this is going away
+            allowOverwrite : true,
         };
 
         const actual = Object.assign({}, defaults, options);
@@ -64,15 +71,16 @@ export default class Accelerator
     }
     /**
      * Advance objects time by the equivalent of delta * PIXI tick value
-     * 
+     *
      * @param  {float}  delta   The delta
      * @return {Float}  Total distance traveled after this time interval is added to
      *                  total time of travel. Just for convenience as could get this with position()
      */
     advance(delta)
     {
-        let deltaTime = delta * this.tickInterval
-        return advanceByTimeInterval(deltaTime)
+        const deltaTime = delta * this.tickInterval;
+
+        return this.advanceByTimeInterval(deltaTime);
     }
 
     /**
@@ -110,6 +118,10 @@ export default class Accelerator
             const tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity);
             const deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance;
 
+            /**
+             * This is a crude estimate of the velocity. At some point I should work out a formular
+             * rather than do this approximation
+             */
             this.currentVelocity = deltaDistance / (deltaTime);
             this.totalDistance = this.distanceBeforeVelocityChange + tmp;
 
@@ -120,11 +132,36 @@ export default class Accelerator
                 + ` totalDistance: ${this.totalDistance}`
                 + `velocity: ${this.currentVelocity}`);
 
+            /**
+             * There are a number of ways of detecting an end of an acceleration.
+             *
+             *  1.  we could ask the bezAccelerator with => if ( this.decelerator.isComplete() )
+             *  2.  we could use the test below => if (this.elapsedTimeChangingVelocity >= this.timeForChange)
+             *  3.  we could use the callback provided for in the BezAccelerator constructor. This approach
+             *      would require code something like below in _accelerateNoDelay
+             *
+             *          const promise = new Promise( (resolve) =>
+             *          {
+             *              this.decelerator = new BezierAccelerator(v0, vF, tF, dF, () => {
+             *                  resolve()
+             *              });
+             *          }
+             *
+             *          return new promise;
+             *
+             * @TODO @NOTE : this last option has NOT been tested.
+             *
+             */
             if (this.elapsedTimeChangingVelocity >= this.timeForChange)
             {
                 // Not sure why we need this - Brendon
 
                 logger(`Mover::advanceTimeBy::velocity increase DONE newVelocity:${this.newVelocity}`);
+                /**
+                 * This next line is to force the velocity to the specific vF value at the end of the
+                 * acceleration. The calculation of currentVelocity during an acceleration is only a crude
+                 * approximation and would not get the right final velocity
+                 */
                 this.currentVelocity = this.newVelocity;
                 this.changingVelocity = false;
                 if (typeof this.resolvePromiseFunction === 'function')
@@ -251,7 +288,18 @@ export default class Accelerator
     }
 
     /**
-     * Implements the heavy lifting for the accelerate function
+     * Implements the guts of the accelerate action. Sets up the necessary properties
+     * and returns a promise.
+     *
+     * Under some circumstances it is permissible to start an acceleration even when one is already
+     * active. This depends on the property this.allowOverwrite
+     *
+     * When permited an overwrite (new acceleration when one is already active)
+     *  -   stops the current acceleration and resolves the associated promise
+     *  -   sets up a new acceleration using the current velocity, total time and total
+     *      distance left over from the kill'd
+     *      acceleration as the initial velocity and starting time and distance
+     *      for the new acceleration
      *
      * @private
      *

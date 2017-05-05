@@ -1,11 +1,6 @@
 import * as Radians from './radian_helpers.js';
+import * as Logger from '../libs/logger.js';
 
-function logError(s)
-{
-    /* eslint-disable no-console */
-    console.error(s);
-    /* eslint-enable no-console */
-}
 /**
 * This class represents visualization of one wheel in a multi wheel game.
 * It should conform to the interface for a rotating_view as defined
@@ -57,7 +52,6 @@ export class SingleWheelView
 
         // get the (x,y) coordinates of the point that bound the sectors
         const coords = plotCirclePoints(colors.length, radius + 50, -90);
-        const size = radius;
 
         coords.forEach((coord, i) =>
         {
@@ -107,9 +101,9 @@ export class SingleWheelView
     rotateByRadians(rads)
     {
         if ((rads > 2 * Math.PI) || (rads < -2.0 * Math.PI))
-{
+        {
             // throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
-            logError('rotateByRadians - rads should not be greater than 2*PI or less than -2*PI');
+            Logger.error('rotateByRadians - rads should not be greater than 2*PI or less than -2*PI');
         }
         const rot = this.container.rotation;
         const newr = Radians.add(rot, rads);

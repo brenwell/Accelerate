@@ -1,27 +1,28 @@
-import { SingleWheelView } from './single_wheel_view.js';
-import * as View from "./view.js"
+import * as View from './view.js';
 import Accelerator from '../../src/index.js';
 import * as Radians from './radian_helpers.js';
-/**
- * private logger function
- * @param {string} s - the string to log
- */
-function logger(s)
-{
-    /* eslint-disable no-console */
-    console.log(s);
-    /* eslint-enable no-console */
-}
+import * as Logger from '../libs/logger.js';
 
+/**
+ * Controls the data flow into a wheel object and updates the view whenever data changes.
+ *
+ * @class      WheelController
+ */
 export class WheelController
 {
+    /**
+     * Constructs the object.
+     *
+     * @param      {SingleWheelView}  view    The view that renders a single wheel
+     */
     constructor(view)
     {
         this.accelerator = new Accelerator(0);
-        this.pixiApp = View.app
-        this.view = view
-        this.lastRadians = view.container.rotation
+        this.pixiApp = View.app;
+        this.view = view;
+        this.lastRadians = view.container.rotation;
     }
+
     /**
      * Advances the wheel's time by a timeInterval and redraws the wheel in the new position.
      * Takes account of the circular nature of the wheel and keeps the new rotation value to less than 2*PI.
@@ -35,11 +36,10 @@ export class WheelController
     {
         // d and lastRadians are not modulo2PI
         const d = this.accelerator.advanceByTimeInterval(timeInterval);
-        const lastPrev = this.lastRadians;
 
         if (d < this.lastRadians)
         {
-            logError('something is wrong');
+            Logger.error('something is wrong');
         }
         const deltaRads = Radians.subtract(Radians.modulo2PI(d), this.lastRadians);
 
@@ -54,23 +54,56 @@ export class WheelController
 
         this.view.rotateByRadians(deltaRads);
     }
+
+    /**
+     * Sets the speed.
+     *
+     * @param      {float}  v       THe value to set
+     */
     setSpeed(v)
     {
-        this.accelerator.setVelocity(v)
+        this.accelerator.setVelocity(v);
     }
+
+    /**
+     * Ramp up the wheel to the required speed
+     *
+     * @param      {float}  speed         The speed to achive
+     * @param      {float}  timeInterval  over this  time interval
+     * @param      {float}  distance      and this distance
+     * @return     {Promise}              resolved when the speed has been reached
+     */
     rampUp(speed, timeInterval, distance)
     {
-        return this.accelerator.accelerate(speed, timeInterval, distance)
+        return this.accelerator.accelerate(speed, timeInterval, distance);
     }
+
+    /**
+     * Spin the wheel for a time interval at its current constant speed
+     *
+     * @param      {float}  timeInterval  The time interval to spin or wait for
+     * @return     {Promise}              resolved when the speed has been reached
+     */
     spin(timeInterval)
     {
-        return this.accelerator.wait(timeInterval)
+        return this.accelerator.wait(timeInterval);
     }
+
+    /**
+     * bring the wheel to stop as a specific position over a given time and distance
+     *
+     * @param      {float}  position      The position
+     * @param      {float}  timeInterval  The time interval
+     * @param      {object} options       The options
+     * @return     {Promise}              resolved when the wheel has stopped
+     */
     comeToStop(position, timeInterval, options)
     {
-        let d = this.calculateStoppingDistance(position, timeInterval, options)
-        return this.accelerator.accelerate(0.0, timeInterval, d)
+        const d = this.calculateStoppingDistance(position, timeInterval, options);
+
+        return this.accelerator.accelerate(0.0, timeInterval, d);
     }
+
     /**
      * VERY IMPORTANT METHOD - will probably need tuning to get a good visual result
      *
@@ -101,13 +134,13 @@ export class WheelController
     calculateStoppingDistance(position, timeInterval)
     {
         this.validatePosition(position);
-        logger(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
+        Logger.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
         const positionInRadians = this.view.convertPositionToRadians(position);
-        const v0 = this.accelerator.getVelocity()
+        const v0 = this.accelerator.getVelocity();
 
-        if ( (v0 !== 0) && (v0 < (2 * Math.PI / timeInterval)))
+        if ((v0 !== 0) && (v0 < (2 * Math.PI / timeInterval)))
         {
-            alertProblem('velocity maybe too low');
+            Logger.alertProblem('velocity maybe too low');
         }
         const currentRadians = this.view.getCurrentRotation();
 
@@ -115,11 +148,10 @@ export class WheelController
                                 ? (positionInRadians - currentRadians)
                                 : ((2 * Math.PI) + positionInRadians - currentRadians);
 
-
         const dMax = v0 * timeInterval;
         const iDeltaR = deltaRadians;
-
         const vers = 3;
+
         if (vers === 2)
         {
             // enhanced algorithm
@@ -131,17 +163,20 @@ export class WheelController
                 tmp += (2 * Math.PI);
             }
         }
-        else if( vers === 3)
+        else if (vers === 3)
         {
             // once we work out the adjustment of less than 2PI to get the right position simply add 3 revolutions
-            const _dRequired = Radians.modulo2PI(deltaRadians) + (6 * Math.PI)
-            return _dRequired
-        } 
+            // this is the option that Brendon is implementing
+            const _dRequired = Radians.modulo2PI(deltaRadians) + (6 * Math.PI);
+
+            return _dRequired;
+        }
+
         const dRequired = deltaRadians;
 
         if (dMax <= dRequired)
         {
-            alertProblem(
+            Logger.alertProblem(
                 `dRequired too big  or velocity too low\n dMax: ${dMax} dRequired:${dRequired}`
                 + ` \nmay be suboptimal deceleration shape`
                 );
@@ -155,7 +190,7 @@ export class WheelController
         // if( (cycles * 2 * Math.PI + deltaRadians) > dMax ){
         //     throw new Error(`calculateStoppingDistance dRequired:${dRequired} too big`)
         // }
-        logger(`calculateStoppingDistance `
+        Logger.log(`calculateStoppingDistance `
         + ` v0 : ${v0} `
         + ` dMax:${dMax}`
         + ` timeInterval: ${timeInterval} `
@@ -176,6 +211,3 @@ export class WheelController
     }
 
 }
-
-
-

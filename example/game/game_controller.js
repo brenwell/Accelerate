@@ -1,45 +1,49 @@
+import * as View from './view.js';
 
-import * as View from "./view.js"
-import {WheelController} from "./wheel_controller.js"
 /**
- * private logger function
- * @param {string} s - the string to log
+ * Controls a game consisting of three rotating wheels in simulation of a slot maching.
+ * 
+ * The game has the following phases:
+ * -    rampUp      -    when the wheels are coming up to speed from a standing start
+ * -    spin        -   when the wheels are all spinning at their top speed for a period
+ * -    comeToAStop -   a period when the wheels are slowing down with the intent of finishing
+ *                      with the predetermined alignment so that the outcome of the game
+ *                      expected at the start is realized.
+ * 
+ * Delegates most of its work to the controllers for each of the wheels.
+ * 
+ * Somewhat untidily the rendering for the gane is done in module View and thats where
+ * the controllers of each wheel are created.
+ *
+ * @class      GameController
  */
-function logger(s)
-{
-    /* eslint-disable no-console */
-    console.log(s);
-    /* eslint-enable no-console */
-}
-
-let game
-
 export class GameController
 {
-    constructor(app)
+    /**
+     * Constructs the object.
+     *
+     */
+    constructor()
     {
-        game = this
-        this.pixiApp = View.app
-        const outerWheelView = View.outerWheelView
-        const middleWheelView = View.middleWheelView
-        const innerWheelView = View.innerWheelView
+        this.pixiApp = View.app;
+        this.outerWheelController = View.outerWheelController;
+        this.middleWheelController = View.middleWheelController;
+        this.innerWheelController = View.innerWheelController;
 
-        this.outerWheelController = View.outerWheelController
-        this.middleWheelController = View.middleWheelController
-        this.innerWheelController = View.innerWheelController
-        
-        this.tickerFunc = (delta)=>{
+        this.tickerFunc = (delta) =>
+        {
             const timeInterval = delta * (1.0 / 60.0);
+
             this.outerWheelController.advanceByTimeInterval(timeInterval);
             this.middleWheelController.advanceByTimeInterval(timeInterval);
             this.innerWheelController.advanceByTimeInterval(timeInterval);
-        }
+        };
     }
     /**
-     * Play one roll of the game
+     * Play one roll of the game. This is where the 
      *
-     * @param      {object}  of thype described below
-     * 
+     * @param      {object}  parameterObject of type described below
+     *
      *   rampUpTimes     : [rampUpTimeInner, rampUpTimeMiddle, rampupTimeOuter],
      *   rampUpTimes     : [rampUpDistanceInner, rampUpDistanceMiddle, rampupDistanceOuter],
      *   spinSpeeds      : [speedInner, speedMiddle, speedOuter],
@@ -47,29 +51,28 @@ export class GameController
      *   finalPositions  : [p1, p1, p1]
      *   stoppingTime    : [stopTimeIntervalInner, stopTimeIntervalMiddle, stopTimeIntervalOuter]
      */
-
     play(parameterObject)
     {
-        let p = parameterObject;
+        const p = parameterObject;
         const OUTERINDEX = 0;
         const MIDDLE_INDEX = 1;
         const INNER_INDEX = 2;
 
-        this.outerSpeed  = p.spinSpeeds[OUTERINDEX];
-        this.middleSpeed  = p.spinSpeeds[MIDDLE_INDEX];
-        this.innerSpeed  = p.spinSpeeds[INNER_INDEX];
+        this.outerSpeed = p.spinSpeeds[OUTERINDEX];
+        this.middleSpeed = p.spinSpeeds[MIDDLE_INDEX];
+        this.innerSpeed = p.spinSpeeds[INNER_INDEX];
 
-        this.outerRampUpTime  = p.rampUpTimes[OUTERINDEX];
-        this.middleRampUpTime  = p.rampUpTimes[MIDDLE_INDEX];
-        this.innerRampUpTime  = p.rampUpTimes[INNER_INDEX];
+        this.outerRampUpTime = p.rampUpTimes[OUTERINDEX];
+        this.middleRampUpTime = p.rampUpTimes[MIDDLE_INDEX];
+        this.innerRampUpTime = p.rampUpTimes[INNER_INDEX];
 
-        this.outerRampUpDistance  = p.rampUpDistance[OUTERINDEX];
-        this.middleRampUpDistance  = p.rampUpDistance[MIDDLE_INDEX];
-        this.innerRampUpDistance  = p.rampUpDistance[INNER_INDEX];
+        this.outerRampUpDistance = p.rampUpDistance[OUTERINDEX];
+        this.middleRampUpDistance = p.rampUpDistance[MIDDLE_INDEX];
+        this.innerRampUpDistance = p.rampUpDistance[INNER_INDEX];
 
         this.outerSpinTime = p.spinTime[OUTERINDEX];
         this.middleSpinTime = p.spinTime[MIDDLE_INDEX];
-        this.innerSpinTime = p.spinTime[INNER_INDEX]
+        this.innerSpinTime = p.spinTime[INNER_INDEX];
 
         this.outerStoppingPosition = p.finalPositions[OUTERINDEX];
         this.middleStoppingPosition = p.finalPositions[MIDDLE_INDEX];
@@ -80,19 +83,26 @@ export class GameController
         this.innerStoppingTime = p.stoppingTime[INNER_INDEX];
 
         this.rampUp()
-        .then(() =>{
-            return this.spin()
+        .then(() =>
+        {
+            return this.spin();
         })
-        .then(() =>{
-            return this.comeToStop()
+        .then(() =>
+        {
+            return this.comeToStop();
         })
-        .then(() =>{
-            this.removeTickerFunc();  
-        })
+        .then(() =>
+        {
+            this.removeTickerFunc();
+        });
         this.pixiApp.ticker.add(this.tickerFunc);
-
     }
-
+    /**
+     * Ramp the game up to full spinning speed
+     *
+     * @return     {Promise}  a Promise that is resolved when all wheels are spinnig at full speed
+     *                          full speed is defined in the parameterObject passed to play
+     */
     rampUp()
     {
         const allPs = [];
@@ -100,8 +110,16 @@ export class GameController
         allPs.push(this.outerWheelController.rampUp(this.outerSpeed, this.outerRampUpTime, this.outerRampUpDistance));
         allPs.push(this.middleWheelController.rampUp(this.middleSpeed, this.middleRampUpTime, this.middleRampUpDistance));
         allPs.push(this.innerWheelController.rampUp(this.innerSpeed, this.innerRampUpTime, this.innerRampUpDistance));
-        return Promise.all(allPs)
+
+        return Promise.all(allPs);
     }
+    /**
+     * Let the game spin for a while
+     *
+     * @return     {Promise}  a Promise that is resolved when "for a while" expires
+     *                          "for a while" can be different for each wheel and is defined in the
+     *                          parameterObject passed to play
+     */
     spin()
     {
         const allPs = [];
@@ -109,8 +127,15 @@ export class GameController
         allPs.push(this.outerWheelController.spin(this.outerSpinTime));
         allPs.push(this.middleWheelController.spin(this.middleSpinTime));
         allPs.push(this.innerWheelController.spin(this.innerSpinTime));
-        return Promise.all(allPs)
+
+        return Promise.all(allPs);
     }
+    /**
+     * Bring all whells to a stop at the appointed finishing position. The position is defined in
+     * the parameterObject passed to method play
+     *
+     * @return     {Promise}  A Promise that is resolved when the stopping completes for all wheels
+     */
     comeToStop()
     {
         const allPs = [];
@@ -118,13 +143,14 @@ export class GameController
         allPs.push(this.outerWheelController.comeToStop(this.outerStoppingPosition, this.outerStoppingTime));
         allPs.push(this.middleWheelController.comeToStop(this.middleStoppingPosition, this.middleStoppingTime));
         allPs.push(this.innerWheelController.comeToStop(this.innerStoppingPosition, this.innerStoppingTime));
-        return Promise.all(allPs)
+
+        return Promise.all(allPs);
     }
+    /**
+     * Removes a ticker function - stops the view from being animated
+     */
     removeTickerFunc()
     {
         this.pixiApp.ticker.remove(this.tickerFunc);
     }
-
 }
-
-

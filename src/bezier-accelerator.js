@@ -3,17 +3,21 @@ import { QuadraticBezier, CubicBezier } from './bezier-functions';
 /**
  * This class performs velocity changes on objects in 1-dimensional motion
  *
- * Provides a single method getDistance(t) - will change name to
- * positionAfter(t) at some point that returns the total distance traveled since
- * after t seconds of the velocity change
+ * Provides two exposed methods
+ *
+ * -    getDistance(x)
+ * -    isComplete()
  *
  * It does NOT keep track of the moving object outside of the velocity change
  * window
  *
  * Elapsed time is measured from the start of the velocity change
  *
- * You can only use one of these objects once. Once the velocity change is
- * complete any call to getPositionAfter will result in an error
+ * You can only use an instance of this class once. Once the velocity change is
+ * complete any call to getDistance() will result in an error. This is because
+ * the values that define the bezier function used to describe the acceleration
+ * are passed in via the constructor and those values cannot be changed (and hence the bezier curve cannot be changed)
+ * without creating a new object
  *
  */
 export default class BezierAccelerator
@@ -21,13 +25,14 @@ export default class BezierAccelerator
     /**
      * Constructs the object.
      *
-     * @param  {number}    v0  The v 0
-     * @param  {number}    vF  The v f
-     * @param  {number}    tF  The t f
-     * @param  {number}    dF  The d f
-     * @param  {Function}  cb  { parameter_description }
+     * @param  {number}    v0  The initial velocity - velocity before the acceleration
+     * @param  {number}    vF  The final velocity to be atained
+     * @param  {number}    tF  The time interval over which the acceleration is to be completed
+     * @param  {number}    dF  The distance the object is to travel over the period of the acceleration
+     *
+     * @param  {Function}  cb  { parameter_description } NOTE - not tested
      */
-    constructor(v0, vF, tF, dF, cb)
+    constructor(v0, vF, tF, dF, cb = null)
     {
         // just changing the notation to what I am using
         const V = v0;
@@ -40,6 +45,19 @@ export default class BezierAccelerator
 
         this.callBack = cb;
 
+        /**
+         * This if statement is selecting the "best" bezier function for the set of defining values
+         * given. The motivation for this is to ensure that the most common deceleration case
+         *
+         *  -   going from a high velocity to zero velocity
+         *
+         *  uses a curve that results in a uniform deceleration. This is achieved by slecting the
+         *  Quadratic bezier for this particular circunstance.
+         *
+         *  It is possible to handle this particular case with a Cubic Bezier but the result would be that the
+         *  motion decelerates too much and has to speed up or reverse course at the end
+         *
+         */
         if ((v0 > 0) && (vF === 0) && ((T * v0) > (D)))
         {
             // this is the one special case where a cubic will not do the job
@@ -108,19 +126,9 @@ export default class BezierAccelerator
     }
 
     /**
-     * Gets the position after an elapsed time.
+     * Gets the distance that has been traveled after xValue time units of the acceleration.
      *
-     * @param  {number}  elapsedTime  The elapsed time
-     * @return {number}  The position after.
-     */
-    getPositionAfter(elapsedTime)
-    {
-        return this.getDistance(elapsedTime);
-    }
-
-    /**
-     * Gets the distance. This is the only exposed method of the class that is
-     * not simply for debugging.
+     * NOTE :: This is one of only two methods exposed by the class that are not simply for debugging.
      *
      * @param  {number}  xValue  a number in the range  0..tF the elapsed time
      *                           of the velocity change
@@ -147,4 +155,16 @@ export default class BezierAccelerator
 
         return yValue;
     }
+    /**
+     * Returns true if the acceleration is complete false other wise
+     *
+     * This is the second method exposed by the class that is not purely debuggin
+     *
+     * @return     {boolean}  True if complete, False otherwise.
+     */
+    isComplete()
+    {
+        return this.complete;
+    }
+
 }

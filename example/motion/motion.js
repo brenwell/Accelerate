@@ -1,4 +1,5 @@
 import Accelerator from '../../src/index.js';
+import * as Logger from "../libs/logger.js"
 
 /*
  * This file implements a function that can run a schedule of accelerations
@@ -18,16 +19,6 @@ const sample_schedule = {
 };
  */
 
-/**
- * private logger function
- * @param {string} s - the string to log
- */
-function logger(s)
-{
-    /* eslint-disable no-console */
-    console.log(s);
-    /* eslint-enable no-console */
-}
 
 /**
  * This function runs a motion schedule or profile and when complete calls cb
@@ -85,7 +76,7 @@ export default function (cb, schedule)
         {
             nextAt = i + delayInTicks(nextAccelIndex);
         }
-        logger(`afterAcceleration next :${nextAccelIndex} nextAt: ${nextAt} more: ${moreAccels}`);
+        Logger.log(`afterAcceleration next :${nextAccelIndex} nextAt: ${nextAt} more: ${moreAccels}`);
     }
 
     const timer = setInterval(function setIntervalCallBack1()
@@ -104,10 +95,10 @@ export default function (cb, schedule)
             const tF = schedule.accelsTable[nextAccelIndex].tF;
             const dF = schedule.accelsTable[nextAccelIndex].dF;
 
-            logger(`setup accel ${nextAccelIndex}`);
+            Logger.log(`setup accel ${nextAccelIndex}`);
             mover.accelerate(vF, tF, dF).then(() =>
             {
-                logger(` ${nextAccelIndex} acceleration ended `);
+                Logger.log(` ${nextAccelIndex} acceleration ended `);
                 setupNextAcceleration();
             });
         }

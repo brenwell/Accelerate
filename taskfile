@@ -1,5 +1,8 @@
 #!/bin/bash
 
+PATH=`realpath .`/node_modules/.bin:$PATH
+
+
 function public:start {
   rm -rf ./lib/
   webpack --progress --colors --watch --env.fileName 'accelerate.js' --env.libName 'accelerate'
