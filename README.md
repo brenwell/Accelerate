@@ -32,9 +32,9 @@ function ticker(delta) {
 window.requestAnimationFrame(ticker);
 
 // Promise based
-carAccelerator.accelerate(newV, overTime, overDistance)
-.then(carAccelerator.accelerate(newV, overTime, overDist))
-.then(carAccelerator.accelerate(newV, overTime, overDistance))
+carAccelerator.accelerate(newV1, overTime1, overDistance1)
+.then(carAccelerator.accelerate(newV2, overTime2, overDistance2))
+.then(carAccelerator.accelerate(newV3, overTime3, overDistance3))
 .then(console.log('done'))
 
 

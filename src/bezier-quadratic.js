@@ -102,5 +102,20 @@ export class BezierQuadratic
 
         return res;
     }
+    /**
+     * This function computes the slope of the bezier curve at the parameter value t.\
+     * This is also the value of the derivate dy/dx at that value of t
+     *
+     * @param      {float}  t       parameter value
+     * @return     {float}  slope
+     */
+    slopeAtT(t)
+    {
+        const dydt = this.derivative(t, this.P0[1], this.P1[1], this.P2[1]);
+        const dxdt = this.derivative(t, this.P0[0], this.P1[0], this.P2[0]);
+        const dydx = (dydt/dxdt);
+
+        return dydx;
+    }
 }
 

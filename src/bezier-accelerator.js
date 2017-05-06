@@ -1,5 +1,4 @@
 import { QuadraticBezier, CubicBezier } from './bezier-functions';
-
 /**
  * This class performs velocity changes on objects in 1-dimensional motion
  *
@@ -126,16 +125,17 @@ export default class BezierAccelerator
     }
 
     /**
-     * Gets the distance that has been traveled after xValue time units of the acceleration.
+     * Gets an object that contains the distance that has been traveled after xValue time units of the acceleration,
+     * and the velocity of travel at that same time
      *
      * NOTE :: This is one of only two methods exposed by the class that are not simply for debugging.
      *
      * @param  {number}  xValue  a number in the range  0..tF the elapsed time
      *                           of the velocity change
-     * @return {float}   The distance traveled since the start of the velocity
-     *                   change
+     * @return {object}   Of type 
+     *                      { distance : , velocity : }
      */
-    getDistance(xValue)
+    getDistanceAndVelocity(xValue)
     {
         if (this.complete)
         {
@@ -151,9 +151,9 @@ export default class BezierAccelerator
             }
         }
 
-        const yValue = this.func(xValue);
+        const obj = this.func(xValue);
 
-        return yValue;
+        return {distance : obj.yValue, velocity : obj.slopeValue};
     }
     /**
      * Returns true if the acceleration is complete false other wise

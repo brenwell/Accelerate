@@ -6,16 +6,6 @@ import BezDecelerator from '../../src/bezier-accelerator';
 import { graphFunction, drawAxes } from '../libs/graph.js';
 import $ from 'jquery';
 
-$(document).ready(function X()
-{
-    $('#version1').click(doVersion1);
-    $('#version2').click(doVersion2);
-    $('#version3').click(doVersion3);
-    $('#version4').click(doVersion4);
-    $('#version5').click(doVersion5);
-    $('#version6').click(doVersion6);
-    $('#version7').click(doVersion7);
-});
 
 // set up the examples that can be plotted
 

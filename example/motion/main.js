@@ -5,6 +5,7 @@
 import { drawAxes, graphTable } from '../libs/graph.js';
 import motion1 from './motion_1.js';
 import motion2 from './motion_2.js';
+import motion4 from './motion_4.js';
 import testWait from './wait_test.js';
 
 const $ = window.$;
@@ -14,6 +15,7 @@ $(document).ready(function DR()
     $('#motion_1_button').click(motionFunc1);
     $('#motion_2_button').click(motionFunc2);
     $('#motion_3_button').click(motionFunc3);
+    $('#motion_4_button').click(motionFunc4);
 });
 
 // just to prove we got here
@@ -28,6 +30,10 @@ function motionFunc3()
 function motionFunc2()
 {
     drawMotion(motion2);
+}
+function motionFunc4()
+{
+    motion4();
 }
 function drawMotion(motion)
 {

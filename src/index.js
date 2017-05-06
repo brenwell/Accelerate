@@ -66,6 +66,7 @@ export default class Accelerator
         this.elapsedTimeChangingVelocity = 0.0;
         this.totalDistance = 0.0;
         this.changingVelocity = false;
+        this.isWaiting = false;
         this.bezAccelerator = null;
         this.currentVelocity = v0;
     }
@@ -115,14 +116,22 @@ export default class Accelerator
             this.time += deltaTime;
             this.elapsedTimeChangingVelocity += deltaTime;
 
-            const tmp = this.decelerator.getDistance(this.elapsedTimeChangingVelocity);
+            const obj = this.decelerator.getDistanceAndVelocity(this.elapsedTimeChangingVelocity);
+            const tmp = obj.distance;
+            const tmpV = obj.velocity;
             const deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance;
 
             /**
              * This is a crude estimate of the velocity. At some point I should work out a formular
              * rather than do this approximation
              */
-            this.currentVelocity = deltaDistance / (deltaTime);
+
+             /**
+              * Trying a new calculation of velocity
+              */
+            // this.currentVelocity = deltaDistance / (deltaTime);
+            this.currentVelocity = tmpV;
+            
             this.totalDistance = this.distanceBeforeVelocityChange + tmp;
 
             logger(
@@ -130,7 +139,9 @@ export default class Accelerator
                 + ` timeForChange: ${this.timeForChange}`
                 + ` DVdistance: ${tmp} `
                 + ` totalDistance: ${this.totalDistance}`
-                + `velocity: ${this.currentVelocity}`);
+                + ` velocity: ${this.currentVelocity}`
+                + ` tmpV: ${tmpV}`
+                );
 
             /**
              * There are a number of ways of detecting an end of an acceleration.
@@ -146,8 +157,11 @@ export default class Accelerator
              *                  resolve()
              *              });
              *          }
-             *
-             *          return new promise;
+             *          this.resolvePromiseFunction = promise 
+             *          return promise;
+             *          
+             *  @NOTE - how to do kill() in this last situation. Maybe have a kill method on
+             *  the BezierAccelerator ??
              *
              * @TODO @NOTE : this last option has NOT been tested.
              *
@@ -214,21 +228,72 @@ export default class Accelerator
      * @param  {float}    vF     - is the velocity the object is to change to
      * @param  {float}    tF     - is the time interval over which the change is to take place
      * @param  {float}    dF     - is the distance that the object should move while changing velocity
-     * @param  {mixed}    delay  - when {float} a timeInterval to delay the acceleration by
-     *                              or false = no delay. Defaults to false
+     * @return {Promise}  Promise which will be resolved when the acceleration
+     *                    has completed
+     *
+    accelerate(vF, tF, dF)
+    {
+        return this._accelerateNoDelay(vF, tF, dF);
+    }
+    */
+    /**
+     * Implements the guts of the accelerate action. Sets up the necessary properties
+     * and returns a promise.
+     *
+     * Under some circumstances it is permissible to start an acceleration even when one is already
+     * active. This depends on the property this.allowOverwrite
+     *
+     * When permited an overwrite (new acceleration when one is already active)
+     *  -   stops the current acceleration and resolves the associated promise
+     *  -   sets up a new acceleration using the current velocity, total time and total
+     *      distance left over from the kill'd
+     *      acceleration as the initial velocity and starting time and distance
+     *      for the new acceleration
+     *
+     * @private
+     *
+     * @param  {Float}   vF  is the velocity the object is to change to
+     * @param  {Float}   tF  is the time interval over which the change is to take place
+     * @param  {Float}   dF  is the distance that the object should move while changing velocity
+     *
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
      */
-    accelerate(vF, tF, dF, delay = false)
+    accelerate(vF, tF, dF)
     {
-        if (!delay || delay <= 0)
+        logger(`Accelerator::accelerate ${vF} ${tF} ${dF}`);
+        if (!this.allowOverwrite)
         {
-            return this._accelerateNoDelay(vF, tF, dF);
+            if (this.changingVelocity)
+            {
+                throw new Error('cannot have two accelerations underway at the same time');
+            }
+            if (this.isWaiting)
+            {
+                throw new Error('cannot have commence acceleration while wait is underway');
+            }
+        }
+        else
+        {
+            this.kill();
         }
 
-        return this.waitFor(delay).then(() =>
-        this._accelerateNoDelay(vF, tF, dF));
+        const v0 = this.currentVelocity;
+
+        this.distanceBeforeVelocityChange = this.totalDistance;
+        this.changingVelocity = true;
+        this.elapsedTimeChangingVelocity = 0.0;
+        this.timeForChange = tF;
+        this.newVelocity = vF;
+        this.distanceForChange = dF;
+        this.decelerator = new BezierAccelerator(v0, vF, tF, dF);
+
+        return new Promise((resolve) =>
+        {
+            this.resolvePromiseFunction = resolve;
+        });
     }
+
 
     /**
      * Lets a timeinterval pass during which the accelerator moves along at a constant velocity.
@@ -260,7 +325,6 @@ export default class Accelerator
 
                 return;
             }
-
             this.isWaiting = true;
             this.requiredWaitingTime = delay;
             this.currentWaitingTime = 0.0;
@@ -269,7 +333,7 @@ export default class Accelerator
     }
 
     /**
-     * Stops any current acceleration & resolves the acceleration promise
+     * Stops any current acceleration or wait & resolves the promise
      */
     kill()
     {
@@ -281,68 +345,18 @@ export default class Accelerator
                 this.resolvePromiseFunction();
             }
         }
+        else if (this.isWaiting)
+        {
+            this.isWaiting = false
+            if (typeof this.resolvePromiseFunction === 'function')
+            {
+                this.resolvePromiseFunction();
+            }
+        }
         else
         {
             // console.log(`WARNING: Accelerator - kill not necessary when no acceleration active`);
         }
-    }
-
-    /**
-     * Implements the guts of the accelerate action. Sets up the necessary properties
-     * and returns a promise.
-     *
-     * Under some circumstances it is permissible to start an acceleration even when one is already
-     * active. This depends on the property this.allowOverwrite
-     *
-     * When permited an overwrite (new acceleration when one is already active)
-     *  -   stops the current acceleration and resolves the associated promise
-     *  -   sets up a new acceleration using the current velocity, total time and total
-     *      distance left over from the kill'd
-     *      acceleration as the initial velocity and starting time and distance
-     *      for the new acceleration
-     *
-     * @private
-     *
-     * @param  {Float}   vF  is the velocity the object is to change to
-     * @param  {Float}   tF  is the time interval over which the change is to take place
-     * @param  {Float}   dF  is the distance that the object should move while changing velocity
-     *
-     * @return {Promise}  Promise which will be resolved when the acceleration
-     *                    has completed
-     */
-    _accelerateNoDelay(vF, tF, dF)
-    {
-        logger(`Mover::accelerate ${vF} ${tF} ${dF}`);
-        if (!this.allowOverwrite)
-        {
-            if (this.changingVelocity)
-            {
-                throw new Error('cannot have two accelerations underway at the same time');
-            }
-            if (this.isWaiting)
-            {
-                throw new Error('cannot have commence acceleration while wait is underway');
-            }
-        }
-        else
-        {
-            this.kill();
-        }
-
-        const v0 = this.currentVelocity;
-
-        this.distanceBeforeVelocityChange = this.totalDistance;
-        this.changingVelocity = true;
-        this.elapsedTimeChangingVelocity = 0.0;
-        this.timeForChange = tF;
-        this.newVelocity = vF;
-        this.distanceForChange = dF;
-        this.decelerator = new BezierAccelerator(v0, vF, tF, dF);
-
-        return new Promise((resolve) =>
-        {
-            this.resolvePromiseFunction = resolve;
-        });
     }
 
     /**

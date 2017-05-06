@@ -15,7 +15,7 @@ function public:build {
 }
 
 function public:test {
-  mocha-webpack --opts './test/mocha.opts' --glob "*.test.js" test || { echo 'Test failed' ; exit 1; }
+  mocha-webpack --webpack-config './test/webpack.config-test.js' --opts './test/mocha.opts' --glob "*.test.js" test || { echo 'Test failed' ; exit 1; }
 }
 
 function public:lint {

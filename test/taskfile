@@ -1,0 +1,42 @@
+#!/bin/bash
+
+PATH=`realpath ..`/node_modules/.bin:$PATH
+MW=../node_modules/.bin/mocha-webpack 
+
+## helper function for testing a single file
+function mw {
+  ${MW} --webpack-config ./webpack.config-test.js $1  
+}
+
+function public:test_all {
+	# please note - is you replace '../test' by './' the command will not work
+	${MW} --webpack-config 'webpack.config-test.js' --glob "*.test.js" '../test'
+}
+
+function public:test {
+	mw ${@}
+}
+
+function public:lint {
+  eslint src --fix --max-warnings 0
+}
+
+function public:lint:watch {
+  esw src --fix --watch -c ./.eslintrc.json
+}
+
+# ------------------------------------------
+# DEFAULT public: list all possible commands
+#
+function public:help {
+    echo "$0 <task> <args>"
+    echo "Tasks:"
+    compgen -A function | sed -En 's/public:(.*)/\1/p' | cat -n
+}
+
+# ---------- Do NOT edit below --------------
+
+TIMEFORMAT="Task completed in %3lR"
+SUBCMD=${1}
+shift 1
+public:${SUBCMD} ${@}
