@@ -108,9 +108,7 @@ function main(bezDecelerationObj)
 
     drawAxes(ctx, axes);
 
-    function gd(x){
-        return decel.getDistanceAndVelocity(x).distance;
-    }
+    const gd = decel.getDistance.bind(decel);
     const ti = decel.tangentInitial.bind(decel);
     const tf = decel.tangentFinal.bind(decel);
 

@@ -6,7 +6,8 @@ import newtonRaphson from 'newton-raphson';
  * This means that each point on the curve, say (x,y), is is a function of some "parameter" which is unfortunately
  * for this application usually called 't'.
  *
- * I have continued this use of 't' for the parameter but please note this is NOT time. IN the discussion below and this module
+ * I have continued this use of 't' for the parameter but please note this is NOT time.
+ * In the discussion below and this module
  * the variable x is time and the variable y is distance
  *
  * However to be useful in this application we need to find a way of expressing the curve as a set of points
@@ -38,16 +39,11 @@ export function CubicBezier(P0, P1, P2, P3)
 {
     const bezObj = new BezierCubic(P0, P1, P2, P3);
 
-    // const parametricFunc = function (t)
-    // {
-    //     return [bezObj.xFromT(t), bezObj.yFromT(t)];
-    // };
-
     /**
      * Evaluates the bezier function and returns yValue and slope of the point
      * on the curve corresponding to the given xValue
      *
-     * @param      {number}  xValue  
+     * @param      {number}  xValue the independent variable
      * @return     {Object}  Returns object containing yValue and slopeValue
      */
     function functionOfX(xValue)
@@ -75,14 +71,14 @@ export function CubicBezier(P0, P1, P2, P3)
 
         // let xValue = bezObj.xFromT(t)
         const yValue = bezObj.yFromT(tValue);
-        const slopeValue = bezObj.slopeAtT(tValue)
+        const slopeValue = bezObj.slopeAtT(tValue);
 
         if (yValue === 0)
         {
             // console.log('CubicBezier: yValue is zero'); // eslint-disable-line
         }
 
-        return {yValue, slopeValue};
+        return { yValue, slopeValue };
     }
 
     return functionOfX;
@@ -100,19 +96,11 @@ export function QuadraticBezier(P0, P1, P2)
  {
     const bezObj = new BezierQuadratic(P0, P1, P2);
 
-    // find the t value that corresponds to the x value
-    // get it by newton raphson
-
-    // const parametricFunc = function (t)
-    // {
-    //     return [bezObj.xFromT(t), bezObj.yFromT(t)];
-    // };
-
     /**
      * Evaluates the bezier function and returns yValue and slope of the point
      * on the curve corresponding to the given xValue
      *
-     * @param      {number}  xValue  
+     * @param      {number}  xValue independent variable
      * @return     {Object}  Returns object containing yValue and slopeValue
      */
     function functionOfX(xValue)
@@ -139,14 +127,14 @@ export function QuadraticBezier(P0, P1, P2)
 
         // let x = bezObj.xFromT(t);
         const yValue = bezObj.yFromT(tValue);
-        const slopeValue = bezObj.slopeAtT(tValue)
+        const slopeValue = bezObj.slopeAtT(tValue);
 
         if (yValue === 0)
         {
             console.log('CubicBezier: yValue is zero'); // eslint-disable-line
         }
 
-        return {yValue, slopeValue};
+        return { yValue, slopeValue };
     }
 
     return functionOfX;

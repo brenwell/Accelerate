@@ -115,7 +115,7 @@ export class BezierCubic
     {
         const dydt = this.derivative(t, this.P0[1], this.P1[1], this.P2[1], this.P3[1]);
         const dxdt = this.derivative(t, this.P0[0], this.P1[0], this.P2[0], this.P3[0]);
-        const dydx = (dydt/dxdt);
+        const dydx = (dydt / dxdt);
 
         return dydx;
     }

@@ -2,7 +2,7 @@
 * main entry for bez.html - draws various forms of bezier functions
 */
 
-import BezDecelerator from '../../src/bezier-accelerator';
+import SimpleAccelerator from '../../src/simple-accelerator';
 import { graphFunction, drawAxes } from '../libs/graph.js';
 import $ from 'jquery';
 
@@ -30,7 +30,7 @@ function doVersion1()
     vF = 0;
     dF = 3.5;
     tF = 4;
-    const dObj = new BezDecelerator(v0, vF, tF, dF);
+    const dObj = new SimpleAccelerator(v0, vF, tF);
 
     main(dObj);
 }
@@ -40,7 +40,7 @@ function doVersion2()
     vF = 0;
     dF = 400;
     tF = 2;
-    const dObj = new BezDecelerator(v0, vF, tF, dF);
+    const dObj = new SimpleAccelerator(v0, vF, tF);
 
     main(dObj);
 }
@@ -50,7 +50,7 @@ function doVersion3()
     vF = 180;
     dF = 400;
     tF = 2;
-    main(new BezDecelerator(v0, vF, tF, dF));
+    main(new SimpleAccelerator(v0, vF, tF));
 }
 function doVersion4()
 {
@@ -58,7 +58,7 @@ function doVersion4()
     vF = 1200;
     dF = 400;
     tF = 2;
-    main(new BezDecelerator(v0, vF, tF, dF));
+    main(new SimpleAccelerator(v0, vF, tF));
 }
 function doVersion5()
 {
@@ -66,7 +66,7 @@ function doVersion5()
     vF = 190;
     dF = 400;
     tF = 2;
-    main(new BezDecelerator(v0, vF, tF, dF));
+    main(new SimpleAccelerator(v0, vF, tF, dF));
 }
 function doVersion6()
 {
@@ -74,7 +74,7 @@ function doVersion6()
     vF = 210;
     dF = 400;
     tF = 2;
-    main(new BezDecelerator(v0, vF, tF, dF));
+    main(new SimpleAccelerator(v0, vF, tF, dF));
 }
 function doVersion7()
 {
@@ -82,9 +82,9 @@ function doVersion7()
     vF = 0;
     dF = 400;
     tF = 2;
-    main(new BezDecelerator(v0, vF, tF, dF));
+    main(new SimpleAccelerator(v0, vF, tF, dF));
 }
-function main(bezDecelerationObj)
+function main(accelerationObj)
 {
     $('#canvas-wrapper').empty();
     $('#canvas-wrapper').append('<canvas id="canvas" width="1000" height="500"></canvas>');
@@ -92,7 +92,7 @@ function main(bezDecelerationObj)
     const canvas = document.getElementById('canvas');
 
     if (canvas === null || !canvas.getContext) return;
-    const decel = bezDecelerationObj;
+    const decel = accelerationObj;
 
     const ctx = canvas.getContext('2d');
     const w = ctx.canvas.width;
@@ -111,12 +111,15 @@ function main(bezDecelerationObj)
     function gd(x){
         return decel.getDistanceAndVelocity(x).distance;
     }
-    const ti = decel.tangentInitial.bind(decel);
-    const tf = decel.tangentFinal.bind(decel);
+    function vel(x){
+        return decel.getDistanceAndVelocity(x).velocity;        
+    }
+    // const ti = decel.tangentInitial.bind(decel);
+    // const tf = decel.tangentFinal.bind(decel);
 
     graphFunction(ctx, axes, gd, 'rgb(66,44,255)', 2);
-    graphFunction(ctx, axes, ti, 'rgb(255,44,255)', 2);
-    graphFunction(ctx, axes, tf, 'rgb(255,44,255)', 2);
+    graphFunction(ctx, axes, vel, 'rgb(255,44,255)', 2);
+    // graphFunction(ctx, axes, tf, 'rgb(255,44,255)', 2);
     // drawDot(ctx, axes, points[0][0], points[0][1] );
     // drawDot(ctx, axes, points[1][0], points[1][1] );
     // drawDot(ctx, axes, points[2][0], points[2][1] );

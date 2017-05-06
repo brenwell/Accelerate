@@ -42,10 +42,10 @@ function public:bez_clean {
   rm -fv ${BEZ}/*bundle*
 }
 function public:bez_build {
-  webpack  --devtool source-map ${BEZ}/bez.js ${BEZ}/bez_bundle.js
+  webpack  --devtool source-map ${BEZ}/main.js ${BEZ}/bez_bundle.js
 }
 function public:bez_watch {
-  webpack -w  --devtool source-map ${BEZ}/bez.js ${BEZ}//bez_bundle.js 
+  webpack -w  --devtool source-map ${BEZ}/main.js ${BEZ}//bez_bundle.js 
 }
 function public:bez_lint {
   public:lint bez
@@ -56,10 +56,10 @@ function public:square_clean {
   rm -fv ${SQUARE}/*bundle*
 }
 function public:square_build {
-  webpack  --devtool source-map ${SQUARE}/square.js ${SQUARE}/square_bundle.js
+  webpack  --devtool source-map ${SQUARE}/main.js ${SQUARE}/square_bundle.js
 }
 function public:square_watch {
-  webpack -w  --devtool source-map ${SQUARE}/square.js ${SQUARE}/square_bundle.js 
+  webpack -w  --devtool source-map ${SQUARE}/main.js ${SQUARE}/square_bundle.js 
 }
 function public:square_lint {
   public:lint square

@@ -132,7 +132,7 @@ export default class BezierAccelerator
      *
      * @param  {number}  xValue  a number in the range  0..tF the elapsed time
      *                           of the velocity change
-     * @return {object}   Of type 
+     * @return {object}   Of type
      *                      { distance : , velocity : }
      */
     getDistanceAndVelocity(xValue)
@@ -153,7 +153,7 @@ export default class BezierAccelerator
 
         const obj = this.func(xValue);
 
-        return {distance : obj.yValue, velocity : obj.slopeValue};
+        return { distance : obj.yValue, velocity : obj.slopeValue };
     }
     /**
      * Returns true if the acceleration is complete false other wise

@@ -7,7 +7,6 @@ function logger(s) // eslint-disable-line
 /*
 * TODO
 *   -   does not correctly support advancing by a time interval that jumps over the end of an acceleration
-*   -   the calc of velocity during an acceleration is crude and probably can be made more accurate
 */
 
 /**
@@ -119,7 +118,6 @@ export default class Accelerator
             const obj = this.decelerator.getDistanceAndVelocity(this.elapsedTimeChangingVelocity);
             const tmp = obj.distance;
             const tmpV = obj.velocity;
-            const deltaDistance = (this.distanceBeforeVelocityChange + tmp) - this.totalDistance;
 
             /**
              * This is a crude estimate of the velocity. At some point I should work out a formular
@@ -131,7 +129,7 @@ export default class Accelerator
               */
             // this.currentVelocity = deltaDistance / (deltaTime);
             this.currentVelocity = tmpV;
-            
+
             this.totalDistance = this.distanceBeforeVelocityChange + tmp;
 
             logger(
@@ -157,9 +155,9 @@ export default class Accelerator
              *                  resolve()
              *              });
              *          }
-             *          this.resolvePromiseFunction = promise 
+             *          this.resolvePromiseFunction = promise
              *          return promise;
-             *          
+             *
              *  @NOTE - how to do kill() in this last situation. Maybe have a kill method on
              *  the BezierAccelerator ??
              *
@@ -297,7 +295,6 @@ export default class Accelerator
         });
     }
 
-
     /**
      * Lets a timeinterval pass during which the accelerator moves along at a constant velocity.
      *
@@ -350,7 +347,7 @@ export default class Accelerator
         }
         else if (this.isWaiting)
         {
-            this.isWaiting = false
+            this.isWaiting = false;
             if (typeof this.resolvePromiseFunction === 'function')
             {
                 this.resolvePromiseFunction();
