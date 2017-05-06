@@ -163,7 +163,10 @@ export default class Accelerator
              *  @NOTE - how to do kill() in this last situation. Maybe have a kill method on
              *  the BezierAccelerator ??
              *
-             * @TODO @NOTE : this last option has NOT been tested.
+             * @NOTE : I tried this solution but it gave me some type of race condition
+             * that I could not track down. To do with the fact that the promise does not get resolved until AFTER
+             * the tick handler exits and advance() needs to know we are done BEFORE the promise then function
+             * is called. The problem arose unit testing Kill()
              *
              */
             if (this.elapsedTimeChangingVelocity >= this.timeForChange)
