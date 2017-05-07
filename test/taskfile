@@ -10,15 +10,16 @@ function mw {
 
 function public:test_all {
 	# please note - is you replace '../test' by './' the command will not work
-	${MW} --webpack-config 'webpack.config-test.js' --glob "*.test.js" '../test'
+	${MW} --webpack-config './webpack.config-test.js' --glob "*.test.js" '../test'
 }
 
+## test a single file
 function public:test {
 	mw ${@}
 }
 
 function public:lint {
-  eslint src --fix --max-warnings 0
+  eslint ../test --fix --max-warnings 0
 }
 
 function public:lint:watch {
@@ -38,5 +39,6 @@ function public:help {
 
 TIMEFORMAT="Task completed in %3lR"
 SUBCMD=${1}
+NBR_ARGS=$#
 shift 1
 public:${SUBCMD} ${@}

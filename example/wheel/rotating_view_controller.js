@@ -78,7 +78,6 @@ export class SingleWheelController
     {
         // d and lastRadians are not modulo2PI
         const d = this.accelerator.advanceByTimeInterval(timeInterval);
-        const lastPrev = this.lastRadians;
 
         if (d < this.lastRadians)
         {

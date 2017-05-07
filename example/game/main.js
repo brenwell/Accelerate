@@ -1,5 +1,5 @@
+import ThreeWheelsView from './three_wheels_view.js';
 import { GameController } from './game_controller.js';
-import * as View from './view.js';
 const $ = window.$;
 
 let game;
@@ -35,9 +35,11 @@ $(document).ready(function docReadyFn()
     $('#wheels').css('float', 'left');
 
     setParameters();
-    View.createThreeWheels($('#wheels')[0], 600, 600);
+    // View.createThreeWheels($('#wheels')[0], 600, 600);
 
-    game = new GameController();
+    const threeWheeslView = new ThreeWheelsView($('#wheels')[0], 600, 600);
+
+    game = new GameController(threeWheeslView);
 });
 
 /**
@@ -49,6 +51,13 @@ function setParameters()
     rampUpTimeInner = parseFloat($('#ramp-up-time-inner').val());
     rampUpTimeMiddle = parseFloat($('#ramp-up-time-middle').val());
     rampUpTimeOuter = parseFloat($('#ramp-up-time-outer').val());
+
+    /*
+    * This is to force the rampup phase to use the simpleaccelerator
+    */
+    rampUpTimeInner = null;
+    rampUpTimeMiddle = null;
+    rampUpTimeOuter = null;
 
     rampUpDistanceInner = parseFloat($('#ramp-up-distance-inner').val());
     rampUpDistanceMiddle = parseFloat($('#ramp-up-distance-middle').val());

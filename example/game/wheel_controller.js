@@ -1,4 +1,4 @@
-import * as View from './view.js';
+// import * as View from './view.js';
 import Accelerator from '../../src/index.js';
 import * as Radians from './radian_helpers.js';
 import * as Logger from '../libs/logger.js';
@@ -18,7 +18,7 @@ export class WheelController
     constructor(view)
     {
         this.accelerator = new Accelerator(0);
-        this.pixiApp = View.app;
+        this.pixiApp = view.app;
         this.view = view;
         this.lastRadians = view.container.rotation;
     }

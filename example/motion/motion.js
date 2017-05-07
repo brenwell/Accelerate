@@ -1,5 +1,5 @@
 import Accelerator from '../../src/index.js';
-import * as Logger from "../libs/logger.js"
+import * as Logger from '../libs/logger.js';
 
 /*
  * This file implements a function that can run a schedule of accelerations
@@ -18,7 +18,6 @@ const sample_schedule = {
     ],
 };
  */
-
 
 /**
  * This function runs a motion schedule or profile and when complete calls cb

@@ -5,6 +5,7 @@
 /*.log
 /dist
 /build
+/doc
 /*.sublime-workspace
 /node_modules
 *bundle*

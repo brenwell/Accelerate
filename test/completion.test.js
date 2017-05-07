@@ -2,47 +2,52 @@ import Accelerator from '../src/index.js';
 import BezierAccelerator from '../src/bezier-accelerator.js';
 import util from 'util';
 
-let chai = require('chai')
+const chai = require('chai');
 
 function doTestBez(cb)
 {
-    const v0 = 5;  
+    const v0 = 5;
     const vF = 0;
     const dF = 3.5;
     const tF = 4;
+
     testBezierComplete(v0, vF, tF, dF, cb);
 }
 function doTestAccelerate(cb)
 {
-    const v0 = 5;  
+    const v0 = 5;
     const vF = 0;
     const dF = 3.5;
     const tF = 4;
+
     testAcceleratorAccelerate(v0, vF, tF, dF, cb);
 }
 function doTestKillAccelerate(cb)
 {
-    const v0 = 5;  
+    const v0 = 5;
     const vF = 0;
     const dF = 3.5;
     const tF = 4;
+
     testKillAccelerate(v0, vF, tF, dF, cb);
 }
 function doTestWait(cb)
 {
-    const v0 = 5;  
+    const v0 = 5;
     const vF = 0;
     const dF = 3.5;
     const tF = 4;
-    testAcceleratorWait(v0, tF, cb)
+
+    testAcceleratorWait(v0, tF, cb);
 }
 function doTestKillWait(cb)
 {
-    const v0 = 5;  
+    const v0 = 5;
     const vF = 0;
     const dF = 3.5;
     const tF = 4;
-    testAcceleratorWait(v0, tF, cb)
+
+    testAcceleratorWait(v0, tF, cb);
 }
 function testBezierComplete(v0, vF, tF, dF, cb)
 {
@@ -50,60 +55,65 @@ function testBezierComplete(v0, vF, tF, dF, cb)
     let timer;
     const bezObj = new BezierAccelerator(v0, vF, tF, dF, () =>
     {
-        localCompleteFlag = true;      
-        chai.expect(localCompleteFlag).to.equal(bezObj.isComplete())
+        localCompleteFlag = true;
+        chai.expect(localCompleteFlag).to.equal(bezObj.isComplete());
         clearInterval(timer);
         cb();
     });
-    
+
     const f = bezObj.getDistanceAndVelocity.bind(bezObj);
     const t = [];
     const N = 100;
-    const dx = tF/100;
+    const dx = tF / 100;
     let i = 0;
 
-    timer = setInterval(()=>
+    timer = setInterval(() =>
     {
-        let xValue = i*dx;
-        let obj = bezObj.getDistanceAndVelocity(i*dx);
-        let yValue = obj.distance;
-        let slopeValue = obj.slopeValue;
-        t.push({xValue, yValue, slopeValue});
-        chai.expect(localCompleteFlag).to.equal(bezObj.isComplete())
+        const xValue = i * dx;
+        const obj = bezObj.getDistanceAndVelocity(i * dx);
+        const yValue = obj.distance;
+        const slopeValue = obj.slopeValue;
+
+        t.push({ xValue, yValue, slopeValue });
+        chai.expect(localCompleteFlag).to.equal(bezObj.isComplete());
         i++;
-    }, 3)
+    }, 3);
 }
 function testAcceleratorAccelerate(v0, vF, tF, dF, cb)
 {
     let timer;
     let localCompleteFlag = false;
-    const accelObj = new Accelerator(v0)
-    let p = accelObj.accelerate(vF, tF, dF);
-    p.then(()=>{
+    const accelObj = new Accelerator(v0);
+    const p = accelObj.accelerate(vF, tF, dF);
+
+    p.then(() =>
+{
         localCompleteFlag = true;
         clearInterval(timer);
         cb();
-    })
+    });
     const t = [];
     const N = 100;
-    const dx = tF/100;
+    const dx = tF / 100;
     // console.log(`n:${N} vF:${vF} tF:${tF} dF:${dF}`)
     let i = 0;
 
-    timer = setInterval(()=>
+    timer = setInterval(() =>
     {
-        let xValue = i*dx;
-        accelObj.advanceByTimeInterval(dx)
+        const xValue = i * dx;
+
+        accelObj.advanceByTimeInterval(dx);
         // console.log(`i: ${i} xValue: ${xValue}`)
-        let yValue = accelObj.getPosition();
-        let slopeValue = accelObj.getVelocity()
-        t.push({xValue, yValue, slopeValue});
+        const yValue = accelObj.getPosition();
+        const slopeValue = accelObj.getVelocity();
+
+        t.push({ xValue, yValue, slopeValue });
         // console.log(`changingVelocity ${accelObj.changingVelocity} localCompleteFlag :${localCompleteFlag}`)
         // the flag accel.changingVelocity will turn false before the promise is resolved
         // // this is different to the callback model used by BezierAccelerator
-        if (i < N-1)
+        if (i < N - 1)
         {
-            chai.expect(accelObj.changingVelocity).to.equal(! localCompleteFlag);
+            chai.expect(accelObj.changingVelocity).to.equal(!localCompleteFlag);
             chai.expect(accelObj.changingVelocity).to.equal(true);
         }
         else
@@ -112,138 +122,148 @@ function testAcceleratorAccelerate(v0, vF, tF, dF, cb)
             chai.expect(accelObj.changingVelocity).to.equal(false);
         }
         i++;
-    }, 3)
+    }, 3);
 }
 function testKillAccelerate(v0, vF, tF, dF, cb)
 {
     const N = 100;
     let i = 0;
     let timer;
-    let iKill = Math.round(N/2)
+    const iKill = Math.round(N / 2);
     let localCompleteFlag = false;
-    const accelObj = new Accelerator(v0)
-    let p = accelObj.accelerate(vF, tF, dF);
-    p.then(()=>{
+    const accelObj = new Accelerator(v0);
+    const p = accelObj.accelerate(vF, tF, dF);
+
+    p.then(() =>
+{
         localCompleteFlag = true;
-        chai.expect(i).to.equal(iKill+1); // note the i++ in the timer loop after the kill
+        chai.expect(i).to.equal(iKill + 1); // note the i++ in the timer loop after the kill
         clearInterval(timer);
         cb();
-    })
+    });
     const t = [];
-    const dx = tF/N;
+    const dx = tF / N;
     // console.log(`n:${N} vF:${vF} tF:${tF} dF:${dF}`)
 
-    timer = setInterval(()=>
+    timer = setInterval(() =>
     {
-        let xValue = i*dx;
-        accelObj.advanceByTimeInterval(dx)
+        const xValue = i * dx;
+
+        accelObj.advanceByTimeInterval(dx);
         // console.log(`i: ${i} xValue: ${xValue}`)
-        let yValue = accelObj.getPosition();
-        let slopeValue = accelObj.getVelocity()
-        t.push({xValue, yValue, slopeValue});
+        const yValue = accelObj.getPosition();
+        const slopeValue = accelObj.getVelocity();
+
+        t.push({ xValue, yValue, slopeValue });
         // console.log(`changingVelocity ${accelObj.changingVelocity} localCompleteFlag :${localCompleteFlag}`)
         // the flag accel.changingVelocity will turn false before the promise is resolved
         // // this is different to the callback model used by BezierAccelerator
-        if(i === iKill)
+        if (i === iKill)
         {
             accelObj.kill();
         }
-        if ((i < N-1)&&(i!==iKill))
+        if ((i < N - 1) && (i !== iKill))
         {
-            chai.expect(accelObj.changingVelocity).to.equal(! localCompleteFlag);
+            chai.expect(accelObj.changingVelocity).to.equal(!localCompleteFlag);
             chai.expect(accelObj.changingVelocity).to.equal(true);
         }
-        else if(i === iKill)
+        else if (i === iKill)
         {
             chai.expect(accelObj.changingVelocity).to.equal(localCompleteFlag);
             chai.expect(accelObj.changingVelocity).to.equal(false);
         }
         i++;
-    }, 3)
+    }, 3);
 }
 
-function testKillWait(v0,tF, cb)
+function testKillWait(v0, tF, cb)
 {
     const N = 100;
-    const iKill = Math.round(N/2)
+    const iKill = Math.round(N / 2);
     let timer;
     let localCompleteFlag = false;
-    const accelObj = new Accelerator(v0)
-    let p = accelObj.wait(tF);
-    p.then(()=>{
+    const accelObj = new Accelerator(v0);
+    const p = accelObj.wait(tF);
+
+    p.then(() =>
+{
         localCompleteFlag = true;
         chai.expect(accelObj.isWaiting).to.equal(false);
-        chai.expect(i).to.equal(iKill+1); // note the i++ in the timer loop after the kill
+        chai.expect(i).to.equal(iKill + 1); // note the i++ in the timer loop after the kill
         clearInterval(timer);
         cb();
-    })
+    });
     const t = [];
-    const dx = tF/N;
+    const dx = tF / N;
     // console.log(`n:${N} vF:${vF} tF:${tF} dF:${dF}`)
     let i = 0;
 
-    timer = setInterval(()=>
+    timer = setInterval(() =>
     {
-        let xValue = i*dx;
-        accelObj.advanceByTimeInterval(dx)
+        const xValue = i * dx;
+
+        accelObj.advanceByTimeInterval(dx);
         // console.log(`i: ${i} xValue: ${xValue}`)
-        let yValue = accelObj.getPosition();
-        let slopeValue = accelObj.getVelocity()
-        t.push({xValue, yValue, slopeValue});
+        const yValue = accelObj.getPosition();
+        const slopeValue = accelObj.getVelocity();
+
+        t.push({ xValue, yValue, slopeValue });
 
         // console.log(`i: ${i} isWaiting ${accelObj.isWaiting} localCompleteFlag :${localCompleteFlag} == ${localCompleteFlag === accelObj.isWaiting}`)
-        if(i === iKill)
+        if (i === iKill)
         {
             accelObj.kill();
-        }        
-        if ((i < N-1)&&(i!==iKill))
+        }
+        if ((i < N - 1) && (i !== iKill))
         {
-            chai.expect(accelObj.isWaiting).to.equal(! localCompleteFlag);
+            chai.expect(accelObj.isWaiting).to.equal(!localCompleteFlag);
             chai.expect(accelObj.isWaiting).to.equal(true);
         }
-        else if(i === iKill)
+        else if (i === iKill)
         {
             chai.expect(accelObj.isWaiting).to.equal(localCompleteFlag);
             chai.expect(accelObj.isWaiting).to.equal(false);
         }
         i++;
     }, 3);
-    
 }
 
-
-function testAcceleratorWait(v0,tF, cb)
+function testAcceleratorWait(v0, tF, cb)
 {
     let timer;
     let localCompleteFlag = false;
-    const accelObj = new Accelerator(v0)
-    let p = accelObj.wait(tF);
-    p.then(()=>{
+    const accelObj = new Accelerator(v0);
+    const p = accelObj.wait(tF);
+
+    p.then(() =>
+{
         localCompleteFlag = true;
         chai.expect(accelObj.isWaiting).to.equal(false);
         clearInterval(timer);
         cb();
-    })
+    });
     const t = [];
     const N = 100;
-    const dx = tF/100;
+    const dx = tF / 100;
     // console.log(`n:${N} vF:${vF} tF:${tF} dF:${dF}`)
     let i = 0;
 
-    timer = setInterval(()=>
+    timer = setInterval(() =>
     {
-        let xValue = i*dx;
-        accelObj.advanceByTimeInterval(dx)
+        const xValue = i * dx;
+
+        accelObj.advanceByTimeInterval(dx);
         // console.log(`i: ${i} xValue: ${xValue}`)
-        let yValue = accelObj.getPosition();
-        let slopeValue = accelObj.getVelocity()
-        t.push({xValue, yValue, slopeValue});
+        const yValue = accelObj.getPosition();
+        const slopeValue = accelObj.getVelocity();
+
+        t.push({ xValue, yValue, slopeValue });
 
         // console.log(`i: ${i} isWaiting ${accelObj.isWaiting} localCompleteFlag :${localCompleteFlag} == ${localCompleteFlag === accelObj.isWaiting}`)
-        
-        if (i < N-1)
+
+        if (i < N - 1)
         {
-            chai.expect(accelObj.isWaiting).to.equal(! localCompleteFlag);
+            chai.expect(accelObj.isWaiting).to.equal(!localCompleteFlag);
             chai.expect(accelObj.isWaiting).to.equal(true);
         }
         else
@@ -253,42 +273,39 @@ function testAcceleratorWait(v0,tF, cb)
         }
         i++;
     }, 3);
-    
 }
 
 /*
- * Tests that the completion of accelerations and waits happen as expected. 
+ * Tests that the completion of accelerations and waits happen as expected.
  * Including those generated by a kill() method call
  * Beware These are async actions
- * and are tested with a timer loop to simulate events 
+ * and are tested with a timer loop to simulate events
  *
  */
-describe("Test completion of accelerate", function() {
-
-    it("bez call back function", function(done)
+describe('Test completion of accelerate', function ()
+{
+    it('bez call back function', function (done)
     {
         doTestBez(done);
-    })
-    
-    it("accelerate promise", function(done)
+    });
+
+    it('accelerate promise', function (done)
     {
         doTestAccelerate(done);
-    })
+    });
 
-    it("kill accelerate promise", function(done)
+    it('kill accelerate promise', function (done)
     {
         doTestKillAccelerate(done);
-    })
-    
-    
-    it("wait promise", function(done)
+    });
+
+    it('wait promise', function (done)
     {
         doTestWait(done);
-    })    
+    });
 
-    it("kill wait promise", function(done)
+    it('kill wait promise', function (done)
     {
         doTestKillWait(done);
-    })
-    
-})
+    });
+});

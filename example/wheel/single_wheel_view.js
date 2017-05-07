@@ -57,7 +57,6 @@ export class SingleWheelView
 
         // get the (x,y) coordinates of the point that bound the sectors
         const coords = plotCirclePoints(colors.length, radius + 50, -90);
-        const size = radius;
 
         coords.forEach((coord, i) =>
         {

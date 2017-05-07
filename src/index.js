@@ -1,8 +1,14 @@
 import BezierAccelerator from './bezier-accelerator.js';
+import SimpleAccelerator from './simple-accelerator.js';
 
-function logger(s) // eslint-disable-line
+function logger(s)
 {
-    // console.log(s)
+    const enabled = false;
+
+    if (enabled)
+    /* eslint-disable no-console */
+        { console.log(s); }
+    /* eslint-enable no-console */
 }
 /*
 * TODO
@@ -251,11 +257,14 @@ export default class Accelerator
      *      acceleration as the initial velocity and starting time and distance
      *      for the new acceleration
      *
-     * @private
      *
      * @param  {Float}   vF  is the velocity the object is to change to
+     *
      * @param  {Float}   tF  is the time interval over which the change is to take place
      * @param  {Float}   dF  is the distance that the object should move while changing velocity
+     *
+     * One of dF or tF can be set to null to apply an unconstrained acceleration. In such a
+     * case the Bezier accelerator is not used but rather a simple accelerator
      *
      * @return {Promise}  Promise which will be resolved when the acceleration
      *                    has completed
@@ -287,7 +296,15 @@ export default class Accelerator
         this.timeForChange = tF;
         this.newVelocity = vF;
         this.distanceForChange = dF;
-        this.decelerator = new BezierAccelerator(v0, vF, tF, dF);
+
+        if ((tF !== null) && (dF !== null))
+        {
+            this.decelerator = new BezierAccelerator(v0, vF, tF, dF);
+        }
+        else
+        {
+            this.decelerator = new SimpleAccelerator(v0, vF, tF, dF);
+        }
 
         return new Promise((resolve) =>
         {
@@ -379,4 +396,3 @@ export default class Accelerator
 
 }
 
-// window.Accelerate = exports;

@@ -1,3 +1,30 @@
+## Status Update
+### So where did I get 
+
+-   `accelerate()` method no longer has a delay value as a parameter. This means the the method `_advanceNoDelay()` has disappeared and the code it held folded into `accelerate()`.
+
+-   I did not remove the `wait()` method. I am using it in examples and dont want to loose it. But if you want you can take it out.
+
+-   I found a better way to calculate velocity at each point in an acceleration and have implemented that.
+
+-   I have implemented a `SimpleAccelerator` class that is the parallel of `BezierAccelerator` and is used when one of dF of dT is set equal to `null`.
+
+-   I have implemented unit testing for 
+    -   Function values. Checking that the bezier accelerator and simple accelerator keep getting the same answers.
+    -   Completion of acceleration and wait operations. I check the promises are resolved correctly even for `kill()`. Have not yet tested
+    	overwrite of `acceleration()`
+
+-   The code is now `lint free` - I agree that it certainly makes for more uniform code
+-   I built a little sample game in `example/game` that uses the `Accelerator` class to play a slot machine style experience. It might be helpful.
+-	The example in this `readme.md` does not work because the ticker function called as a result of  `window.requestAnimationFrame(ticker);`
+-	is passed an absolute time of day in milliseconds not a PIXI.ticker delta.
+
+### What will I do next - if anything.
+
+-	Build a few more tests. Particularly related to sequences of `wait`, `accelerate`, `kill`
+-	Work on using the BezierAccelerator's callback function to signal end of an acceleration. There is a problem doing this 
+	when a `kill()` is called and I have not figured out the problem.
+
 # Accelerate
 
 
@@ -192,3 +219,4 @@ npm run lint:watch
 
     wait(delay)
 ```
+

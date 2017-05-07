@@ -1,7 +1,10 @@
-import { QuadraticBezier, CubicBezier } from './bezier-functions';
 /**
  * This class performs velocity changes on objects in 1-dimensional motion,
- * but unlike the Bezier uses only the elapsed time as a cnstrint.
+ * but unlike the Bezier uses only the elapsed time OR distance as a constraint - not both.
+ *
+ * Hence one of the values dF or tF passed to the constructor MUST be set to false
+ * to signify 'not provided'
+ *
  * Hence the usual rules of physics can be applied and a constant acceleration
  * applied.
  *
@@ -30,20 +33,41 @@ export default class SimpleAccelerator
      * @param  {number}    v0  The initial velocity - velocity before the acceleration
      * @param  {number}    vF  The final velocity to be atained
      * @param  {number}    tF  The time interval over which the acceleration is to be completed
+     * @param  {float}     dF  is the distance that the object should move while changing velocity
      *
      * @param  {Function}  cb  { parameter_description } NOTE - not tested
      */
     constructor(v0, vF, tF, dF, cb = null)
     {
         // just changing the notation to what I am using
-        const V = v0;
-        const T = tF;
+
         this.callBack = cb;
         this.complete = false;
         this.V = v0;
         this.vF = vF;
+        this.D = dF;
         this.T = tF;
-        this.acceleration = (vF - v0)/T;
+        if ((dF === null) && (tF === null))
+        {
+            throw new Error(`Only one of dF tF can be null tF:${tF} dF:${dF}`);
+        }
+        else if ((dF !== null) && (tF !== null))
+        {
+            throw new Error(`Exactly one of dF, tF MUST be false tF:${tF} dF:${dF}`);
+        }
+        else if (dF !== null)
+        {
+            const vAverage = (vF - v0) / 2.0;
+            const t = dF / vAverage;
+
+            this.acceleration = (vF - v0) / t;
+            this.T = t;
+        }
+        else // dF === null, tF !== null
+        {
+            this.acceleration = (vF - v0) / tF;
+            this.D = (v0 * tF) + (0.5 * this.acceleration * tF * tF);
+        }
     }
 
     /**
@@ -72,8 +96,14 @@ export default class SimpleAccelerator
                 this.callBack();
             }
         }
-        let v = this.V + (xValue * this.acceleration);
-        let d = (this.V * xValue) + 0.5 * this.acceleration * xValue * xValue;
+        const v = this.V + (xValue * this.acceleration);
+        const d = (this.V * xValue) + (0.5 * this.acceleration * xValue * xValue);
+
+        // console.log(`SimpleAccelerator xValue:${xValue}`
+        //     +` isComplete:${this.complete}`
+        //     +` this.T ${this.T}`
+        //     +` d:${d}  v:${v}`
+        //     )
 
         return { distance : d, velocity : v };
     }

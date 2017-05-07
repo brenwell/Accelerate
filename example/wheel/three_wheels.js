@@ -38,8 +38,8 @@ const colors = [
 const PIE_ANGLE = 360 / colors.length;
 const PIE_MIDDLE = PIE_ANGLE / 2;
 const options = {
-    backgroundColor: 0xEEEEEE,
-    antialias: true,
+    backgroundColor : 0xEEEEEE,
+    antialias : true,
 };
 
 let app;
@@ -225,19 +225,6 @@ function tickerFunc(delta)     // currently ignores the delta value
     return;
 }
 
-/**
- * Convert radians/sec to radians/tick
- *
- * @param      {number}  radsSec  The radians security
- * @return     {number}  radians per tick
- */
-function radiansPerSecToPerTick(radsSec)
-{
-    const tmp = radsSec / 60.0;
-
-    return tmp;
-}
-
 /*
 * Add a triangular pointer to the top of the 'wheel'
 */
@@ -270,7 +257,7 @@ function addCenterButton()
     cir.drawCircle(0, 0, 50);
     cir.endFill();
 
-    const text = new PIXI.Text('Click', { fill: 0xFF66CC });
+    const text = new PIXI.Text('Click', { fill : 0xFF66CC });
 
     text.x = Math.round(-text.width / 2);
     text.y = -14;

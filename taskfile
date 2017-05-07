@@ -15,7 +15,10 @@ function public:build {
 }
 
 function public:test {
-  mocha-webpack --webpack-config './test/webpack.config-test.js' --opts './test/mocha.opts' --glob "*.test.js" test || { echo 'Test failed' ; exit 1; }
+  cd test
+  ./taskfile test
+  cd ..  
+  # mocha-webpack --webpack-config './test/webpack.config-test.js' --opts './test/mocha.opts' --glob "*.test.js" test || { echo 'Test failed' ; exit 1; }
 }
 
 function public:lint {
@@ -27,7 +30,7 @@ function public:lint:watch {
 }
 
 function public:docs {
-  rm -rf ./docs && jsdoc -c ./jsdoc.json -R README.md
+  rm -rf ./docs && jsdoc -c ./jsdoc.json -d ./docs -R README.md src/*.js
 }
 
 # ------------------------------------------

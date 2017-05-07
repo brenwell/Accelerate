@@ -1,17 +1,15 @@
-import * as View from './view.js';
-
 /**
  * Controls a game consisting of three rotating wheels in simulation of a slot maching.
- * 
+ *
  * The game has the following phases:
  * -    rampUp      -    when the wheels are coming up to speed from a standing start
  * -    spin        -   when the wheels are all spinning at their top speed for a period
  * -    comeToAStop -   a period when the wheels are slowing down with the intent of finishing
  *                      with the predetermined alignment so that the outcome of the game
  *                      expected at the start is realized.
- * 
+ *
  * Delegates most of its work to the controllers for each of the wheels.
- * 
+ *
  * Somewhat untidily the rendering for the gane is done in module View and thats where
  * the controllers of each wheel are created.
  *
@@ -21,14 +19,15 @@ export class GameController
 {
     /**
      * Constructs the object.
-     *
+     * @param {ThreeWheelsView} threeWheelsView - the view for the overall 3 wheel game
      */
-    constructor()
+    constructor(threeWheelsView)
     {
-        this.pixiApp = View.app;
-        this.outerWheelController = View.outerWheelController;
-        this.middleWheelController = View.middleWheelController;
-        this.innerWheelController = View.innerWheelController;
+        this.view = threeWheelsView;
+        this.pixiApp = this.view.app;
+        this.outerWheelController = this.view.outerWheelController;
+        this.middleWheelController = this.view.middleWheelController;
+        this.innerWheelController = this.view.innerWheelController;
 
         this.tickerFunc = (delta) =>
         {
@@ -40,7 +39,7 @@ export class GameController
         };
     }
     /**
-     * Play one roll of the game. This is where the 
+     * Play one roll of the game. This is where the
      *
      * @param      {object}  parameterObject of type described below
      *
