@@ -153,6 +153,12 @@ Run tests
 npm test
 ```
 
+Run the tests & watch
+
+```bash
+npm run lint:watch
+```
+
 ### Lint
 
 Run the linter
