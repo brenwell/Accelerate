@@ -79,7 +79,7 @@ const myAccelerator = new Accelerator(initialVelocity, options)
 ### Advance
 Advance the moving objects time by a time interval
 ```js
-myAccelerator.advanceTimeBy(delta)
+myAccelerator.advance(delta)
 ```
 
 ### Get position
