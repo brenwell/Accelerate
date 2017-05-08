@@ -1,8 +1,5 @@
 #!/bin/bash
 
-PATH=`realpath .`/node_modules/.bin:$PATH
-
-
 function public:start {
   rm -rf ./lib/
   webpack --progress --colors --watch --env.fileName 'accelerate.js' --env.libName 'accelerate'
@@ -15,10 +12,11 @@ function public:build {
 }
 
 function public:test {
-  cd test
-  ./taskfile test
-  cd ..  
-  # mocha-webpack --webpack-config './test/webpack.config-test.js' --opts './test/mocha.opts' --glob "*.test.js" test || { echo 'Test failed' ; exit 1; }
+  mocha --opts './test/mocha.opts' #--grep Helper
+}
+
+function public:test:watch {
+  mocha --opts './test/mocha.opts' --watch
 }
 
 function public:lint {

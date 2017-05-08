@@ -15,6 +15,13 @@ export class BezierQuadratic
         this.P0 = P0;
         this.P1 = P1;
         this.P2 = P2;
+
+        if(P0.length !== 2 || P1.length !== 2 || P2.length !== 2){
+            debugger
+        }
+
+        const arr = P0.concat(P1,P2)
+        console.log(arr)
     }
     /**
     * The derivative of the bezier curve

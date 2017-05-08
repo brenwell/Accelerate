@@ -1,12 +1,11 @@
 import Accelerator from '../src/index.js';
 import BezierAccelerator from '../src/bezier-accelerator.js';
+import { QuadraticBezier, CubicBezier } from '../src/bezier-functions';
 import SimpleAccelerator from '../src/simple-accelerator.js';
 import util from 'util';
-const chai = require('chai');
-
 import fs from 'fs';
 import path from 'path';
-import BezDecelerator from '../src/bezier-accelerator';
+import chai from 'chai'
 
 const generateFlag = false;
 
@@ -154,7 +153,7 @@ function makeSimpleTable(v0, vF, tF, dF)
 }
 function makeBezierTable(v0, vF, tF, dF)
 {
-    const bezObj = new BezDecelerator(v0, vF, tF, dF);
+    const bezObj = new BezierAccelerator(v0, vF, tF, dF);
     const f = bezObj.getDistanceAndVelocity.bind(bezObj);
 
     const t = [];
@@ -306,24 +305,33 @@ describe('Test values from Accelerator, BezierAccelerator and SimpleAccelerator 
         done();
     });
     it('valuation 6', function (done)
-{
+    {
         doVersion6();
         done();
     });
 
     it('valuation 7', function (done)
-{
+    {
         doVersion7();
         done();
     });
     it('valuation 8', function (done)
-{
+    {
         doVersion8();
         done();
     });
     it('valuation 9', function (done)
-{
+    {
         doVersion9();
         done();
+    });
+
+    it('Check for throws', function (done)
+    {
+        const P0 = [0,0]
+        const P1 = [0.9384969940637271,1032.3466934700998]
+        const P2 = [1,1032.3466934700998]
+        const func = QuadraticBezier(P0, P1, P2);
+        expect(func).to.throw(error);
     });
 });

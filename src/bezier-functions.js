@@ -115,7 +115,7 @@ export function QuadraticBezier(P0, P1, P2)
             return bezObj.xFromTDerivative(t);
         }
 
-        const tValue = newtonRaphson(f, fPrime, 0.5, null);
+        const tValue = newtonRaphson(f, fPrime, 0.5, {maxIterations: 50, tolerance:0.001});
 
         if (tValue === false)
         {

@@ -61,11 +61,12 @@ export default class BezierAccelerator
         {
             // this is the one special case where a cubic will not do the job
             P0 = [0.0, 0.0];
-            P2 = [T, D];
             const p1X = (D - (vF * T)) / (v0 - vF);
             const p1Y = (v0 * p1X);
+            P1 = [p1X, p1Y];
+            P2 = [T, D];
 
-            this.func = QuadraticBezier(P0, [p1X, p1Y], P2);
+            this.func = QuadraticBezier(P0, P1, P2);
         }
         else
         {
@@ -142,16 +143,20 @@ export default class BezierAccelerator
             throw new Error('Accelerator: velocity change is complete. Cannot call this function');
         }
 
+        let tmpX = xValue;
+
         if ((xValue >= this.T) && (!this.complete))
         {
             this.complete = true;
-            if ((typeof this.callBack === 'function'))
+            if (typeof this.callBack === 'function')
             {
                 this.callBack();
             }
+
+            tmpX =this.T;
         }
 
-        const obj = this.func(xValue);
+        const obj = this.func(tmpX);
 
         return { distance : obj.yValue, velocity : obj.slopeValue };
     }

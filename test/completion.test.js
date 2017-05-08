@@ -1,8 +1,7 @@
 import Accelerator from '../src/index.js';
 import BezierAccelerator from '../src/bezier-accelerator.js';
 import util from 'util';
-
-const chai = require('chai');
+import chai from 'chai'
 
 function doTestBez(cb)
 {

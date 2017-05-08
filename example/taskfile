@@ -1,16 +1,16 @@
 #!/bin/bash
 PWD=`pwd`
-PROJ=`realpath ..` 
-PATH=${PROJ}/node_modules/.bin:$PATH
 
-EXAMPLE=${PROJ}/example
+# PATH=${PROJ}/node_modules/.bin:$PATH
 
-# these are the examples 
+# EXAMPLE=${PROJ}/example
+
+# these are the examples
 BEZ=${EXAMPLE}/bez
 MOTION=${EXAMPLE}/motion
 WHEEL=${EXAMPLE}/wheel
 
-WEBPACK=${PROJ}/node_modules/.bin/webpack 
+WEBPACK=../node_modules/.bin/webpack
 WEBPACK_ARGS="--devtool source-map --module-bind js=babel-loader babel-polyfill "
 
 function public:lint {
@@ -20,11 +20,11 @@ function public:lint {
 }
 
 function public:build {
-	${WEBPACK}  ${WEBPACK_ARGS} ${1}/main.js ${1}/${1}_bundle.js  
+	${WEBPACK}  ${WEBPACK_ARGS} ${1}/main.js ${1}/${1}_bundle.js
 }
 
 function public:watch {
-	${WEBPACK} -w    ${WEBPACK_ARGS} ${1}/main.js ${1}/${1}_bundle.js 
+	${WEBPACK} -w    ${WEBPACK_ARGS} ${1}/main.js ${1}/${1}_bundle.js
 }
 
 function public:clean {
@@ -68,7 +68,7 @@ SUBCMD=$1
 NBRARGS=$#
 shift 1
 
-if [ ${NBRARGS} == "1" ] || [ $1 == "all" ] 
+if [ ${NBRARGS} == "1" ] || [ $1 == "all" ]
 then
 	# implements command like ./taskfile build
 	# without the qualifying 'all'

@@ -316,7 +316,7 @@ export default class Accelerator
      * Lets a timeinterval pass during which the accelerator moves along at a constant velocity.
      *
      * @param  {Float}   delay  The time interval
-     * @return {Promise}  { description_of_the_return_value }
+     * @return {Promise}  After waiting
      */
     wait(delay)
     {

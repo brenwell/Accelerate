@@ -4,7 +4,7 @@
 
 import BezDecelerator from '../../src/bezier-accelerator';
 import { graphFunction, drawAxes } from '../libs/graph.js';
-import $ from 'jquery';
+import $ from '../libs/jquery';
 
 $(document).ready(function X()
 {
@@ -26,10 +26,11 @@ let tF = 2;
 
 function doVersion1()
 {
-    v0 = 5;  // (10*60) 10px / frame (60/sec)
+    v0 = 1100;  // (10*60) 10px / frame (60/sec)
     vF = 0;
-    dF = 3.5;
-    tF = 4;
+    dF = 1392.3466934700998;
+    tF = 1;
+    debugger
     const dObj = new BezDecelerator(v0, vF, tF, dF);
 
     main(dObj);
