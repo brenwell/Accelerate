@@ -1,9 +1,4 @@
 #!/bin/bash
-PWD=`pwd`
-
-# PATH=${PROJ}/node_modules/.bin:$PATH
-
-# EXAMPLE=${PROJ}/example
 
 # these are the examples
 BEZ=${EXAMPLE}/bez
