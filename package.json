@@ -12,6 +12,7 @@
     "lint": "./taskfile lint",
     "lint:watch": "./taskfile lint:watch",
     "test": "./taskfile test",
+    "test": "./taskfile test:watch",
     "docs": "./taskfile docs"
   },
   "repository": {
