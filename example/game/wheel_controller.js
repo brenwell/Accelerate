@@ -1,6 +1,6 @@
 // import * as View from './view.js';
 import Accelerator from '../../src/index.js';
-import * as Radians from './radian_helpers.js';
+import * as Radians from '../libs/radian_helpers.js';
 import * as Logger from '../libs/logger.js';
 
 /**
@@ -54,7 +54,66 @@ export class WheelController
 
         this.view.rotateByRadians(deltaRads);
     }
-
+    logDeltaRadians(schedule)
+    {
+        const stopPosition = schedule.stoppingPosition;
+        const positionInRadians = this.view.convertPositionToRadians(stopPosition);
+        const currentRadians = this.view.getCurrentRotation();
+        const delta = Radians.modulo2PI(positionInRadians - currentRadians);
+        console.log(
+            `wheelController stoPosition: ${stopPosition}`
+            +` currentRotation: ${currentRadians}`
+            +` positionInRadians: ${positionInRadians}`
+            +` delta: ${delta}`)
+    }
+    play(schedule)
+    {
+        // this.accelerator = new Accelerator(0);
+        this.killFlag = false;
+        const p = new Promise((resolve, reject) =>
+        {
+            this.wait(schedule.startDelay)
+            .then(()=>
+            {
+                return this.rampUp(schedule.speed, schedule.rampUpTime, schedule.rampUpDistance)
+            })
+            // .then(() =>
+            // {
+            //     resolve(false);return;
+            //     if( this.killFlag)
+            //     {
+            //         resolve(true);
+            //     }
+            //     else
+            //     {
+            //         // return wait(.1);
+            //         return this.spin(schedule.speed, schedule.spinTime, schedule.spinDistance);
+            //     }
+            // })
+            // .then(() =>
+            // {
+            //     resolve(false);return;
+            //     if( this.killFlag)
+            //     {
+            //         resolve(true);
+            //     }
+            //     else
+            //     {
+            //         return this.comeToStop(schedule.stoppingPosition, schedule.stoppingTime);
+            //     }
+            // })
+            .then(() =>
+            {
+                resolve(false);
+            });
+        });
+        return p;
+    }
+    kill()
+    {
+        this.killFlag = true;
+        this.accelerator.kill();
+    }
     /**
      * Sets the speed.
      *
@@ -75,6 +134,11 @@ export class WheelController
      */
     rampUp(speed, timeInterval, distance)
     {
+        if(typeof distance !== 'number' )
+        {
+            console.log(`wheel_controller distance: ${distance} is invalid`)
+        }
+
         return this.accelerator.accelerate(speed, timeInterval, distance);
     }
 
@@ -84,11 +148,18 @@ export class WheelController
      * @param      {float}  timeInterval  The time interval to spin or wait for
      * @return     {Promise}              resolved when the speed has been reached
      */
-    spin(timeInterval)
+    spin(speed, timeInterval, distance)
+    {
+        return this.accelerator.accelerate(speed, timeInterval, distance);
+    }
+    wait(timeInterval)
     {
         return this.accelerator.wait(timeInterval);
     }
-
+    getDistance()
+    {
+        return this.accelerator.getPosition();
+    }
     /**
      * bring the wheel to stop as a specific position over a given time and distance
      *
@@ -100,10 +171,27 @@ export class WheelController
     comeToStop(position, timeInterval, options)
     {
         const d = this.calculateStoppingDistance(position, timeInterval, options);
-
+        if(typeof d !== 'number' )
+        {
+            console.log(`wheel_controller d: ${d} is invalid`)
+        }
         return this.accelerator.accelerate(0.0, timeInterval, d);
     }
+    comeToStopDistance(distance, timeInterval, options)
+    {
+        return this.accelerator.accelerate(0.0, timeInterval, distance);
+    }
+    calculateDeltaRadiansToPosition(position)
+    {
+        const positionInRadians = this.view.convertPositionToRadians(position);
+        const v0 = this.accelerator.getVelocity();
+        const currentRadians = this.view.getCurrentRotation();
 
+        let deltaRadians = (positionInRadians >= currentRadians)
+                                ? (positionInRadians - currentRadians)
+                                : ((2 * Math.PI) + positionInRadians - currentRadians);
+        return deltaRadians;
+    }
     /**
      * VERY IMPORTANT METHOD - will probably need tuning to get a good visual result
      *
@@ -167,6 +255,8 @@ export class WheelController
         {
             // once we work out the adjustment of less than 2PI to get the right position simply add 3 revolutions
             // this is the option that Brendon is implementing
+            // 
+            console.log(`calculateStoppingDistance deltaRadians:${deltaRadians}`)
             const _dRequired = Radians.modulo2PI(deltaRadians) + (6 * Math.PI);
 
             return _dRequired;
@@ -199,6 +289,19 @@ export class WheelController
 
         return dRequired;
     }
+    /**
+    * Moves the view to a position index
+    *
+    * Position index values have meaning only for the view. To this controller
+    * they are just non negative integers
+    *
+    * @param    {int} position - a position index
+    */
+    setPosition(position)
+    {
+        this.view.setPosition(position);
+    }
+
     /**
      * Validates a position index - throws an error is not valid
      *

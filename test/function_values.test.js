@@ -7,22 +7,24 @@ import fs from 'fs';
 import path from 'path';
 import chai from 'chai'
 
+console.log(__filename + " " + __dirname )
+
 const generateFlag = false;
 
-const pwd = path.resolve('.');
-const y = path.basename(path.resolve('.'));
+// const pwd = path.resolve('.');
+// const y = path.basename(path.resolve('.'));
 
-let z;
+// let z;
 
-if (y !== 'test')
-{
-    z = path.join(pwd, 'test', 'test_values');
-}
-else
-{
-    z = path.join(pwd, 'test_values');
-}
-const testDataDir = z;
+// if (y !== 'test')
+// {
+//     z = path.join(pwd, 'test', 'test_values');
+// }
+// else
+// {
+//     z = path.join(pwd, 'test_values');
+// }
+const testDataDir = path.join(__dirname, 'test_values');
 
 function doVersion1()
 {
@@ -277,30 +279,30 @@ function doAccelerator(v0, vF, tF, dF, fn)
  *
  * both the BezAccelerator and the Accelerator object return values are tested.
  */
-describe('Test values from Accelerator, BezierAccelerator and SimpleAccelerator functions', function ()
+describe('function values', function ()
 {
     it('valuation 1', function (done)
-{
-    	doVersion1();
-    	done();
+    {
+        doVersion1();
+        done();
     });
     it('valuation 2', function (done)
-{
+    {
         doVersion2();
         done();
     });
     it('valuation 3', function (done)
-{
+    {
         doVersion3();
         done();
     });
     it('valuation 4', function (done)
-{
+    {
         doVersion4();
         done();
     });
     it('valuation 5', function (done)
-{
+    {
         doVersion5();
         done();
     });
@@ -328,10 +330,24 @@ describe('Test values from Accelerator, BezierAccelerator and SimpleAccelerator 
 
     it('Check for throws', function (done)
     {
-        const P0 = [0,0]
-        const P1 = [0.9384969940637271,1032.3466934700998]
-        const P2 = [1,1032.3466934700998]
+        const v0 = 1100;
+        const vF = 0;
+        const T = 1;
+        const D = (v0 * T);
+        
+        const P0 = [0.0, 0.0];
+        const p1X = (D - (vF * T)) / (v0 - vF);
+        const p1Y = (v0 * p1X);
+        let P1 = [p1X, p1Y];
+        let P2 = [T, D];
+
         const func = QuadraticBezier(P0, P1, P2);
-        expect(func).to.throw(error);
+        try{
+            const y = func(1.05)
+        } catch(e){
+            console.log("catched an error")
+        }
+        done();
     });
 });
+

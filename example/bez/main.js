@@ -26,9 +26,9 @@ let tF = 2;
 
 function doVersion1()
 {
-    v0 = 1100;  // (10*60) 10px / frame (60/sec)
-    vF = 0;
-    dF = 1392.3466934700998;
+    v0 = 0;  // (10*60) 10px / frame (60/sec)
+    vF = Math.PI*2*3;
+    dF = Math.PI*2*2;
     tF = 1;
     debugger
     const dObj = new BezDecelerator(v0, vF, tF, dF);
@@ -37,9 +37,9 @@ function doVersion1()
 }
 function doVersion2()
 {
-    v0 = 800;  // (10*60) 10px / frame (60/sec)
-    vF = 0;
-    dF = 400;
+    v0 = Math.PI*2*3;  // (10*60) 10px / frame (60/sec)
+    vF = Math.PI*2*3;
+    dF = Math.PI*2*3*3+(Math.PI/3);
     tF = 2;
     const dObj = new BezDecelerator(v0, vF, tF, dF);
 

@@ -33,7 +33,9 @@ const colors = [
     0x00FF00, // Green
     0xFFFF00, // Yellow
     0xFF7F00, // Orange
-    0xFF0000, //Red
+    0xFF0000, //Red,
+    0x00FFFF, // cyan
+    0x808000, // olive 
 ];
 const PIE_ANGLE = 360 / colors.length;
 const PIE_MIDDLE = PIE_ANGLE / 2;
@@ -101,6 +103,98 @@ export function setPosition(outterPosition, middlePosition, innerPosition)
     outerWheelController.setPosition(outterPosition);
     middleWheelController.setPosition(middlePosition);
     innerWheelController.setPosition(innerPosition);
+}
+export function gamePlay(endingPositions)
+{
+    const allPs = [];
+    const positionStart = 0;
+    const velocity = 3*Math.PI*2;
+    const rampUpTime = 2;
+    const spinTime = 1;
+    const endingTime = 1;
+    const outerEndPosition = endingPositions[0];
+    const middleEndPosition = endingPositions[1];
+    const innerEndPosition = endingPositions[2];
+
+    Promise.all([
+        outerWheelController.rampUp(positionStart, velocity, rampUpTime),
+        middleWheelController.rampUp(positionStart, velocity, rampUpTime),
+        innerWheelController.rampUp(positionStart, velocity, rampUpTime),
+    ]).then(() =>
+    {
+        const p = Promise.all([
+            outerWheelController.spinAdjustEndingPosition(outerEndPosition, spinTime),
+            middleWheelController.spinAdjustEndingPosition(middleEndPosition, spinTime),
+            innerWheelController.spinAdjustEndingPosition(innerEndPosition, spinTime),
+        ])
+        return p;
+    })
+    .then(()=>
+    {
+        const p = Promise.all([
+            outerWheelController.accelerateToZero(outerEndPosition, endingTime),
+            middleWheelController.accelerateToZero(middleEndPosition, endingTime),
+            innerWheelController.accelerateToZero(innerEndPosition, endingTime),
+        ]);
+        return p;
+    })
+    .then(()=>
+    {
+        logger('all wheels have ramped up');
+        removeTickerFunc();
+    });
+    app.ticker.add(tickerFunc);
+}
+export function spinWithAdjustment(newPositions)
+{    
+    const allPs = [];
+    const positionStart = 0;
+    const velocity = 3*Math.PI*2;
+    const rampUpTime = 2;
+    const np = newPositions;
+    const spinTime = 1;
+
+    Promise.all([
+        outerWheelController.rampUp(positionStart, velocity, rampUpTime),
+        middleWheelController.rampUp(positionStart, velocity, rampUpTime),
+        innerWheelController.rampUp(positionStart, velocity, rampUpTime),
+    ]).then(() =>
+    {
+        const p = Promise.all([
+            outerWheelController.spinAdjustEndingPosition(3, spinTime),
+            middleWheelController.spinAdjustEndingPosition(4, spinTime),
+            innerWheelController.spinAdjustEndingPosition(6, spinTime),
+        ]);
+        return p;
+    })
+    .then(()=>
+    {
+            logger('all wheels have ramped up');
+            removeTickerFunc();
+    });
+    app.ticker.add(tickerFunc);
+}
+export function wheelsRampUp(
+    positionOuter, 
+    positionMiddle, 
+    positionInner, 
+    outerVelocity, 
+    middleVelocity, 
+    innerVelocity, 
+    rampUpTime )
+{
+    const allPs = [];
+
+    allPs.push(outerWheelController.rampUp(positionOuter, outerVelocity, rampUpTime));
+    allPs.push(middleWheelController.rampUp(positionMiddle, middleVelocity, rampUpTime));
+    allPs.push(innerWheelController.rampUp(positionInner, innerVelocity, rampUpTime));
+    Promise.all(allPs).then(() =>
+    {
+        logger('all wheels have ramped up');
+        removeTickerFunc();
+    });
+    app.ticker.add(tickerFunc);
+
 }
 /**
 * Starts all wheels spinning with velocity for each wheel given by the object

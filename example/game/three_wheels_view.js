@@ -147,4 +147,12 @@ export default class ThreeWheelsView
             // but this is a good simulation. Always produces the same near win
         };
     }
+    getCurrentRotation()
+    {
+        return {
+            outer : this.outerWheelView.getCurrentRotation(),
+            middle: this.outerWheelView.getCurrentRotation(),
+            inner : this.outerWheelView.getCurrentRotation(),
+        }
+    }
 }

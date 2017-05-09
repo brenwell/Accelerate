@@ -1,5 +1,5 @@
 import Accelerator from '../../src/index.js';
-import * as Radians from './radian_helpers.js';
+import * as Radians from '../libs/radian_helpers.js';
 import * as Logger from '../libs/logger.js';
 
 /**
@@ -106,7 +106,51 @@ export class SingleWheelController
     {
         return this.accelerator.wait(timeInterval);
     }
+    rampUp(position, velocity, timeInterval)
+    {
+        const r = this.view.convertPositionToRadians(position);
+        const c = this.view.getCurrentRotation();
+        const v0 = this.accelerator.getVelocity();
 
+        let d = Radians.modulo2PI(r - c);
+        while( d < ((velocity * timeInterval) / 2) )
+        {
+            d += Math.PI*2;
+        }
+        const p = this.accelerator.accelerate(velocity, timeInterval, d);
+        return p;
+    }
+
+    spinAdjustEndingPosition(newPosition, timeInterval)
+    {
+        const r = this.view.convertPositionToRadians(newPosition);
+        const rD = (360*r)/(2*Math.PI);
+
+        const c = this.view.getCurrentRotation();
+        const cM = Radians.modulo2PI(c);
+        const cD = (360*c)/(2*Math.PI);
+        const cMD = (360*cM)/(2*Math.PI);
+
+        const v = this.accelerator.getVelocity();
+        const vD = (360*v) / (2*Math.PI);
+
+        let d = Radians.modulo2PI(r - c);
+        let dd = d;
+        let ddD = (360*dd) / (Math.PI*2);
+        
+        let z = v*timeInterval;
+        let zD = (360*v*timeInterval) / (2*Math.PI);
+
+        // d = v*timeInterval;
+        while( d < ((v * timeInterval)) )
+        {
+            d += Math.PI*2;
+        }
+        const dD = (360*d) / (2*Math.PI);
+
+        const p = this.accelerator.accelerate(v, timeInterval, d);
+        return p;
+    }
     /**
      * VERY IMPORTANT METHOD - will probably need tuning to get a good visual result
      *
@@ -136,20 +180,29 @@ export class SingleWheelController
      */
     calculateStoppingDistance(position, timeInterval)
     {
+        function radsToDeg(rads)
+        {
+            return (360*rads) / (Math.PI*2);
+        }
         this.validatePosition(position);
         Logger.log(`calculateStoppingDistance position : ${position} timeInterval: ${timeInterval}`);
         const positionInRadians = this.view.convertPositionToRadians(position);
-        const v0 = this.velocity;
+        const pD = radsToDeg(positionInRadians);
+
+        const v0 = this.accelerator.getVelocity();
+        const v0D = radsToDeg(v0);
 
         if (v0 < (2 * Math.PI / timeInterval))
         {
             Logger.alertProblem('velocity maybe too low');
         }
         const currentRadians = this.view.getCurrentRotation();
+        const crD = radsToDeg(currentRadians);
 
         let deltaRadians = (positionInRadians >= currentRadians)
                                 ? (positionInRadians - currentRadians)
                                 : ((2 * Math.PI) + positionInRadians - currentRadians);
+        const deltaD = radsToDeg(deltaRadians);
 
         const dMax = v0 * timeInterval;
         const iDeltaR = deltaRadians;
@@ -167,6 +220,7 @@ export class SingleWheelController
             }
         }
         const dRequired = deltaRadians;
+        const dRequiredD = radsToDeg(deltaRadians);
 
         if (dMax <= dRequired)
         {
@@ -215,9 +269,9 @@ export class SingleWheelController
     */
     setPosition(position)
     {
-        const rads = this.convertPositionToRadians(position);
+        const rads = this.view.convertPositionToRadians(position);
 
-        this.view.positionToRadians(rads);
+        this.view.setRotationToRadians(rads);
     }
     /**
      * Validates a position index - throws an error is not valid

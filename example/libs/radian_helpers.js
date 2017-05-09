@@ -1,3 +1,12 @@
+
+function validateRadian(rads)
+{
+    if ((rads >= 0) && (rads < 2 * Math.PI))
+        return;
+    
+    // throw new Error('radian out of range');
+
+}
 /**
  * Converts degrees to radians
  * @param {float} degrees - number of degrees
@@ -15,17 +24,26 @@ export function degToRad(degrees)
  */
 export function modulo2PI(rads)
 {
+    let res;
     if ((rads >= 0) && (rads < 2 * Math.PI))
-        { return rads; }
-    if (rads < 0)
     {
-        rads = rads + (2 * Math.PI);
+        res = rads; 
     }
-
-    const tmp = Math.round(rads / (2 * Math.PI));
-    const tmp2 = rads - (2 * Math.PI * tmp);
-
-    return tmp2;
+    else if( rads < 0 )
+    {
+        while (rads < 0)
+        {
+            rads = rads + (2 * Math.PI);
+        }
+        res = rads
+    }
+    else
+    {
+        const tmp = Math.round(rads / (2 * Math.PI));
+        const tmp2 = rads - (2 * Math.PI * tmp);
+        res = tmp2;
+    }
+    return res;
 }
 /**
  * Add two radian values and return a result modulo 2*PI
@@ -37,6 +55,7 @@ export function modulo2PI(rads)
 export function add(a, b)
 {
     const tmp = modulo2PI(a + b);
+    validateRadian(tmp);
 
     return tmp;
 }
@@ -50,6 +69,7 @@ export function add(a, b)
 export function subtract(a, b)
 {
     const tmp = modulo2PI(a - b);
+    validateRadian(tmp);
 
     return tmp;
 }

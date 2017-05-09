@@ -7,6 +7,9 @@ import { setPosition,
         stopWheelsWithLoss,
         stopWheelsWithNearWin,
         stopWheelsWithWin,
+        wheelsRampUp,
+        spinWithAdjustment,
+        gamePlay,
     } from './three_wheels.js';
 
 const $ = window.$;
@@ -33,6 +36,9 @@ $(document).ready(function docReadyFn()
     $('#btn-position').click(positionBtn);
     $('#btn-stop').click(stopBtn);
     $('#btn-start-spinning').click(startSpinningBtn);
+    $('#btn-ramp-up').click(rampUpBtn);
+    $('#btn-spin-adjust').click(spinWithAdjustmentBtn);
+    $('#btn-game').click(gameBtn);
     $('#btn-loss').click(lossBtn);
     $('#btn-nearwin').click(nearwinBtn);
     $('#btn-win').click(winBtn);
@@ -52,12 +58,25 @@ $(document).ready(function docReadyFn()
 function positionBtn()
 {
     // console.log('positionFirst');
-    setPosition(0, 1, 2);
+    setPosition(3, 3, 3);
 }
 function stopBtn()
 {
     // console.log('stop');
     stopWheel();
+}
+function rampUpBtn()
+{
+    wheelsRampUp(2,3,4, Math.PI*2*3, Math.PI*2*3, Math.PI*2*3, 1);
+}
+
+function spinWithAdjustmentBtn()
+{
+    spinWithAdjustment([2,3,4]);
+}
+function gameBtn()
+{
+    gamePlay([2,4,6])
 }
 function startSpinningBtn()
 {
@@ -83,12 +102,7 @@ function selectedWinBtn()
     // let x = $("#select :selected").text()
     // let y = $("#selected").val()
 
-    setParameters();
-    startSpinning(speedOuter, speedMiddle, speedInner);
-    setTimeout(() =>
-    {
-        stopWheelsWithWin(p, stopTimeInterval1, stopTimeInterval2);
-    }, waitTime);
+    gamePlay([p,p,p]);
 }
 function selectedNearWinBtn()
 {
@@ -100,6 +114,8 @@ function selectedNearWinBtn()
     // let x = $("#select :selected").text()
     // let y = $("#selected").val()
 
+    gamePlay([p1,p2,p2]);
+    return;
     setParameters();
     startSpinning(speedOuter, speedMiddle, speedInner);
     setTimeout(() =>
@@ -119,10 +135,5 @@ function selectedLossBtn()
     // let x = $("#select :selected").text()
     // let y = $("#selected").val()
 
-    setParameters();
-    startSpinning(speedOuter, speedMiddle, speedInner);
-    setTimeout(() =>
-    {
-        stopWheelsWithLoss(p1, p2, p3, stopTimeInterval1, stopTimeInterval2);
-    }, waitTime);
+    gamePlay([p1,p2,p3]);
 }

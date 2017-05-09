@@ -12,11 +12,11 @@ function public:build {
 }
 
 function public:test {
-  mocha --opts './test/mocha.opts' #--grep Helper
+  mocha --opts './test/mocha.opts' ./test/radians.test.js #--grep Helper
 }
 
 function public:test:watch {
-  mocha --opts './test/mocha.opts' --watch
+  mocha --opts './test/mocha.opts' --watch ./test/*.test.js 
 }
 
 function public:lint {

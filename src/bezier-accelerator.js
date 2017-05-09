@@ -41,7 +41,16 @@ export default class BezierAccelerator
         let P1 = [];
         let P2 = [];
         let P3 = [];
-
+        this.verifyPoint = (P)=>
+        {
+            const ok = 
+                (P.length === 2)
+                // && (P[0] !== undefined) && (!isNan(P[0]))
+                // && (P[1] !== undefined) && (!isNan(P[1]))
+                && (typeof P[0] === 'number') 
+                && ( typeof P[1] == 'number')
+            return ok;
+        }
         this.callBack = cb;
 
         /**
@@ -66,14 +75,29 @@ export default class BezierAccelerator
             P1 = [p1X, p1Y];
             P2 = [T, D];
 
+            if( ! (this.verifyPoint(P0) && this.verifyPoint(P1) && this.verifyPoint(P2)) )
+            {
+                console.log([P0, P1, P2]);
+                throw new Error(`BezierFunction line 79 a point is bad` )
+            }
+
             this.func = QuadraticBezier(P0, P1, P2);
+
         }
         else
         {
+            console.log(`dF: ${dF} D: ${D} T:${T} V:${V} vF:${vF} D-vF*T/3 ${D - (vF*T/3.0)}`)
             P0 = [0.0, 0.0];
             P1 = [T / 3.0, V * T / 3.0];
-            P2 = [(2.0 / 3.0) * T, D - (vF * T / 3.0)];
+            P2 = [(2.0 / 3.0) * T, D - ((vF * T) / 3.0)];
             P3 = [T, D];
+            if( ! (this.verifyPoint(P0) && this.verifyPoint(P1) && this.verifyPoint(P2) && this.verifyPoint(P3)) )
+            {
+                console.log({P0: P0, P1: P1, P2: P2, P3: P3});
+                // throw new Error(`BezierFunction line 93 a point is bad` )
+                console.log(`BezierFunction line 93 a point is bad` )
+            }
+
             this.func = CubicBezier(P0, P1, P2, P3);
         }
 

@@ -1,4 +1,4 @@
-import * as Radians from './radian_helpers.js';
+import * as Radians from '../libs/radian_helpers.js';
 
 function logError(s)
 {
@@ -106,7 +106,7 @@ export class SingleWheelView
     rotateByRadians(rads)
     {
         if ((rads > 2 * Math.PI) || (rads < -2.0 * Math.PI))
-{
+        {
             // throw new Error("rotateByRadians - rads should not be greater than 2*PI or less than -2*PI")
             logError('rotateByRadians - rads should not be greater than 2*PI or less than -2*PI');
         }
@@ -122,14 +122,14 @@ export class SingleWheelView
     setRotationToRadians(radians)
     {
         if ((radians > 2 * Math.PI) || (radians < -2.0 * Math.PI))
-{
+        {
             throw new Error('positionToRadians - radians should not be greater than 2*PI or less than -2*PI');
         }
         this.container.rotation = radians;
     }
 
     /**
-    * convert a position index into a rotation expressedin radians
+    * convert a position index into a rotation expressed in radians
     *
     * @param {int} positionIndex  - the index of one of the wheels segments
     *
@@ -141,7 +141,7 @@ export class SingleWheelView
         let t = (2 * Math.PI * positionIndex / this.numberOfSegments);
 
         if (t !== 0)
-{
+        {
             t = (2 * Math.PI) - t;
         }
         const res = t + Radians.degToRad(this.startDegrees);

@@ -281,7 +281,7 @@ function testAcceleratorWait(v0, tF, cb)
  * and are tested with a timer loop to simulate events
  *
  */
-describe('Test completion of accelerate', function ()
+describe('completions', function ()
 {
     it('bez call back function', function (done)
     {
