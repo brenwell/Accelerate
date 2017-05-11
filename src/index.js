@@ -212,7 +212,11 @@ export default class Accelerator
     {
         return this.totalDistance;
     }
-
+    /**
+     * Sets the position.
+     *
+     * @param      {float}  d Sets the acceleratros total distance to d
+     */
     setPosition(d)
     {
         this.totalDistance = d;
