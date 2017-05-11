@@ -103,8 +103,8 @@ export default function (cb, schedule)
         }
         const t = deltaT * i;
         const pos = mover.advanceByTimeInterval(deltaT);
-
-        table.push([t, pos]);
+        table.push({x:t, y: pos});
+        // table.push([t, pos]);
         i++;
     }, 1);
 }

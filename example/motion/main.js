@@ -2,7 +2,7 @@
 * proves a slection of two motions to display.
 */
 
-import { drawAxes, graphTable } from '../libs/graph.js';
+import * as Graph from '../libs/graph.js';
 import motion1 from './motion_1.js';
 import motion2 from './motion_2.js';
 import motion4 from './motion_4.js';
@@ -41,6 +41,9 @@ function drawMotion(motion)
     $('#canvas-wrapper').append('<canvas id="canvas" width="1000" height="500"></canvas>');
 
     const canvas = document.getElementById('canvas');
+    const canvasWrapper = document.getElementById('canvas-wrapper');
+    canvasWrapper.style.width = "900px";
+    canvasWrapper.style.height = "600px";
 
     if (canvas === null || !canvas.getContext) return;
 
@@ -48,8 +51,10 @@ function drawMotion(motion)
     {
         const axes = {};
         const ctx = canvas.getContext('2d');
+        const values = {
 
-        drawAxes(ctx, axes);
-        graphTable(ctx, axes, table, 'rgb(66,44,255)', 2);
+        };
+        let gdDataset = Graph.datasetFromValues(table,'Trajectory', '#0e12e5', 2);
+        Graph.graphDatasets(ctx, [gdDataset]);            
     });
 }

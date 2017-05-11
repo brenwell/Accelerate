@@ -3,7 +3,8 @@ import { QuadraticBezier, CubicBezier } from './bezier-functions';
  * This class a performs special class of velocity changes on objects in 1-dimensional motion
  *
  *  Specifically - start and end velocity is zero and have a set time and distance to travel between
- *  zero velocity points. Uses a sinc curve to provide the distance function
+ *  zero velocity points. Uses a sine curve to provide the distance function and a cosine curve
+ *  to provide the velovity
  *
  * Provides two exposed methods
  *
