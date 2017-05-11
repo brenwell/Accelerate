@@ -61,13 +61,14 @@ export default class Accelerator
         const defaults = {
             tickInterval : 1 / 60, // @FIX this is going away
             allowOverwrite : true,
-            bounce : false,
+            debug: false,
         };
 
         const actual = Object.assign({}, defaults, options);
         this.actual = actual;
         this.tickInterval = actual.tickInterval;
         this.allowOverwrite = actual.allowOverwrite;
+        this.debug = actual.debug;
 
         this.time = 0.0;
         this.elapsedTimeChangingVelocity = 0.0;
@@ -194,7 +195,12 @@ export default class Accelerator
             }
         }
 
-        return this.totalDistance;
+        if (this.debug)
+        {
+            console.log(this.getPosition());
+        }
+
+        return this.getPosition();
     }
 
     /**
@@ -205,6 +211,11 @@ export default class Accelerator
     getPosition()
     {
         return this.totalDistance;
+    }
+
+    setPosition(d)
+    {
+        this.totalDistance = d;
     }
 
     /**
@@ -299,11 +310,7 @@ export default class Accelerator
         this.newVelocity = vF;
         this.distanceForChange = dF;
 
-        if( this.actual.bounce )
-        {
-            this.decelerator = new BounceAccelerator(tF, dF);
-        }
-        else if ((tF !== null) && (dF !== null))
+        if ((tF !== null) && (dF !== null))
         {
             this.decelerator = new BezierAccelerator(v0, vF, tF, dF);
         }
@@ -357,13 +364,15 @@ export default class Accelerator
 
     /**
      * Stops any current acceleration or wait & resolves the promise
+     *
+     * @param  {boolean}  trigger  Whether or not to trigger the completion handler
      */
-    kill()
+    kill(trigger=true)
     {
         if (this.changingVelocity)
         {
             this.changingVelocity = false;
-            if (typeof this.resolvePromiseFunction === 'function')
+            if (trigger && typeof this.resolvePromiseFunction === 'function')
             {
                 this.resolvePromiseFunction();
             }
@@ -371,7 +380,7 @@ export default class Accelerator
         else if (this.isWaiting)
         {
             this.isWaiting = false;
-            if (typeof this.resolvePromiseFunction === 'function')
+            if (trigger && typeof this.resolvePromiseFunction === 'function')
             {
                 this.resolvePromiseFunction();
             }
