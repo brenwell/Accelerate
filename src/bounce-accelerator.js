@@ -1,12 +1,9 @@
+import { QuadraticBezier, CubicBezier } from './bezier-functions';
 /**
- * This class performs velocity changes on objects in 1-dimensional motion,
- * but unlike the Bezier uses only the elapsed time OR distance as a constraint - not both.
+ * This class a performs special class of velocity changes on objects in 1-dimensional motion
  *
- * Hence one of the values dF or tF passed to the constructor MUST be set to false
- * to signify 'not provided'
- *
- * Hence the usual rules of physics can be applied and a constant acceleration
- * applied.
+ *  Specifically - start and end velocity is zero and have a set time and distance to travel between
+ *  zero velocity points. Uses a sinc curve to provide the distance function
  *
  * Provides two exposed methods
  *
@@ -25,49 +22,31 @@
  * without creating a new object
  *
  */
-export default class SimpleAccelerator
+export default class BounceAccelerator
 {
     /**
      * Constructs the object.
      *
-     * @param  {number}    v0  The initial velocity - velocity before the acceleration
-     * @param  {number}    vF  The final velocity to be atained
      * @param  {number}    tF  The time interval over which the acceleration is to be completed
-     * @param  {float}     dF  is the distance that the object should move while changing velocity
+     * @param  {number}    dF  The distance the object is to travel over the period of the acceleration
      *
      * @param  {Function}  cb  { parameter_description } NOTE - not tested
      */
-    constructor(v0, vF, tF, dF, cb = null)
+    constructor(tF, dF, cb = null)
     {
         // just changing the notation to what I am using
 
         this.callBack = cb;
         this.complete = false;
-        this.V = v0;
-        this.vF = vF;
         this.D = dF;
         this.T = tF;
-        if ((dF === null) && (tF === null))
-        {
-            throw new Error(`Only one of dF tF can be null tF:${tF} dF:${dF}`);
-        }
-        else if ((dF !== null) && (tF !== null))
-        {
-            throw new Error(`Exactly one of dF, tF MUST be false tF:${tF} dF:${dF}`);
-        }
-        else if (dF !== null)
-        {
-            const vAverage = (vF - v0) / 2.0;
-            const t = Math.abs(dF / vAverage);
 
-            this.acceleration = (vF - v0) / t;
-            this.T = t;
-        }
-        else // dF === null, tF !== null
+        if ( ((dF === null) || (tF === null))||((dF === 0)||(tF === 0)) )
         {
-            this.acceleration = (vF - v0) / tF;
-            this.D = (v0 * tF) + (0.5 * this.acceleration * tF * tF); 
+            throw new Error(`BounceAccelerator dF tF can NOT be null tF:${tF} dF:${dF}`);
         }
+        this.K = (2*Math.PI) / this.T;
+        this.H = (this.D * this.K) / Math.PI;
     }
 
     /**
@@ -96,8 +75,8 @@ export default class SimpleAccelerator
                 this.callBack();
             }
         }
-        const v = this.V + (xValue * this.acceleration);
-        const d = (this.V * xValue) + (0.5 * this.acceleration * xValue * xValue);
+        const d = this.H * ( 1 + Math.sin( this.K * xValue - 0.5*Math.PI));
+        const v = this.H * this.K * Math.cos( this.K * xValue - 0.5*Math.PI );
 
         // console.log(`SimpleAccelerator xValue:${xValue}`
         //     +` isComplete:${this.complete}`

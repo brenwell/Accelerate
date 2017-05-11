@@ -64,6 +64,12 @@ export function CubicBezier(P0, P1, P2, P3)
 
         if (tValue === false)
         {
+            console.log(
+                `P0( ${P0[0]}, ${P0[1]})\n`
+                +`P1( ${P1[0]}, ${P1[1]})\n`
+                +`P2( ${P2[0]}, ${P2[1]})\n`
+                +`P3( ${P3[0]}, ${P3[1]})\n`
+            );
             throw new Error('cannot find t for x in CubicBezier');
         }
         // const checkXValue = bezObj.xFromT(tValue);

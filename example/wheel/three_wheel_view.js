@@ -1,5 +1,16 @@
-import { SingleWheelView } from './single_wheel_view.js';
-import { WheelController } from './wheel_controller.js';
+import SingleWheelView from './single_wheel_view.js';
+import SingleWheelController from './single_wheel_controller.js';
+
+/**
+ * private logger function
+ * @param {string} s - the string to log
+ */
+function logger(s)
+{
+    /* eslint-disable no-console */
+    console.log(s);
+    /* eslint-enable no-console */
+}
 
 /*
 * This is the master module (not a class) that sets up the three spinning wheels and provides
@@ -22,63 +33,47 @@ const colors = [
     0x00FF00, // Green
     0xFFFF00, // Yellow
     0xFF7F00, // Orange
-    0xFF0000, //Red
+    0xFF0000, //Red,
+    0x00FFFF, // cyan
+    0x808000, // olive 
 ];
 const PIE_ANGLE = 360 / colors.length;
 const PIE_MIDDLE = PIE_ANGLE / 2;
 const options = {
     backgroundColor : 0xEEEEEE,
-    antialias       : true,
+    antialias : true,
 };
 
-/*
-export let app;
-export let containerOuter;
-export let containerMiddle;
-export let containerInner;
-
-export let outerWheelController;
-export let middleWheelController;
-export let innerWheelController;
-
-export let outerWheelView;
-export let middleWheelView;
-export let innerWheelView;
-*/
-
 /**
- * Creates three wheels.
+ * Three wheel visualization of the data that model contains.
  *
- * @param      {domelement}    el      dom element at which wheels will be drawn
- * @param      {pixels}         width   canvas width
- * @param      {pixels}         height  canvas height
+ * @class      ThreeWheelView (name)
  */
-export default class ThreeWheelsView
+export default class ThreeWheelView
 {
     /**
-     * Constructs the object.
+     * Creates three wheels.
      *
-     * @param      {DOMElement}  el   The dom element to contain the wheels
-     * @param      {number}  width   The width of the game container element in pixels
-     * @param      {number}  height  The height of the game container element in pixels
+     * @param      {domelement}    el      dom element at which wheels will be drawn
+     * @param      {pixels}         width   canvas width
+     * @param      {pixels}         height  canvas height
      */
     constructor(el, width, height)
     {
-        this.colors = colors;
-        this.el = el;
-        this.height = height;
         this.width = width;
+        this.height = height;
+        this.el = el;
         this.app = new PIXI.Application(width, height, options);
         // document.body.appendChild(app.view);
-        this.el.appendChild(this.app.view);
+        el.appendChild(this.app.view);
 
-        this.outerWheelView = new SingleWheelView(this.app, 300, 0xFFFFFF, this.colors, -PIE_MIDDLE);
-        this.middleWheelView = new SingleWheelView(this.app, 210, 0xFFFFFF, this.colors, -PIE_MIDDLE);
-        this.innerWheelView = new SingleWheelView(this.app, 120, 0xFFFFFF, this.colors, -PIE_MIDDLE);
+        this.outerWheelView = new SingleWheelView(this.app, 300, 0xFFFFFF, colors, -PIE_MIDDLE);
+        this.middleWheelView = new SingleWheelView(this.app, 210, 0xFFFFFF, colors, -PIE_MIDDLE);
+        this.innerWheelView = new SingleWheelView(this.app, 120, 0xFFFFFF, colors, -PIE_MIDDLE);
 
-        this.outerWheelController = new WheelController(this.outerWheelView);
-        this.middleWheelController = new WheelController(this.middleWheelView);
-        this.innerWheelController = new WheelController(this.innerWheelView);
+        this.outerWheelController = new SingleWheelController(this.outerWheelView);
+        this.middleWheelController = new SingleWheelController(this.middleWheelView);
+        this.innerWheelController = new SingleWheelController(this.innerWheelView);
 
         this.containerOuter = this.outerWheelView.container;
         this.containerMiddle = this.middleWheelView.container;
@@ -93,6 +88,25 @@ export default class ThreeWheelsView
     }
 
     /**
+    * Moves the wheels to positions. The positions are indexes
+    * in the range 0 .. NUMBER_OF_SEGMENTS - 1
+    * Positions each circle so that the specified segment is at the
+    * pointer mark - the mark is in the middle of the segment.
+    *
+    * Segments are numbered clockwise same as the colors
+    *
+    * @param {int} outterPosition - position of the outer wheel
+    * @param {int} middlePosition - position of the middle wheel
+    * @param {int} innerPosition - position of the inner wheel
+    */
+    setPosition(outterPosition, middlePosition, innerPosition)
+    {
+        this.outerWheelController.setPosition(outterPosition);
+        this.middleWheelController.setPosition(middlePosition);
+        this.innerWheelController.setPosition(innerPosition);
+    }
+
+    /*
     * Add a triangular pointer to the top of the 'wheel'
     */
     addIndicator()
@@ -112,7 +126,7 @@ export default class ThreeWheelsView
         triContainer.x = 300 - 15;
     }
 
-    /**
+    /*
     * Add a center button to the wheel and hooks the press of that
     * button to the randon function
     */
@@ -145,14 +159,7 @@ export default class ThreeWheelsView
             // need to invoke the core game processing
             // does not seem worth in this demo generating random outcomes
             // but this is a good simulation. Always produces the same near win
+
         };
-    }
-    getCurrentRotation()
-    {
-        return {
-            outer : this.outerWheelView.getCurrentRotation(),
-            middle: this.outerWheelView.getCurrentRotation(),
-            inner : this.outerWheelView.getCurrentRotation(),
-        }
     }
 }

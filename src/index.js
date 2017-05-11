@@ -1,5 +1,6 @@
 import BezierAccelerator from './bezier-accelerator.js';
 import SimpleAccelerator from './simple-accelerator.js';
+import BounceAccelerator from './bounce-accelerator.js';
 
 function logger(s)
 {
@@ -60,10 +61,11 @@ export default class Accelerator
         const defaults = {
             tickInterval : 1 / 60, // @FIX this is going away
             allowOverwrite : true,
+            bounce : false,
         };
 
         const actual = Object.assign({}, defaults, options);
-
+        this.actual = actual;
         this.tickInterval = actual.tickInterval;
         this.allowOverwrite = actual.allowOverwrite;
 
@@ -297,7 +299,11 @@ export default class Accelerator
         this.newVelocity = vF;
         this.distanceForChange = dF;
 
-        if ((tF !== null) && (dF !== null))
+        if( this.actual.bounce )
+        {
+            this.decelerator = new BounceAccelerator(tF, dF);
+        }
+        else if ((tF !== null) && (dF !== null))
         {
             this.decelerator = new BezierAccelerator(v0, vF, tF, dF);
         }

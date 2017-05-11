@@ -12,7 +12,7 @@ function logError(s)
 * in the source for rotating_view_controller
 *
 */
-export class SingleWheelView
+export default class SingleWheelView
 {
     /**
     * @param {PIXI.application}     app     - the pixie app for the wheel

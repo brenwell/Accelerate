@@ -1,16 +1,5 @@
-/*
-*/
-import { setPosition,
-         startSpinning,
-        createThreeWheels,
-        stopWheel,
-        stopWheelsWithLoss,
-        stopWheelsWithNearWin,
-        stopWheelsWithWin,
-        wheelsRampUp,
-        spinWithAdjustment,
-        gamePlay,
-    } from './three_wheels.js';
+import GameController from './game_controller.js';
+import ThreeWheelView from './three_wheel_view.js';
 
 const $ = window.$;
 
@@ -20,6 +9,39 @@ let speedInner;
 let waitTime;
 let stopTimeInterval1;
 let stopTimeInterval2;
+
+let game;
+
+main();
+function main()
+{
+    $(document).ready(function docReadyFn()
+    {
+        $('#btn-position').click(positionBtn);
+        $('#btn-stop').click(stopBtn);
+        $('#btn-start-spinning').click(startSpinningBtn);
+        $('#btn-ramp-up').click(rampUpBtn);
+        $('#btn-spin-adjust').click(spinWithAdjustmentBtn);
+        $('#btn-game').click(gameBtn);
+        $('#btn-loss').click(lossBtn);
+        $('#btn-nearwin').click(nearwinBtn);
+        $('#btn-win').click(winBtn);
+
+        $('#btn-selected-win').click(selectedWinBtn);
+        $('#btn-selected-nearwin').click(selectedNearWinBtn);
+        $('#btn-selected-loss').click(selectedLossBtn);
+
+        $('#wheels').css('background-color', 'yellow');
+        $('#wheels').css('width', 600);
+        $('#wheels').css('height', 600);
+        $('#wheels').css('float', 'left');
+
+        setParameters();
+        const threeWheelView = new ThreeWheelView($('#wheels')[0], 600, 600);
+        game = new GameController(threeWheelView); 
+
+    });
+}
 
 function setParameters()
 {
@@ -31,30 +53,7 @@ function setParameters()
     stopTimeInterval2 = parseFloat($('#stop-time-interval-2').val());
 }
 
-$(document).ready(function docReadyFn()
-{
-    $('#btn-position').click(positionBtn);
-    $('#btn-stop').click(stopBtn);
-    $('#btn-start-spinning').click(startSpinningBtn);
-    $('#btn-ramp-up').click(rampUpBtn);
-    $('#btn-spin-adjust').click(spinWithAdjustmentBtn);
-    $('#btn-game').click(gameBtn);
-    $('#btn-loss').click(lossBtn);
-    $('#btn-nearwin').click(nearwinBtn);
-    $('#btn-win').click(winBtn);
 
-    $('#btn-selected-win').click(selectedWinBtn);
-    $('#btn-selected-nearwin').click(selectedNearWinBtn);
-    $('#btn-selected-loss').click(selectedLossBtn);
-
-    $('#wheels').css('background-color', 'yellow');
-    $('#wheels').css('width', 600);
-    $('#wheels').css('height', 600);
-    $('#wheels').css('float', 'left');
-
-    setParameters();
-    createThreeWheels($('#wheels')[0], 600, 600);
-});
 function positionBtn()
 {
     // console.log('positionFirst');
@@ -63,46 +62,42 @@ function positionBtn()
 function stopBtn()
 {
     // console.log('stop');
-    stopWheel();
+    game.stopWheel();
 }
 function rampUpBtn()
 {
-    wheelsRampUp(2,3,4, Math.PI*2*3, Math.PI*2*3, Math.PI*2*3, 1);
+    game.wheelsRampUp(2,3,4, Math.PI*2*3, Math.PI*2*3, Math.PI*2*3, 1);
 }
 
 function spinWithAdjustmentBtn()
 {
-    spinWithAdjustment([2,3,4]);
+    game.spinWithAdjustment([2,3,4]);
 }
 function gameBtn()
 {
-    gamePlay([2,4,6])
+    game.gamePlay([2,4,6])
 }
 function startSpinningBtn()
 {
-    startSpinning(12, 10, 14);
+    game.startSpinning(12, 10, 14);
 }
 function lossBtn()
 {
-    stopWheelsWithLoss(1, 2, 3, 2.0);
+    game.stopWheelsWithLoss(1, 2, 3, 2.0);
 }
 function nearwinBtn()
 {
-    stopWheelsWithNearWin(2, 3, 2.0, 4.0);
+    game.stopWheelsWithNearWin(2, 3, 2.0, 4.0);
 }
 function winBtn()
 {
-    stopWheelsWithWin(2, 2.0, 4.0);
+    game.stopWheelsWithWin(2, 2.0, 4.0);
 }
 function selectedWinBtn()
 {
     const e = document.getElementById('win-select');
     const p = e.selectedIndex;
-    // var value = e.options[e.selectedIndex].value;
-    // let x = $("#select :selected").text()
-    // let y = $("#selected").val()
-
-    gamePlay([p,p,p]);
+    game.play([p,p,p]);
 }
 function selectedNearWinBtn()
 {
@@ -110,18 +105,7 @@ function selectedNearWinBtn()
     const p1 = e1.selectedIndex;
     const e2 = document.getElementById('near-win-select-2');
     const p2 = e2.selectedIndex;
-    // var value = e.options[e.selectedIndex].value;
-    // let x = $("#select :selected").text()
-    // let y = $("#selected").val()
-
-    gamePlay([p1,p2,p2]);
-    return;
-    setParameters();
-    startSpinning(speedOuter, speedMiddle, speedInner);
-    setTimeout(() =>
-    {
-        stopWheelsWithNearWin(p1, p2, stopTimeInterval1, stopTimeInterval2);
-    }, waitTime);
+    game.play([p1,p2,p2]);
 }
 function selectedLossBtn()
 {
@@ -131,9 +115,5 @@ function selectedLossBtn()
     const p2 = e2.selectedIndex;
     const e3 = document.getElementById('loss-select-3');
     const p3 = e3.selectedIndex;
-    // var value = e.options[e.selectedIndex].value;
-    // let x = $("#select :selected").text()
-    // let y = $("#selected").val()
-
-    gamePlay([p1,p2,p3]);
+    game.play([p1,p2,p3]);
 }

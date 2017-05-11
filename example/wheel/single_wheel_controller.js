@@ -23,7 +23,7 @@ import * as Logger from '../libs/logger.js';
  * This controller manages the starting, speed and deceleration to a specified stopping
  * position index of such a rotating view
  */
-export class SingleWheelController
+export default class SingleWheelController
 {
     /**
      * Constructor
@@ -64,7 +64,80 @@ export class SingleWheelController
         // important - cannot put a delay here, already calculated  stopping distance
         return this.accelerator.accelerate(0.0, timeInterval, dF, false);
     }
+    accelerateToZeroWithDelay(position, timeInterval, delayInterval)
+    {
 
+        this.validatePosition(position);
+        const dF = this.calculateStoppingDistance(position, timeInterval);
+
+        // important - cannot put a delay here, already calculated  stopping distance
+        return this.accelerator.wait(delayInterval).then(()=>
+        {
+           return this.accelerator.accelerate(0.0, timeInterval, dF, false)
+        })
+    }
+    /**
+     * { function_description }
+     *
+     * @param      {positionIndex}  position - position index at which to stop
+     * @param      {number}         timeInterval  The time interval over which to stop
+     * @param      {object}         options       {
+     *                                  stopDelay : {number} - in seconds - to be added to timeInterval
+     *                                  bounceAmount : {number}  - in radians, deualts to (3/360)*(Math.PI*2)
+     *                                  bounceTime  : {number}   - the extra time for the bounce - defaults to .2 secs
+     *                              }
+     */
+    accelerateToZeroWithDelayAndBounce(position, timeInterval, options)
+    {
+        const defaults = {
+            stopDelay : 0.15,
+            bounceAmount : ((5/360)*(Math.PI*2)),
+            bounceTime : 0.4,            
+        }
+
+        const actual = Object.assign({}, defaults, options);
+        const delayInterval = actual.stopDelay;
+        const bounceAmount = actual.bounceAmount;
+        const bounceTimeInterval = actual.bounceTime;
+        const v = this.accelerator.getVelocity();
+        const vTarget = v / 4;
+
+        this.validatePosition(position);
+        const d = this.calculateStoppingDistance(position, timeInterval);
+        const ti = timeInterval  - bounceTimeInterval;
+        const dF = d + bounceAmount;
+
+        if (delayInterval === 0)
+        {
+            throw new Error("cannot call with delay === 0");
+        }
+        if( (bounceAmount === 0) || (bounceTimeInterval === 0) )
+        {
+            throw new Error("cannot call with bounceAmount === 0 oor bounceInterval === 0");
+        }
+        // important - cannot put a delay here, already calculated  stopping distance
+        return this.accelerator.wait(delayInterval).then(()=>
+        {
+            return this.accelerator.accelerate(0.0, ti, dF, false);
+        })
+        .then(()=>
+        {
+            return this.accelerator.accelerate(0.0, bounceTimeInterval, - bounceAmount, false);
+        })
+    }
+    accelerateToZeroWithBounce(position, timeInterval, bounceAmount, bounceTime)
+    {
+
+        this.validatePosition(position);
+        const d = this.calculateStoppingDistance(position, timeInterval);
+        const dF = d + bounceAmount;
+        const ti = timeInterval + delayInterval - bounceTimeInterval;
+        return this.accelerator.accelerate(0.0, ti, dF, false)
+        .then(()=>
+        {
+            return this.accelerator.accelerate(0.0, bounceTimeInterval, - bounceAmount, false);
+        })        
+    }
     /**
      * Advances the wheel's time by a timeInterval and redraws the wheel in the new position.
      * Takes account of the circular nature of the wheel and keeps the new rotation value to less than 2*PI.
@@ -79,10 +152,10 @@ export class SingleWheelController
         // d and lastRadians are not modulo2PI
         const d = this.accelerator.advanceByTimeInterval(timeInterval);
 
-        if (d < this.lastRadians)
-        {
-            Logger.error('something is wrong');
-        }
+        // if (d < this.lastRadians)
+        // {
+        //     Logger.error('something is wrong');
+        // }
         const deltaRads = Radians.subtract(Radians.modulo2PI(d), this.lastRadians);
 
         this.lastRadians = d;
